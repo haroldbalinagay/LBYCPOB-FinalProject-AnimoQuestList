@@ -1,19 +1,23 @@
 # LBYCPOB-FinalProject-AnimoQuestList
 
 PROJECT TITLE:
+
 AnimoQuestList: A Web App Designed to Aid Students Choose the Courses Taken Per Term Based on Their Inputs
 
 TEAM MEMBERS:
-BALINGAY, Harold Jay E.  - haroldbalinagay
+
+BALINAGAY, Harold Jay E.  - haroldbalinagay
+
 GERILLA, Edwin Jr. C.    - edwingerilla-cmd
+
 SZE, Timothy Emmanuel U. - TimothySze1254
 
 PROBLEM STATEMENT & GOALS:
-<
 
-What problem does this solve? What are the main objectives?>
+What problem does this solve? What are the main objectives?
 
 TARGET USER:
+
 This program seeks to aid both the student body of DLSU and the Faculty by providing a simple tool ease the lives of both sides. 
 
 BRIEF DESCRIPTION:
@@ -26,6 +30,7 @@ CORE OOP CONCEPTS:
 - Abstraction: <where/how>
 
 INITIAL CLASS IDEAS:
+Classes:
 - Courses: Class that creates course objects with the characteristics needed such as PASSED/FAILED, HARD PREREQUISITE/SOFT PREREQUISITE etc.
 - Users: Manage the data of the users logging in or
 - ClassName3: <responsibility>
