@@ -2,7 +2,7 @@
 
 PROJECT TITLE:
 
-AnimoQuestList: A Web App Designed to Aid Students Choose the Courses Taken Per Term Based on Their Inputs
+AnimoQuestList: A Web App Designed to Aid Students in Choosing the Courses Taken Per Term Based on Their Inputs
 
 TEAM MEMBERS:
 
@@ -14,11 +14,13 @@ SZE, Timothy Emmanuel U. - TimothySze1254
 
 PROBLEM STATEMENT & GOALS:
 
-What problem does this solve? What are the main objectives?
+Problem Statement: When a student fails one or more subjects, they are required to manually review their course checklist to determine which courses need to be retaken and to update their academic plan accordingly. This manual process is time-consuming, prone to error, and may lead to missed prerequisites or scheduling conflicts, increasing the student’s academic burden and risk of delayed graduation.
+
+Goals: To ease the burden on the students and automate their preferred course checklist according to their inputs.
 
 TARGET USER:
 
-This program seeks to aid both the student body of DLSU and the Faculty by providing a simple tool ease the lives of both sides. 
+This program aims to support both DLSU students and faculty by providing a simple tool to make their lives easier. 
 
 BRIEF DESCRIPTION:
 <Summary of purpose and basic functionality>
