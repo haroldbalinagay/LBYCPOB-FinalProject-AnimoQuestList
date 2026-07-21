@@ -77,7 +77,9 @@ Classes:
 ---
 
 ## CORE FEATURES:
-- Allow administrators to edit current course offerings.
-- Create optimized workloads to help students catch up to the checklist.
-- Shift functionality allowing one to carry over PASSED courses onto their next checklist.
+- Allow administrators to create new and edit current course offerings.
+- Create optimized workloads to help students catch up to the checklist for any given Term.
+- Shift functionality allowing one to carry over PASSED courses onto their next Term's checklist.
+- Display a visual and intuitive graph of subject requisites (with visual distinctions between hard / soft prerequisites, corequisites).
 - Show some Statistics for the administrator side to view.
+- Implement a dashboard to easily navigate the different features.
