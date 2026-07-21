@@ -58,7 +58,14 @@ Classes:
 ---
 
 ## USER STORIES:
-> As a student, when I have a failed subject/s, I want to have the proper course checklist automated for me by utilizing a web application that makes it easy and convenient for users to use.
+> As a student, I want to have a tool that can let me visualize my current curriculum progression, so that I can better plan for my future subjects.
+> As a student, I want to look at a visual graph of my course subjects instead of reading through a checklist, as it is much more convenient and intuitive.
+> As a student, I want to have a visual graph that shows how different subjects are connected to one other (ie. hard / soft prerequisites, corequisites), so that I will not take subjects which I do not yet have the complete requisites.
+> As a student, I want to have a tool that allows me to select which subjects to take next Term based on my current course progression, which would be quite convenient and a time saver.
+> As a student, when I have a failed subject/s, I want to have a tool that can automatically update my course checklist and suggest the courses to take in succeeding Terms, so that I will not fall behind in my course.
+> As a student, I want all of the aforementioned features to be accessible in a web application, so that I can access these features on any device.
+> As an admin, I want to be able to easily create and update course checklists, so that students will be immediately informed of any changes.
+> As an admin, I want to see some statistics on how many students are taking or have taken each course, and how many passed or failed each course for a given batch of students (eg. ID 125 only), so that we may adjust our checklists accordingly.
 
 ---
 
