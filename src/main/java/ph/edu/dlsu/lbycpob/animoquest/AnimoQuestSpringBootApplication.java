@@ -11,16 +11,18 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 
 // To temporarily disable Spring Data JPA, since no Supabase yet
-@SpringBootApplication(exclude = {
-        DataSourceAutoConfiguration.class,
-        DataSourceTransactionManagerAutoConfiguration.class,
-        HibernateJpaAutoConfiguration.class
-})
+//@SpringBootApplication(exclude = {
+//        DataSourceAutoConfiguration.class,
+//        DataSourceTransactionManagerAutoConfiguration.class,
+//        HibernateJpaAutoConfiguration.class
+//})
+@SpringBootApplication
 public class AnimoQuestSpringBootApplication {
 
     // Source - https://stackoverflow.com/a/78467021
     // Posted by Malavan
     // Retrieved 2026-08-05, License - CC BY-SA 4.0
+    // To allow Spring to recognize FxWeaver as a Bean
     @Bean
     public FxWeaver fxWeaver(ConfigurableApplicationContext applicationContext) {
         // Would also work with javafx-weaver-core only:
