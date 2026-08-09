@@ -14,5 +14,13 @@ public class Student extends User {
     @Column(nullable = false)
     private String major;
 
+    public Student() {
+    }
+
+    public Student(String type, Long idNumber, String name, String password, String major) {
+        super(type, idNumber, name, password);
+        this.major = major;
+    }
+
     // TODO: Add student attributes & behaviors
 }

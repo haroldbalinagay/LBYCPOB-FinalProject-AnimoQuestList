@@ -36,6 +36,7 @@ public class TermChecklist {
     public TermChecklist() {
     }
 
+    // TODO: Might change long[] courseIds with arraylist
     public TermChecklist(int batch, String degree, int termNumber, int maxUnits, long[] courseIds) {
         this.batch = batch;
         this.degree = degree;

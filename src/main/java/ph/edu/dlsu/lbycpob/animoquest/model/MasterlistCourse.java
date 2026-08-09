@@ -48,5 +48,16 @@ public class MasterlistCourse {
     @Column(name = "created_at", insertable = false, updatable = false)
     private OffsetDateTime createdAt;
 
+    public MasterlistCourse() {
+    }
+
+    // TODO: missing reqIds & reqTypes (use builder)
+    public MasterlistCourse(String code, String name, int units, boolean passFail) {
+        this.code = code;
+        this.name = name;
+        this.units = units;
+        this.passFail = passFail;
+    }
+
     // TODO: Add attributes & behaviors for course in masterlist
 }

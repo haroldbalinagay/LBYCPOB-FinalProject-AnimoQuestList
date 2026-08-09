@@ -42,5 +42,14 @@ public class DegreeCourse {
     @Column(name = "created_at", insertable = false, updatable = false)
     private OffsetDateTime createdAt;
 
+    public DegreeCourse() {
+    }
+
+    // TODO: still missing reqIds & reqTypes (use builder)
+    public DegreeCourse(Long courseId, String degree) {
+        this.courseId = courseId;
+        this.degree = degree;
+    }
+
     // TODO: Add attributes & behaviors for course with degree-specific info
 }

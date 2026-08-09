@@ -33,5 +33,15 @@ public abstract class User {
     @Column(name = "created_at", insertable = false, updatable = false)
     private OffsetDateTime createdAt;
 
+    public User() {
+    }
+
+    public User(String type, Long idNumber, String name, String password) {
+        this.type = type;
+        this.idNumber = idNumber;
+        this.name = name;
+        this.password = password;
+    }
+
     // TODO: Add common attributes & behaviors for user
 }

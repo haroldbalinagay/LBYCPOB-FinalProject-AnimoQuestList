@@ -13,5 +13,8 @@ import lombok.Setter;
 public class Admin extends User {
     // No schema attributes
 
+    public Admin() {
+    }
+
     // TODO: Add admin attributes & behaviors
 }
