@@ -23,7 +23,7 @@
 
         <Label text="AnimoQuest" />
 
-        <Label text="ID Number" />
+        <Label text="Username" />
 
         <TextField fx:id="idNumberField"
                    promptText="Enter ID number" />
