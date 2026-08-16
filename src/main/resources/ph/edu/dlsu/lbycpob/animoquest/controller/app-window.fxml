@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="542.0" prefWidth="833.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ph.edu.dlsu.lbycpob.animoquest.controller.MainController">
+<BorderPane fx:id="appWindow" prefHeight="542.0" prefWidth="833.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ph.edu.dlsu.lbycpob.animoquest.controller.MainController">
    <left>
       <VBox prefHeight="522.0" prefWidth="104.0" BorderPane.alignment="CENTER">
          <children>
@@ -19,10 +19,10 @@
                   <Label text="Term in-progress here" wrapText="true" />
                </children>
             </VBox>
-            <Button fx:id="courseEditorBtn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Course Editor" textAlignment="CENTER" wrapText="true" />
-            <Button fx:id="termChecklistBtn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Term Checklists" textAlignment="CENTER" wrapText="true" />
-            <Button fx:id="enrollPlanBtn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Enrollment Plan" textAlignment="CENTER" wrapText="true" />
-            <Button fx:id="logoutBtn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Logout" textAlignment="CENTER" wrapText="true" />
+            <Button fx:id="courseEditorBtn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#showCourseEditorView" text="Course Editor" textAlignment="CENTER" wrapText="true" />
+            <Button fx:id="termChecklistBtn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#showTermChecklistView" text="Term Checklists" textAlignment="CENTER" wrapText="true" />
+            <Button fx:id="enrollPlanBtn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#showEnrollmentPlanView" text="Enrollment Plan" textAlignment="CENTER" wrapText="true" />
+            <Button fx:id="logoutBtn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleLogout" text="Logout" textAlignment="CENTER" wrapText="true" />
          </children>
          <BorderPane.margin>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
