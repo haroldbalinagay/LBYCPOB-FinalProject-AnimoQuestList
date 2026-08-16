@@ -1,4 +1,4 @@
 package ph.edu.dlsu.lbycpob.animoquest.controller;
 
-public class AdminEditorController {
+public class EnrollmentPlanController {
 }
