@@ -5,6 +5,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane fx:id="appWindow" prefHeight="542.0" prefWidth="833.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ph.edu.dlsu.lbycpob.animoquest.controller.MainController">
@@ -13,10 +14,10 @@
          <children>
             <VBox prefHeight="104.0" prefWidth="94.0">
                <children>
-                  <Label text="Name here" wrapText="true" />
-                  <Label text="ID num here" wrapText="true" />
-                  <Label text="Degree prog here" wrapText="true" />
-                  <Label text="Term in-progress here" wrapText="true" />
+                  <Label fx:id="usernameLabel" text="Name here" wrapText="true" />
+                  <Label fx:id="idNumberLabel" text="ID num here" wrapText="true" />
+                  <Label fx:id="degreeLabel" text="Degree prog here" wrapText="true" />
+                  <Label fx:id="currentTermLabel" text="Term in-progress here" wrapText="true" />
                </children>
             </VBox>
             <Button fx:id="courseEditorBtn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#showCourseEditorView" text="Course Editor" textAlignment="CENTER" wrapText="true" />
@@ -35,4 +36,14 @@
    <padding>
       <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
    </padding>
+   <bottom>
+      <HBox prefHeight="20.0" prefWidth="823.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label fx:id="statusBarLabel" prefHeight="17.0" prefWidth="832.0" text="Update info here" visible="false" />
+         </children>
+         <BorderPane.margin>
+            <Insets left="5.0" />
+         </BorderPane.margin>
+      </HBox>
+   </bottom>
 </BorderPane>
