@@ -1,5 +1,10 @@
 package ph.edu.dlsu.lbycpob.animoquest.controller;
 
+import net.rgielen.fxweaver.core.FxmlView;
+import org.springframework.stereotype.Component;
+
+@Component
+@FxmlView("checklist-view.fxml")
 public class TermChecklistController {
 
 }
