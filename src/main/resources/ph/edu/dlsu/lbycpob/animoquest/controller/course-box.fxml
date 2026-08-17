@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 
-<GridPane gridLinesVisible="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="250.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ph.edu.dlsu.lbycpob.animoquest.controller.CourseBoxController">
+<GridPane gridLinesVisible="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#handleSelfClick" prefHeight="25.0" prefWidth="250.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ph.edu.dlsu.lbycpob.animoquest.controller.CourseBoxController">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="195.0" minWidth="10.0" prefWidth="180.0" />
     <ColumnConstraints hgrow="NEVER" maxWidth="154.0" minWidth="-Infinity" prefWidth="40.0" />
@@ -20,7 +20,7 @@
    <children>
       <Label fx:id="courseCodeLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" text="LBYCPOB" />
       <Label fx:id="courseUnitsLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" text="3" GridPane.columnIndex="1" />
-      <CheckBox fx:id="enrollInCheckbox" alignment="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" GridPane.columnIndex="3" />
+      <CheckBox fx:id="enrollInCheckbox" alignment="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onMouseClicked="#handleSelfClick" GridPane.columnIndex="3" />
       <StackPane GridPane.columnIndex="2" />
    </children>
 </GridPane>

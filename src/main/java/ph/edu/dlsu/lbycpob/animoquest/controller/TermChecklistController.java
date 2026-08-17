@@ -16,6 +16,7 @@ import ph.edu.dlsu.lbycpob.animoquest.service.TermChecklistService;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 @Component
 @Scope("prototype") // Ensures that Spring creates new controller instance for each fxml instance
@@ -31,6 +32,8 @@ public class TermChecklistController {
 
     private TermChecklist checklist;
     private List<MasterlistCourse> courses = new ArrayList<>();
+
+    private Consumer<MasterlistCourse> onCourseClickListener;
 
     private final FxmlLoaderService fxmlLoader;
     private final TermChecklistService checklistService;
@@ -66,6 +69,7 @@ public class TermChecklistController {
         courses = checklistService.getCourseDetailsOf(checklist.getCourseIds());
 
         // Set up each course listed in the term checklist
+        int orderIdx = 0;
         for (MasterlistCourse course : courses) {
             Parent courseBox;
             // Load an instance of the course box
@@ -83,6 +87,11 @@ public class TermChecklistController {
             // Provide the instance with the course code and units
             controller.setCourseCode(course.getCode());
             controller.setCourseUnits(course.getUnits());
+            controller.setOrderInChecklist(orderIdx);
+            orderIdx++; // Increment the index
+
+            // Define the listener for the instance
+            controller.addListener(this::handleOnCourseClick);
 
             // Add the instance to the checklist view
             coursesView.getChildren().add(courseBox);
@@ -90,5 +99,25 @@ public class TermChecklistController {
 
         // Update max units
         maxUnitsLabel.setText(String.valueOf(checklist.getMaxUnits()));
+    }
+
+    /**
+     * Executes when ANY child (course) instance is clicked.
+     * Passes the course model of the clicked on course to the parent (checklist view) controller.
+     * @param orderIdx The order index of the clicked on course
+     */
+    private void handleOnCourseClick(int orderIdx) {
+        if (onCourseClickListener != null) {
+            // Pass the data back to the main controller listener
+            onCourseClickListener.accept(courses.get(orderIdx));
+        }
+    }
+
+    /**
+     * Attaches a listener to the controller.
+     * @param listener
+     */
+    public void addListener(Consumer<MasterlistCourse> listener) {
+        onCourseClickListener = listener;
     }
 }

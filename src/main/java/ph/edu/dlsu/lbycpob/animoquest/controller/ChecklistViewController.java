@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.stereotype.Component;
+import ph.edu.dlsu.lbycpob.animoquest.model.MasterlistCourse;
 import ph.edu.dlsu.lbycpob.animoquest.service.FxmlLoaderService;
 
 import java.io.IOException;
@@ -64,6 +65,9 @@ public class ChecklistViewController {
                 TermChecklistController controller = fxmlLoader.getController();
                 checklistControllers.add(controller);
 
+                // Define the listener for the instance
+                controller.addListener(this::handleOnCourseClick);
+
                 // Set the term number of the instance (causes it to start searching for its courses)
                 controller.setTermNumber(count);
                 count++;
@@ -72,5 +76,24 @@ public class ChecklistViewController {
                 checklistGrid.add(subView, col, row);
             }
         }
+    }
+
+    /**
+     * Executes when ANY course is clicked from ANY checklist.
+     * @param course The course model of the clicked on course
+     */
+    private void handleOnCourseClick(MasterlistCourse course) {
+        showCourseDetails(course);
+    }
+
+    private void showCourseDetails(MasterlistCourse course) {
+        courseNameLabel.setText(course.getName());
+        courseCodeLabel.setText(course.getCode());
+        courseUnitsLabel.setText(String.valueOf(course.getUnits()));
+        courseRequisitesLabel.setText("TBD");
+        courseDependentsLabel.setText("TBD");
+        courseStatusLabel.setText("TBD");
+        eligibleLabel.setText("TBD");
+        eligibleReasonLabel.setText("TBD");
     }
 }
