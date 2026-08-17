@@ -18,9 +18,9 @@
     <RowConstraints minHeight="-Infinity" prefHeight="15.0" vgrow="ALWAYS" />
   </rowConstraints>
    <children>
-      <Label alignment="CENTER" maxWidth="1.7976931348623157E308" text="LBYCPOB" />
-      <Label alignment="CENTER" maxWidth="1.7976931348623157E308" text="3" GridPane.columnIndex="1" />
-      <CheckBox alignment="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" GridPane.columnIndex="3" />
+      <Label fx:id="courseCodeLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" text="LBYCPOB" />
+      <Label fx:id="courseUnitsLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" text="3" GridPane.columnIndex="1" />
+      <CheckBox fx:id="enrollInCheckbox" alignment="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" GridPane.columnIndex="3" />
       <StackPane GridPane.columnIndex="2" />
    </children>
 </GridPane>
