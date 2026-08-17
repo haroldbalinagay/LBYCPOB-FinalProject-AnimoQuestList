@@ -6,9 +6,8 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.shape.SVGPath?>
 
-<GridPane gridLinesVisible="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="250.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane gridLinesVisible="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="250.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="195.0" minWidth="10.0" prefWidth="180.0" />
     <ColumnConstraints hgrow="NEVER" maxWidth="154.0" minWidth="-Infinity" prefWidth="40.0" />
@@ -16,16 +15,12 @@
       <ColumnConstraints hgrow="NEVER" maxWidth="92.5" minWidth="-Infinity" prefWidth="40.0" />
   </columnConstraints>
   <rowConstraints>
-    <RowConstraints minHeight="-Infinity" prefHeight="30.0" vgrow="NEVER" />
+    <RowConstraints minHeight="-Infinity" prefHeight="15.0" vgrow="ALWAYS" />
   </rowConstraints>
    <children>
       <Label alignment="CENTER" maxWidth="1.7976931348623157E308" text="LBYCPOB" />
       <Label alignment="CENTER" maxWidth="1.7976931348623157E308" text="3" GridPane.columnIndex="1" />
       <CheckBox alignment="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" GridPane.columnIndex="3" />
-      <StackPane GridPane.columnIndex="2">
-         <children>
-            <SVGPath content="M40,60 C42,48 44,30 25,32" />
-         </children>
-      </StackPane>
+      <StackPane GridPane.columnIndex="2" />
    </children>
 </GridPane>
