@@ -9,7 +9,6 @@ import net.rgielen.fxweaver.core.FxWeaver;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import ph.edu.dlsu.lbycpob.animoquest.controller.MainController;
-import ph.edu.dlsu.lbycpob.animoquest.controller.TermChecklistController;
 
 public class JavaFxApplication extends Application {
 
