@@ -7,14 +7,13 @@ import java.io.IOException;
 import java.net.URL;
 
 /**
- * FxmlLoaderService tells the JavaFX FXMLLoader to allow Spring to recognize the FXML file's controller as a managed Bean.
+ * FxmlLoaderService tells the JavaFX FXMLLoader to allow Spring to manage the FXML's controller as a Bean.
  */
 @Service
 public class FxmlLoaderService {
 
     private final ApplicationContext context;
 
-    // Spring automatically injects itself here
     public FxmlLoaderService(ApplicationContext context) {
         this.context = context;
     }

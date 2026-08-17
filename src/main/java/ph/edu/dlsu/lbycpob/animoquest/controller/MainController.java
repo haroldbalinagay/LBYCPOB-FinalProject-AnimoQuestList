@@ -10,8 +10,10 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.util.Duration;
 import net.rgielen.fxweaver.core.FxmlView;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
+import ph.edu.dlsu.lbycpob.animoquest.service.FxmlLoaderService;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -31,6 +33,12 @@ public class MainController {
     @FXML private Label currentTermLabel;
     @FXML private Label statusBarLabel;
 
+    private final FxmlLoaderService fxmlLoader;
+
+    public MainController(FxmlLoaderService fxmlLoader) {
+        this.fxmlLoader = fxmlLoader;
+    }
+
     /**
      * Initializes variable UI elements, namely the user profile info.
      */
@@ -45,7 +53,7 @@ public class MainController {
     private void loadCenterView(String fxmlFile) {
         try {
             // Load the subview
-            Parent subView = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(fxmlFile)));
+            Parent subView = fxmlLoader.load(Objects.requireNonNull(getClass().getResource(fxmlFile)));
 
             // Swap out only the center layout
             appWindow.setCenter(subView);
