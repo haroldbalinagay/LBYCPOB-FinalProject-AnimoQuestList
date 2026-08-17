@@ -45,27 +45,32 @@ public class ChecklistViewController {
      */
     @FXML
     public void initialize() {
+        // Reset variables (for when switching between app subviews)
         checklistControllers = new ArrayList<>();
+        int count = 1;
 
+        // Loop through each cell of the checklist grid and create a new checklist instance
         for (int row = 0; row < 4 ; row++) {
             for (int col = 0; col < 3; col++) {
+                Parent subView;
                 try {
-                    Parent subView = fxmlLoader.load(getClass().getResource("term-checklist.fxml"));
-                    checklistGrid.add(subView, col, row);
+                    subView = fxmlLoader.load(getClass().getResource("term-checklist.fxml"));
                 } catch (IOException e) {
                     checklistGrid.add(new Label("Error loading checklist"), col, row);
+                    continue;
                 }
+
                 // Extract and save the instance's controller into a list
                 TermChecklistController controller = fxmlLoader.getController();
                 checklistControllers.add(controller);
-            }
-        }
 
-        // Set up the Term numbers
-        int i = 1;
-        for (TermChecklistController controller : checklistControllers) {
-            controller.setTermNumber(i);
-            i++;
+                // Set the term number of the instance (causes it to start searching for its courses)
+                controller.setTermNumber(count);
+                count++;
+
+                // Show the instance on screen
+                checklistGrid.add(subView, col, row);
+            }
         }
     }
 }
