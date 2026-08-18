@@ -2,9 +2,14 @@ package ph.edu.dlsu.lbycpob.animoquest.controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+import net.rgielen.fxweaver.core.FxWeaver;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.stereotype.Component;
 import ph.edu.dlsu.lbycpob.animoquest.model.Admin;
@@ -26,9 +31,14 @@ public class LoginController {
     private PasswordField passwordField;
 
     private final LoginService loginService;
+    private final FxWeaver fxWeaver;
 
-    public LoginController(LoginService loginService) {
+    public LoginController(
+            LoginService loginService,
+            FxWeaver fxWeaver
+    ) {
         this.loginService = loginService;
+        this.fxWeaver = fxWeaver;
     }
 
     @FXML
@@ -61,65 +71,3 @@ public class LoginController {
             );
 
             if (user instanceof Student) {
-
-                showAlert(
-                        Alert.AlertType.INFORMATION,
-                        "Login Successful",
-                        "Welcome, " + user.getFullName() + "!"
-                );
-
-                // TODO:
-                // Open Student Dashboard
-
-            } else if (user instanceof Admin) {
-
-                showAlert(
-                        Alert.AlertType.INFORMATION,
-                        "Login Successful",
-                        "Welcome, " + user.getFullName() + "!"
-                );
-
-                // TODO:
-                // Open Admin Dashboard
-            }
-
-        } catch (IllegalArgumentException e) {
-
-            showAlert(
-                    Alert.AlertType.WARNING,
-                    "Login Failed",
-                    e.getMessage()
-            );
-
-        } catch (Exception e) {
-
-            showAlert(
-                    Alert.AlertType.ERROR,
-                    "Login Error",
-                    "An unexpected error occurred while logging in."
-            );
-
-            e.printStackTrace();
-        }
-    }
-
-    @FXML
-    private void handleBack(ActionEvent event) {
-
-        // We'll add the Welcome page navigation here.
-        // For now, this method is intentionally left empty.
-    }
-
-    private void showAlert(
-            Alert.AlertType type,
-            String title,
-            String message
-    ) {
-
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-}
