@@ -10,7 +10,7 @@
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="ph.edu.dlsu.lbycpob.animoquest.controller.LoginController"
-            prefHeight="400.0"
+            prefHeight="500.0"
             prefWidth="600.0">
 
     <VBox spacing="10.0"
@@ -20,36 +20,28 @@
           AnchorPane.rightAnchor="150.0"
           AnchorPane.topAnchor="50.0">
 
-        <!-- Title -->
-        <Label text="AnimoQuest"
-               style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+        <Label text="AnimoQuest Login"/>
 
-        <Label text="Login"
-               style="-fx-font-size: 18px;" />
-
-        <!-- Username -->
-        <Label text="Username" />
+        <Label text="Username"/>
 
         <TextField fx:id="usernameField"
-                   promptText="Enter username" />
+                   promptText="First Middle Last"/>
 
-        <!-- ID Number -->
-        <Label text="ID Number" />
+        <Label text="DLSU ID Number"/>
 
         <TextField fx:id="idNumberField"
-                   promptText="Enter ID number" />
+                   promptText="Enter 8-digit ID number"/>
 
-        <!-- Password -->
-        <Label text="Password" />
+        <Label text="Password"/>
 
         <PasswordField fx:id="passwordField"
-                       promptText="Enter password" />
+                       promptText="Enter password"/>
 
-        <!-- Login Button -->
-        <Button fx:id="loginButton"
-                text="Login"
-                onAction="#handleLogin"
-                prefWidth="150.0" />
+        <Button text="Login"
+                onAction="#handleLogin"/>
+
+        <Button text="Back"
+                onAction="#handleBack"/>
 
     </VBox>
 
