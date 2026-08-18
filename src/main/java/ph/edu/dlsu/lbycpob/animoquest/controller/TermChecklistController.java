@@ -133,7 +133,7 @@ public class TermChecklistController {
      * @param sourceCourse The course to match against
      * @return A count of dependents
      */
-    public int countDependentsOf(MasterlistCourse sourceCourse) {
+    public int countDependentsOf(MasterlistCourse sourceCourse, boolean renderHighlights) {
         int count = 0;
 
         // Simply return 0 if there are no courses
@@ -152,11 +152,13 @@ public class TermChecklistController {
 
                 if (reqId == null) continue; // Skip req slot if empty
 
-                // If req does match source course, increment counter and trigger dependent visualization
+                // If req does match source course, increment counter and trigger dependent visualization (ONLY IF desired)
                 if (reqId.equals(sourceCourse.getId())) {
                     count++;
                     IO.println(course.getCode() + " is a dependent of " + sourceCourse.getCode());
-                    highlightDependent(idx);
+                    if (renderHighlights) {
+                        highlightDependent(idx);
+                    }
                 }
             }
         }

@@ -149,9 +149,11 @@ public class ChecklistViewController {
         // Update the label
         courseRequisitesLabel.setText(sb.toString());
 
-        // Ask each checklist to check if it contains the reqs to highlight on screen
-        for (TermChecklistController controller : checklistControllers) {
-            controller.highlightRequisitesOf(course, progressList);
+        // Ask each checklist to check if it contains the reqs to highlight on screen (ONLY IF checkbox is selected)
+        if (showTargetReqsCheckbox.isSelected()) {
+            for (TermChecklistController controller : checklistControllers) {
+                controller.highlightRequisitesOf(course, progressList);
+            }
         }
     }
 
@@ -164,7 +166,8 @@ public class ChecklistViewController {
 
         // Ask each checklist to check if it has any courses that depend on the given course
         for (TermChecklistController controller : checklistControllers) {
-            totalCount += controller.countDependentsOf(course); // Increment the counter
+            // Increment the counter
+            totalCount += controller.countDependentsOf(course, showTargetDependentsCheckbox.isSelected());
         }
 
         // Update the label

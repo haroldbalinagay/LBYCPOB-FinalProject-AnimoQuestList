@@ -59,11 +59,11 @@
                   </VBox>
                   <VBox layoutX="253.0" layoutY="10.0" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="95.0" prefWidth="350.0">
                      <children>
-                        <Label fx:id="courseNameLabel" maxWidth="1.7976931348623157E308" text="Course Name" />
-                        <Label fx:id="courseCodeLabel" maxWidth="1.7976931348623157E308" text="Course Code" />
-                        <Label fx:id="courseUnitsLabel" maxWidth="1.7976931348623157E308" text="Units" />
-                        <Label fx:id="courseRequisitesLabel" maxWidth="1.7976931348623157E308" text="Requisites" />
-                        <Label fx:id="courseDependentsLabel" maxWidth="1.7976931348623157E308" text="Dependents" />
+                        <Label fx:id="courseNameLabel" maxWidth="1.7976931348623157E308" text="-" />
+                        <Label fx:id="courseCodeLabel" maxWidth="1.7976931348623157E308" text="-" />
+                        <Label fx:id="courseUnitsLabel" maxWidth="1.7976931348623157E308" text="-" />
+                        <Label fx:id="courseRequisitesLabel" maxWidth="1.7976931348623157E308" text="-" />
+                        <Label fx:id="courseDependentsLabel" maxWidth="1.7976931348623157E308" text="-" />
                      </children>
                      <padding>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -81,9 +81,9 @@
                   </VBox>
                   <VBox layoutX="547.0" layoutY="10.0" minWidth="-Infinity" prefHeight="95.0" prefWidth="160.0">
                      <children>
-                        <Label fx:id="courseStatusLabel" text="Status" />
-                        <Label fx:id="eligibleLabel" text="YES / NO" />
-                        <Label fx:id="eligibleReasonLabel" maxWidth="1.7976931348623157E308" text="Reason" wrapText="true" />
+                        <Label fx:id="courseStatusLabel" text="-" />
+                        <Label fx:id="eligibleLabel" text="-" />
+                        <Label fx:id="eligibleReasonLabel" maxWidth="1.7976931348623157E308" text="-" wrapText="true" />
                      </children>
                      <padding>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
