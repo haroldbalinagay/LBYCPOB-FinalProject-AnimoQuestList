@@ -8,6 +8,11 @@ import javafx.scene.control.TextField;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.stereotype.Component;
 import ph.edu.dlsu.lbycpob.animoquest.service.LoginService;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import net.rgielen.fxweaver.core.FxWeaver;
 
 @Component
 @FxmlView("add-account.fxml")
@@ -32,9 +37,14 @@ public class AddAccountController {
     private TextField majorField;
 
     private final LoginService loginService;
+    private final FxWeaver fxWeaver;
 
-    public AddAccountController(LoginService loginService) {
+    public AddAccountController(
+            LoginService loginService,
+            FxWeaver fxWeaver
+    ) {
         this.loginService = loginService;
+        this.fxWeaver = fxWeaver;
     }
 
     @FXML
@@ -54,6 +64,25 @@ public class AddAccountController {
                 || middleName.isEmpty()
                 || lastName.isEmpty()
                 || major.isEmpty()) {
+
+            @FXML
+            private void handleBack(ActionEvent event) {
+
+                try {
+
+                    Parent root = fxWeaver.loadView(WelcomeController.class);
+
+                    Stage stage = (Stage) ((Node) event.getSource())
+                            .getScene()
+                            .getWindow();
+
+                    stage.setScene(new Scene(root));
+                    stage.show();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
 
             showAlert(
                     Alert.AlertType.WARNING,
