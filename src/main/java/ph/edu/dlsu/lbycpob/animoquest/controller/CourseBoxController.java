@@ -6,6 +6,7 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import lombok.Getter;
+import lombok.Setter;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -20,10 +21,11 @@ import java.util.function.IntConsumer;
 public class CourseBoxController {
     @FXML private Label courseCodeLabel;
     @FXML private Label courseUnitsLabel;
-    @FXML private CheckBox enrollInCheckbox;
+    @FXML private CheckBox enrollInCheckbox; // TODO: HARMONY POINT
     @FXML private GridPane courseBox;
 
     private int orderIdxInChecklist;
+    @Getter @Setter private CourseStatus status;
 
     // The listener that will notify the checklist controller of a click
     private IntConsumer onClickListener;
@@ -65,6 +67,13 @@ public class CourseBoxController {
     }
 
     // HIGHLIGHTING
+
+    /**
+     * Sets a highlight on the course box based on its status instance field.
+     */
+    public void updateHighlight() {
+        updateHighlight(status);
+    }
 
     /**
      * Sets a highlight on the course box based on the given status.

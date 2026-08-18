@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.stereotype.Component;
@@ -30,13 +31,14 @@ public class ChecklistViewController {
     @FXML private Label courseStatusLabel;
     @FXML private Label eligibleLabel;
     @FXML private Label eligibleReasonLabel;
-    @FXML private Label checklistTitleLabel;
+    @FXML private Label checklistTitleLabel; // TODO: HARMONY POINT (LOGIN)
 
     @FXML private CheckBox showColorCodingCheckbox;
     @FXML private CheckBox showTargetReqsCheckbox;
     @FXML private CheckBox showTargetDependentsCheckbox;
 
     @FXML private GridPane checklistGrid;
+    private boolean checklistGridClickLock = false; // A set-reset latch
 
     private List<TermChecklistController> checklistControllers = new ArrayList<>();
 
@@ -61,6 +63,9 @@ public class ChecklistViewController {
         checklistControllers = new ArrayList<>();
         int count = 1;
 
+        // Ask the curriculum service for the student's progress records
+        progressList = progressService.getProgressOf(null); // TODO: HARMONY POINT
+
         // Loop through each cell of the checklist grid and create a new checklist instance
         for (int row = 0; row < 4 ; row++) {
             for (int col = 0; col < 3; col++) {
@@ -81,15 +86,13 @@ public class ChecklistViewController {
 
                 // Set the term number of the instance (causes it to start searching for its courses)
                 controller.setTermNumber(count);
+                controller.populateCourses(progressList);
                 count++;
 
                 // Show the instance on screen
                 checklistGrid.add(subView, col, row);
             }
         }
-
-        // Ask the curriculum service for the student's progress records
-        progressList = progressService.getProgressOf(null); // TODO: HARMONY POINT
     }
 
     /**
@@ -97,6 +100,7 @@ public class ChecklistViewController {
      * @param course The course model of the clicked on course
      */
     private void handleOnCourseClick(MasterlistCourse course) {
+        checklistGridClickLock = true; // Prevents the same click from triggering the grid pane on-mouse click
         showCourseDetails(course);
     }
 
@@ -196,6 +200,31 @@ public class ChecklistViewController {
                 controller.highlightSourceCourse(course, CourseBoxState.ELIGIBLE);
             }
             else controller.highlightSourceCourse(course, CourseBoxState.INELIGIBLE);
+        }
+    }
+
+    /**
+     * Trigger when any part of the checklist grid pane is clicked on.
+     * The execution of this handler depends on a set-reset latch that is set when a course box is clicked,
+     * as well as the "show status color coding" visual control.
+     * @param event
+     */
+    @FXML
+    public void handleChecklistGridClick(MouseEvent event) {
+        // Acts like a set-reset latch that prevents the handler from doing anything,
+        // except for when the user did not click on a course box.
+        if (checklistGridClickLock) {
+            checklistGridClickLock = false;
+            return;
+        }
+
+        // Instruct each checklist to restore its course highlights
+        for (TermChecklistController controller : checklistControllers) {
+            if (showColorCodingCheckbox.isSelected()) {
+                controller.restoreHighlights();
+            } else {
+                controller.resetHighlights();
+            }
         }
     }
 }

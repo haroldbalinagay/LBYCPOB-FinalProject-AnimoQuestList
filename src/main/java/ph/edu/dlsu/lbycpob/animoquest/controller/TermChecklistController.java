@@ -33,7 +33,6 @@ public class TermChecklistController {
     private TermChecklist checklist;
     private List<MasterlistCourse> courses = new ArrayList<>();
 
-    private int sourceCourseIdx = -1;
     private List<CourseBoxController> highlightedCourses = new ArrayList<>();
 
     private Consumer<MasterlistCourse> onCourseClickListener;
@@ -54,13 +53,13 @@ public class TermChecklistController {
         if (number <= 0) return;
         termNumber = number;
         termNumberLabel.setText("TERM " + number);
-        populateCourses();
     }
 
     /**
      * Populates the courses of the checklist.
      */
-    private void populateCourses() {
+    public void populateCourses(List<CurriculumProgress> progressList) {
+        // Get the appropriate checklist
         checklist = checklistService.getChecklistOf("CPE", 125, termNumber); // TODO: HARMONY POINT
 
         // Do not attempt to generate course boxes if the checklist is not found
@@ -87,10 +86,13 @@ public class TermChecklistController {
             CourseBoxController controller = fxmlLoader.getController();
             courseControllers.add(controller);
 
-            // Provide the instance with the course code and units
+            // Provide the instance with key data
             controller.setCourseCode(course.getCode());
             controller.setCourseUnits(course.getUnits());
             controller.setOrderInChecklist(orderIdx);
+
+            CourseStatus status = checklistService.getStatusOf(course, progressList);
+            controller.setStatus(status);
             orderIdx++; // Increment the index
 
             // Define the listener for the instance
@@ -98,6 +100,10 @@ public class TermChecklistController {
 
             // Add the instance to the checklist view
             coursesView.getChildren().add(courseBox);
+
+            // Automatically highlight the instance based on its status
+            highlightedCourses.add(controller);
+            controller.updateHighlight();
         }
 
         // Update max units
@@ -111,10 +117,6 @@ public class TermChecklistController {
      */
     private void handleOnCourseClick(int orderIdx) {
         if (onCourseClickListener != null) {
-            // Save the clicked on course box
-            sourceCourseIdx = orderIdx;
-            IO.println("Saved " + courses.get(orderIdx).getCode());
-
             // Pass the data back to the main controller listener
             onCourseClickListener.accept(courses.get(orderIdx));
         }
@@ -252,6 +254,17 @@ public class TermChecklistController {
                 courseBox.updateHighlight(newState);
             }
             idx++;
+        }
+    }
+
+    /**
+     * Instructs all course boxes to revert back to the highlights associated with their stored statuses.
+     */
+    public void restoreHighlights() {
+        // Loop through each course in the checklist to restore its default highlight
+        for (CourseBoxController courseBox : courseControllers) {
+            highlightedCourses.add(courseBox);
+            courseBox.updateHighlight();
         }
     }
 }
