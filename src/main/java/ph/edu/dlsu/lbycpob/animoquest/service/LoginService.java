@@ -79,9 +79,11 @@ public class LoginService {
 
         return userRepository.save(student);
     }
-    public User login(String idNumber, String password) {
-
-        // Validate ID format
+    public User login(
+            String username,
+            String idNumber,
+            String password
+    ) {
         if (!IDValidator.validateID(idNumber)) {
             throw new IllegalArgumentException(
                     "Invalid DLSU ID number."
@@ -90,15 +92,14 @@ public class LoginService {
 
         Long id = Long.parseLong(idNumber);
 
-        // Find the user
-        User user = userRepository.findByIdNumber(id)
+        User user = userRepository
+                .findByUsernameAndIdNumber(username.trim(), id)
                 .orElseThrow(() ->
                         new IllegalArgumentException(
-                                "No account was found with this ID number."
+                                "No account was found with those credentials."
                         )
                 );
 
-        // Check password
         if (!user.getPassword().equals(password)) {
             throw new IllegalArgumentException(
                     "Incorrect password."
