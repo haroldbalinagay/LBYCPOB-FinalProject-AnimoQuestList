@@ -6,6 +6,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -23,6 +24,12 @@ public class AddAccountController {
 
     @FXML
     private PasswordField passwordField;
+
+    @FXML
+    private TextField passwordTextField;
+
+    @FXML
+    private CheckBox showPasswordCheckBox;
 
     @FXML
     private TextField firstNameField;
@@ -51,13 +58,25 @@ public class AddAccountController {
     private void handleAddAccount(ActionEvent event) {
 
         String idNumber = idNumberField.getText().trim();
-        String password = passwordField.getText();
+
+        String password;
+
+        if (showPasswordCheckBox.isSelected()) {
+            password = passwordTextField.getText();
+        } else {
+            password = passwordField.getText();
+        }
+
         String firstName = firstNameField.getText().trim();
         String middleName = middleNameField.getText().trim();
         String lastName = lastNameField.getText().trim();
         String major = majorField.getText().trim();
 
-        // Check if any field is empty
+
+        // ============================================================
+        // CHECK FOR EMPTY FIELDS
+        // ============================================================
+
         if (idNumber.isEmpty()
                 || password.isEmpty()
                 || firstName.isEmpty()
@@ -73,6 +92,11 @@ public class AddAccountController {
 
             return;
         }
+
+
+        // ============================================================
+        // CREATE ACCOUNT
+        // ============================================================
 
         try {
 
@@ -113,47 +137,4 @@ public class AddAccountController {
         }
     }
 
-    @FXML
-    private void handleBack(ActionEvent event) {
-
-        try {
-
-            Parent root = fxWeaver.loadView(WelcomeController.class);
-
-            Stage stage = (Stage) ((Node) event.getSource())
-                    .getScene()
-                    .getWindow();
-
-            stage.setScene(new Scene(root));
-            stage.show();
-
-        } catch (Exception e) {
-
-            e.printStackTrace();
-
-        }
-    }
-
-    private void showAlert(
-            Alert.AlertType type,
-            String title,
-            String message
-    ) {
-
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-    private void clearFields() {
-
-        idNumberField.clear();
-        passwordField.clear();
-        firstNameField.clear();
-        middleNameField.clear();
-        lastNameField.clear();
-        majorField.clear();
-    }
-}
+    
