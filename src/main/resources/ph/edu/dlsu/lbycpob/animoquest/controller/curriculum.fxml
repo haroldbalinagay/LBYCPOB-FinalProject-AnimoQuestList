@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="ph.edu.dlsu.lbycpob.animoquest.controller.CurriculumController"
+            prefHeight="600.0"
+            prefWidth="900.0">
+
+    <VBox spacing="15.0"
+          AnchorPane.topAnchor="25.0"
+          AnchorPane.leftAnchor="30.0"
+          AnchorPane.rightAnchor="30.0"
+          AnchorPane.bottomAnchor="25.0">
+
+        <Label text="Enrollment Planning List"/>
+
+        <!-- Control Bar -->
+        <HBox spacing="10.0">
+
+            <Label text="Current Term:"/>
+
+            <ComboBox fx:id="termComboBox"
+                      promptText="Select Term"/>
+
+            <Label text="Filter:"/>
+
+            <ComboBox fx:id="filterComboBox"
+                      promptText="Select Filter"/>
+
+            <Button text="Apply Filter"
+                    onAction="#handleApplyFilter"/>
+
+        </HBox>
+
+        <!-- Courses List -->
+        <TableView fx:id="courseTable"
+                   VBox.vgrow="ALWAYS">
+
+            <columns>
+
+                <TableColumn fx:id="codeColumn"
+                             text="Course Code"
+                             prefWidth="120.0"/>
+
+                <TableColumn fx:id="nameColumn"
+                             text="Course Name"
+                             prefWidth="250.0"/>
+
+                <TableColumn fx:id="unitsColumn"
+                             text="Units"
+                             prefWidth="70.0"/>
+
+                <TableColumn fx:id="statusColumn"
+                             text="Status"
+                             prefWidth="120.0"/>
+
+                <TableColumn fx:id="termColumn"
+                             text="Term"
+                             prefWidth="80.0"/>
+
+                <TableColumn fx:id="requisiteColumn"
+                             text="Requisites"
+                             prefWidth="180.0"/>
+
+            </columns>
+
+        </TableView>
+
+        <!-- Course Actions -->
+
+        <HBox spacing="10.0">
+
+            <Label text="Status:"/>
+
+            <ComboBox fx:id="statusComboBox"
+                      promptText="Select Status"/>
+
+            <Button text="Save Status"
+                    onAction="#handleSaveStatus"/>
+
+            <Button text="Remove Course"
+                    onAction="#handleRemoveCourse"/>
+
+        </HBox>
+
+    </VBox>
+
+</AnchorPane>
