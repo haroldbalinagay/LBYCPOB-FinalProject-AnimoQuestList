@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.stereotype.Component;
+import ph.edu.dlsu.lbycpob.animoquest.model.CourseStatus;
 import ph.edu.dlsu.lbycpob.animoquest.model.CurriculumProgress;
 import ph.edu.dlsu.lbycpob.animoquest.model.MasterlistCourse;
 import ph.edu.dlsu.lbycpob.animoquest.service.CurriculumService;
@@ -171,7 +172,9 @@ public class ChecklistViewController {
 
     // TODO: NEEDS ELIGIBILITY LOGIC + CURRICULUM PROGRESS
     private void showCourseStatus(MasterlistCourse course) {
-        courseStatusLabel.setText("TBD");
+        CourseStatus status = checklistService.getStatusOf(course, progressList);
+
+        courseStatusLabel.setText(status.getStatus());
         eligibleLabel.setText("TBD");
         eligibleReasonLabel.setText("TBD");
     }
