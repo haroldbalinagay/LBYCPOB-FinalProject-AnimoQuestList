@@ -9,6 +9,7 @@ import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.stereotype.Component;
 import ph.edu.dlsu.lbycpob.animoquest.model.MasterlistCourse;
 import ph.edu.dlsu.lbycpob.animoquest.service.FxmlLoaderService;
+import ph.edu.dlsu.lbycpob.animoquest.service.TermChecklistService;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,9 +37,11 @@ public class ChecklistViewController {
     private List<TermChecklistController> checklistControllers = new ArrayList<>();
 
     private final FxmlLoaderService fxmlLoader;
+    private final TermChecklistService checklistService;
 
-    public ChecklistViewController(FxmlLoaderService fxmlLoader) {
+    public ChecklistViewController(FxmlLoaderService fxmlLoader, TermChecklistService checklistService) {
         this.fxmlLoader = fxmlLoader;
+        this.checklistService = checklistService;
     }
 
     /**
@@ -86,12 +89,55 @@ public class ChecklistViewController {
         showCourseDetails(course);
     }
 
+    /**
+     * Displays the course details of the clicked on course.
+     * @param course The clicked on course
+     */
     private void showCourseDetails(MasterlistCourse course) {
         courseNameLabel.setText(course.getName());
         courseCodeLabel.setText(course.getCode());
         courseUnitsLabel.setText(String.valueOf(course.getUnits()));
-        courseRequisitesLabel.setText("TBD");
+        showCourseRequisites(course);
+        showTotalCourseDependents(course);
+        showCourseStatus(course);
+    }
+
+    /**
+     * Displays the requisites of the clicked on course
+     * @param course The clicked on course
+     */
+    private void showCourseRequisites(MasterlistCourse course) {
+        StringBuilder sb = new StringBuilder();
+
+        // Simply show "N/A" if course has no requisites
+        if (course.hasNoRequisites()) {
+            sb.append("N/A");
+            courseRequisitesLabel.setText(sb.toString());
+            return;
+        }
+
+        // Ask for the course codes of the requisites
+        List<String> reqs = checklistService.getCompleteRequisitesOf(course);
+
+        // Format non-null requisite codes
+        int i = 1;
+        for (String req : reqs) {
+            if (req == null) continue;
+            if (i > 1) sb.append(", ");
+
+            sb.append(req).append(" (").append(course.getRequisiteTypeOf(i)).append(")");
+            i++;
+        }
+
+        // Update the label
+        courseRequisitesLabel.setText(sb.toString());
+    }
+
+    private void showTotalCourseDependents(MasterlistCourse course) {
         courseDependentsLabel.setText("TBD");
+    }
+
+    private void showCourseStatus(MasterlistCourse course) {
         courseStatusLabel.setText("TBD");
         eligibleLabel.setText("TBD");
         eligibleReasonLabel.setText("TBD");
