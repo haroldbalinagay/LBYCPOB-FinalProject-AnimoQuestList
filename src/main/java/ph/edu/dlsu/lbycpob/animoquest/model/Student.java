@@ -11,16 +11,31 @@ import lombok.Setter;
 @Entity
 @DiscriminatorValue("STUDENT")
 public class Student extends User {
+
     @Column(nullable = false)
     private String major;
 
     public Student() {
     }
 
-    public Student(String type, Long idNumber, String name, String password, String major) {
-        super(type, idNumber, name, password);
+    public Student(
+            String type,
+            String username,
+            Long idNumber,
+            String firstName,
+            String lastName,
+            String password,
+            String major
+    ) {
+        super(
+                type,
+                username,
+                idNumber,
+                firstName,
+                lastName,
+                password
+        );
+
         this.major = major;
     }
-
-    // TODO: Add student attributes & behaviors
 }
