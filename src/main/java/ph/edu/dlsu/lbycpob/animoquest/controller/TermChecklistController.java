@@ -198,6 +198,7 @@ public class TermChecklistController {
         highlightedCourses.add(courseBox);
 
         courseBox.setCourseUnits(5000);
+        courseBox.updateHighlight(0); // TODO: TEMP
     }
 
     /**
@@ -209,6 +210,7 @@ public class TermChecklistController {
         highlightedCourses.add(courseBox);
 
         courseBox.setCourseUnits(1000);
+        courseBox.updateHighlight(3); // TODO: TEMP
     }
 
     /**
@@ -217,6 +219,7 @@ public class TermChecklistController {
     public void resetHighlights() {
         for (CourseBoxController courseBox : highlightedCourses) {
             courseBox.setCourseUnits(10);
+            courseBox.resetHighlight();
         }
         highlightedCourses.clear();
     }
