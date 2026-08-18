@@ -18,6 +18,9 @@ import ph.edu.dlsu.lbycpob.animoquest.service.LoginService;
 public class LoginController {
 
     @FXML
+    private TextField usernameField;
+
+    @FXML
     private TextField idNumberField;
 
     @FXML
@@ -35,16 +38,19 @@ public class LoginController {
     @FXML
     private void handleLogin(ActionEvent event) {
 
+        String username = usernameField.getText().trim();
         String idNumber = idNumberField.getText().trim();
         String password = passwordField.getText();
 
         // Check empty fields
-        if (idNumber.isEmpty() || password.isEmpty()) {
+        if (username.isEmpty()
+                || idNumber.isEmpty()
+                || password.isEmpty()) {
 
             showAlert(
                     Alert.AlertType.WARNING,
                     "Missing Information",
-                    "Please enter your ID number and password."
+                    "Please enter your username, ID number, and password."
             );
 
             return;
@@ -53,6 +59,7 @@ public class LoginController {
         try {
 
             User user = loginService.login(
+                    username,
                     idNumber,
                     password
             );
@@ -62,7 +69,11 @@ public class LoginController {
                 showAlert(
                         Alert.AlertType.INFORMATION,
                         "Login Successful",
-                        "Welcome, " + user.getName() + "!"
+                        "Welcome, "
+                                + user.getFirstName()
+                                + " "
+                                + user.getLastName()
+                                + "!"
                 );
 
                 // TODO:
@@ -73,7 +84,11 @@ public class LoginController {
                 showAlert(
                         Alert.AlertType.INFORMATION,
                         "Login Successful",
-                        "Welcome, " + user.getName() + "!"
+                        "Welcome, "
+                                + user.getFirstName()
+                                + " "
+                                + user.getLastName()
+                                + "!"
                 );
 
                 // TODO:
