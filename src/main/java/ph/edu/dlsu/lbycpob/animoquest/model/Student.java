@@ -23,6 +23,7 @@ public class Student extends User {
             String username,
             Long idNumber,
             String firstName,
+            String middleName,
             String lastName,
             String password,
             String major
@@ -32,6 +33,7 @@ public class Student extends User {
                 username,
                 idNumber,
                 firstName,
+                middleName,
                 lastName,
                 password
         );
