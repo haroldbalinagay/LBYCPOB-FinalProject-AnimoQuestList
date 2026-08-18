@@ -97,6 +97,12 @@ public class ChecklistViewController {
         courseNameLabel.setText(course.getName());
         courseCodeLabel.setText(course.getCode());
         courseUnitsLabel.setText(String.valueOf(course.getUnits()));
+
+        // Reset all course highlights across all checklists
+        for (TermChecklistController controller : checklistControllers) {
+            controller.resetHighlights();
+        }
+
         showCourseRequisites(course);
         showTotalCourseDependents(course);
         showCourseStatus(course);
@@ -131,6 +137,11 @@ public class ChecklistViewController {
 
         // Update the label
         courseRequisitesLabel.setText(sb.toString());
+
+        // Ask each checklist to check if it contains the reqs to highlight on screen
+        for (TermChecklistController controller : checklistControllers) {
+            controller.highlightRequisitesOf(course);
+        }
     }
 
     /**

@@ -34,6 +34,8 @@ public class TermChecklistController {
     private TermChecklist checklist;
     private List<MasterlistCourse> courses = new ArrayList<>();
 
+    private List<CourseBoxController> highlightedCourses = new ArrayList<>();
+
     private Consumer<MasterlistCourse> onCourseClickListener;
 
     private final FxmlLoaderService fxmlLoader;
@@ -134,7 +136,9 @@ public class TermChecklistController {
         if (courses.isEmpty()) return count;
 
         // Loop through each course in the checklist
+        int idx = -1;
         for (MasterlistCourse course : courses) {
+            idx++;
             // Skip this course if it has no reqs
             if (course.hasNoRequisites()) continue;
 
@@ -149,9 +153,71 @@ public class TermChecklistController {
                     count++;
                     IO.println(course.getCode() + " is a dependent of " + sourceCourse.getCode());
                     // TODO: Trigger for dependent coloring
+                    highlightDependent(idx);
                 }
             }
         }
         return count;
+    }
+
+    /**
+     * Highlights all requisites of the source course found in the checklist.
+     * @param sourceCourse The course to match against
+     */
+    public void highlightRequisitesOf(MasterlistCourse sourceCourse) {
+        // Simply return if the source course has no reqs
+        if (sourceCourse.hasNoRequisites()) return;
+
+        // Simply return if there are no courses in checklist
+        if (courses.isEmpty()) return;
+
+        // Check each req slot of the source course
+        for (int i = 0; i < 3; i++) {
+            Long reqId = sourceCourse.getRequisiteIdAt(i);
+
+            if (reqId == null) continue; // Skip req slot if empty
+
+            // Loop through each course in the checklist
+            int idx = 0;
+            for (MasterlistCourse course : courses) {
+                if (reqId.equals(course.getId())) {
+                    IO.println(course.getCode() + " is a requisite of " + sourceCourse.getCode());
+                    highlightRequisite(idx);
+                }
+                idx++;
+            }
+        }
+    }
+
+    /**
+     * Highlights the course as a requisite.
+     * @param courseIdx The order index of the course
+     */
+    private void highlightRequisite(int courseIdx) {
+        CourseBoxController courseBox = courseControllers.get(courseIdx);
+        highlightedCourses.add(courseBox);
+
+        courseBox.setCourseUnits(5000);
+    }
+
+    /**
+     * Highlights the course as a dependent.
+     * @param courseIdx The order index of the course
+     */
+    private void highlightDependent(int courseIdx) {
+        CourseBoxController courseBox = courseControllers.get(courseIdx);
+        highlightedCourses.add(courseBox);
+
+        courseBox.setCourseUnits(1000);
+    }
+
+    /**
+     * Removes the highlight from all highlighted courses.
+     */
+    public void resetHighlights() {
+        for (CourseBoxController courseBox : highlightedCourses) {
+            courseBox.setCourseUnits(10);
+        }
+        highlightedCourses.clear();
     }
 }
