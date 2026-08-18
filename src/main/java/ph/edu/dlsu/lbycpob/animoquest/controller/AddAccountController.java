@@ -14,9 +14,6 @@ import ph.edu.dlsu.lbycpob.animoquest.service.LoginService;
 public class AddAccountController {
 
     @FXML
-    private TextField usernameField;
-
-    @FXML
     private TextField idNumberField;
 
     @FXML
@@ -24,6 +21,9 @@ public class AddAccountController {
 
     @FXML
     private TextField firstNameField;
+
+    @FXML
+    private TextField middleNameField;
 
     @FXML
     private TextField lastNameField;
@@ -40,18 +40,18 @@ public class AddAccountController {
     @FXML
     private void handleAddAccount(ActionEvent event) {
 
-        String username = usernameField.getText().trim();
         String idNumber = idNumberField.getText().trim();
         String password = passwordField.getText();
         String firstName = firstNameField.getText().trim();
+        String middleName = middleNameField.getText().trim();
         String lastName = lastNameField.getText().trim();
         String major = majorField.getText().trim();
 
         // Check if any field is empty
-        if (username.isEmpty()
-                || idNumber.isEmpty()
+        if (idNumber.isEmpty()
                 || password.isEmpty()
                 || firstName.isEmpty()
+                || middleName.isEmpty()
                 || lastName.isEmpty()
                 || major.isEmpty()) {
 
@@ -67,10 +67,10 @@ public class AddAccountController {
         try {
 
             loginService.addStudentAccount(
-                    username,
                     idNumber,
                     password,
                     firstName,
+                    middleName,
                     lastName,
                     major
             );
@@ -82,46 +82,3 @@ public class AddAccountController {
             );
 
             clearFields();
-
-        } catch (IllegalArgumentException e) {
-
-            showAlert(
-                    Alert.AlertType.WARNING,
-                    "Account Creation Failed",
-                    e.getMessage()
-            );
-
-        } catch (Exception e) {
-
-            showAlert(
-                    Alert.AlertType.ERROR,
-                    "Database Error",
-                    "An unexpected error occurred while creating the account."
-            );
-
-            e.printStackTrace();
-        }
-    }
-
-    private void showAlert(
-            Alert.AlertType type,
-            String title,
-            String message
-    ) {
-
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-    private void clearFields() {
-        usernameField.clear();
-        idNumberField.clear();
-        passwordField.clear();
-        firstNameField.clear();
-        lastNameField.clear();
-        majorField.clear();
-    }
-}
