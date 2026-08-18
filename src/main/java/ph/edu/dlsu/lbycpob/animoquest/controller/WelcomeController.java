@@ -7,7 +7,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import net.rgielen.fxweaver.core.FxWeaver;
-import net.rgielen.fxweaver.core.FxWeaverException;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -43,7 +42,7 @@ public class WelcomeController {
             stage.setScene(new Scene(root));
             stage.show();
 
-        } catch (FxWeaverException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
