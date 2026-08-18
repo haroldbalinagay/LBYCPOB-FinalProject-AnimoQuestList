@@ -72,3 +72,54 @@ public class LoginController {
                 // Open Student Dashboard
 
             } else if (user instanceof Admin) {
+
+                showAlert(
+                        Alert.AlertType.INFORMATION,
+                        "Login Successful",
+                        "Welcome, " + user.getFullName() + "!"
+                );
+
+                // TODO:
+                // Open Admin Dashboard
+            }
+
+        } catch (IllegalArgumentException e) {
+
+            showAlert(
+                    Alert.AlertType.WARNING,
+                    "Login Failed",
+                    e.getMessage()
+            );
+
+        } catch (Exception e) {
+
+            showAlert(
+                    Alert.AlertType.ERROR,
+                    "Login Error",
+                    "An unexpected error occurred while logging in."
+            );
+
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleBack(ActionEvent event) {
+
+        // We'll add the Welcome page navigation here.
+        // For now, this method is intentionally left empty.
+    }
+
+    private void showAlert(
+            Alert.AlertType type,
+            String title,
+            String message
+    ) {
+
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+}
