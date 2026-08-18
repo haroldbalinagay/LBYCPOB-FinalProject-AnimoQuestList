@@ -2,17 +2,17 @@ package ph.edu.dlsu.lbycpob.animoquest.controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
-import net.rgielen.fxweaver.core.FxmlView;
-import org.springframework.stereotype.Component;
-import ph.edu.dlsu.lbycpob.animoquest.service.LoginService;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import net.rgielen.fxweaver.core.FxWeaver;
+import net.rgielen.fxweaver.core.FxmlView;
+import org.springframework.stereotype.Component;
+import ph.edu.dlsu.lbycpob.animoquest.service.LoginService;
 
 @Component
 @FxmlView("add-account.fxml")
@@ -65,25 +65,6 @@ public class AddAccountController {
                 || lastName.isEmpty()
                 || major.isEmpty()) {
 
-            @FXML
-            private void handleBack(ActionEvent event) {
-
-                try {
-
-                    Parent root = fxWeaver.loadView(WelcomeController.class);
-
-                    Stage stage = (Stage) ((Node) event.getSource())
-                            .getScene()
-                            .getWindow();
-
-                    stage.setScene(new Scene(root));
-                    stage.show();
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
             showAlert(
                     Alert.AlertType.WARNING,
                     "Missing Information",
@@ -103,54 +84,3 @@ public class AddAccountController {
                     lastName,
                     major
             );
-
-            showAlert(
-                    Alert.AlertType.INFORMATION,
-                    "Account Created",
-                    "Your AnimoQuest account was successfully created!"
-            );
-
-            clearFields();
-
-        } catch (IllegalArgumentException e) {
-
-            showAlert(
-                    Alert.AlertType.WARNING,
-                    "Account Creation Failed",
-                    e.getMessage()
-            );
-
-        } catch (Exception e) {
-
-            showAlert(
-                    Alert.AlertType.ERROR,
-                    "Database Error",
-                    "An unexpected error occurred while creating the account."
-            );
-
-            e.printStackTrace();
-        }
-    }
-
-    private void showAlert(
-            Alert.AlertType type,
-            String title,
-            String message
-    ) {
-
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-    private void clearFields() {
-        idNumberField.clear();
-        passwordField.clear();
-        firstNameField.clear();
-        middleNameField.clear();
-        lastNameField.clear();
-        majorField.clear();
-    }
-}
