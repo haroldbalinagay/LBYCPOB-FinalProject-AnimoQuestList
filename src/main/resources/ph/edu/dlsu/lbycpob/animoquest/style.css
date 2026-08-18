@@ -1,0 +1,19 @@
+.course-box {
+    -fx-background-color: #a8a8a8;
+}
+
+.course-box:requisite-passed {
+    -fx-background-color: #36cc36;
+}
+
+.course-box:requisite-failed {
+    -fx-background-color: #f13c3c;
+}
+
+.course-box:requisite-in-progress {
+    -fx-background-color: #ecec72;
+}
+
+.course-box:dependent {
+    -fx-background-color: #0088ff;
+}
