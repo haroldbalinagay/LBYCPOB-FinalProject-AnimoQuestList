@@ -10,7 +10,7 @@
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="ph.edu.dlsu.lbycpob.animoquest.controller.AddAccountController"
-            prefHeight="500.0"
+            prefHeight="650.0"
             prefWidth="600.0">
 
     <VBox spacing="10.0"
@@ -18,32 +18,72 @@
           prefWidth="300.0"
           AnchorPane.leftAnchor="150.0"
           AnchorPane.rightAnchor="150.0"
-          AnchorPane.topAnchor="50.0">
+          AnchorPane.topAnchor="30.0">
 
-        <Label text="Create AnimoQuest Account"/>
+        <Label text="Create AnimoQuest Account"
+               style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+
+        <!-- First Name -->
+
+        <Label text="First Name"/>
+
+        <TextField fx:id="firstNameField"
+                   promptText="Enter your first name"/>
+
+
+        <!-- Middle Name -->
+
+        <Label text="Middle Name"/>
+
+        <TextField fx:id="middleNameField"
+                   promptText="Enter your middle name"/>
+
+
+        <!-- Last Name -->
+
+        <Label text="Last Name"/>
+
+        <TextField fx:id="lastNameField"
+                   promptText="Enter your last name"/>
+
+
+        <!-- DLSU ID -->
 
         <Label text="DLSU ID Number"/>
 
         <TextField fx:id="idNumberField"
                    promptText="Enter 8-digit ID number"/>
 
-        <Label text="Name"/>
 
-        <TextField fx:id="nameField"
-                   promptText="Enter your name"/>
+        <!-- Password -->
 
         <Label text="Password"/>
 
         <PasswordField fx:id="passwordField"
                        promptText="Enter password"/>
 
+
+        <!-- Major -->
+
         <Label text="Major"/>
 
         <TextField fx:id="majorField"
                    promptText="Enter your major"/>
 
+
+        <!-- Create Account -->
+
         <Button text="Create Account"
-                onAction="#handleAddAccount"/>
+                onAction="#handleAddAccount"
+                prefWidth="180.0"/>
+
+
+        <!-- Back -->
+
+        <Button text="Back"
+                onAction="#handleBack"
+                prefWidth="180.0"/>
 
     </VBox>
 
