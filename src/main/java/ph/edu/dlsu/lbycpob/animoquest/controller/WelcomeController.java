@@ -8,8 +8,10 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import net.rgielen.fxweaver.core.FxWeaver;
 import org.springframework.stereotype.Component;
+import net.rgielen.fxweaver.core.FxmlView;
 
 @Component
+@FxmlView("welcome.fxml")
 public class WelcomeController {
 
     private final FxWeaver fxWeaver;
