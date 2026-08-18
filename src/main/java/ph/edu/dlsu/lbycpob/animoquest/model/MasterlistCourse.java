@@ -60,4 +60,37 @@ public class MasterlistCourse {
     }
 
     // TODO: Add attributes & behaviors for course in masterlist
+
+    /**
+     * @return Whether the course has no requisites
+     */
+    public boolean hasNoRequisites() {
+        return reqId1 == null && reqId2 == null && reqId3 == null;
+    }
+
+    /**
+     * @param requisite The requisite "number"
+     * @return The desired requisite ID
+     */
+    public Long getRequisiteIdOf(int requisite) {
+        switch (requisite) {
+            case 1 -> { return reqId1; }
+            case 2 -> { return reqId2; }
+            case 3 -> { return reqId3; }
+            default -> { return null; }
+        }
+    }
+
+    /**
+     * @param requisite The requisite "number"
+     * @return The desired requisite type
+     */
+    public String getRequisiteTypeOf(int requisite) {
+        switch (requisite) {
+            case 1 -> { return reqType1; }
+            case 2 -> { return reqType2; }
+            case 3 -> { return reqType3; }
+            default -> { return null; }
+        }
+    }
 }
