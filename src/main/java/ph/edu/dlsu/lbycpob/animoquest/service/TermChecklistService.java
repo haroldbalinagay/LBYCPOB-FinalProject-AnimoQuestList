@@ -84,7 +84,85 @@ public class TermChecklistService {
         return status;
     }
 
-    public boolean checkEnrollEligibilityOf(MasterlistCourse course) {
-        return false;
+    /**
+     * Determines if the given course is eligible to be enrolled in.
+     * Takes into account the student's curriculum progress records and H/S/C requisite rules.
+     * @param course The course to evaluate
+     * @param progressList The complete curriculum progress records of a student
+     * @return EnrollEligibility record containing whether eligible or not, and accompanying reason
+     */
+    public EnrollEligibility checkEnrollEligibilityOf(MasterlistCourse course, List<CurriculumProgress> progressList) {
+        // Setup
+        List<Boolean> reqChecked = new ArrayList<>();
+        List<CourseStatus> reqStatuses = new ArrayList<>();
+
+        for (int i = 0; i < 3; i++) {
+            Long reqId = course.getRequisiteIdAt(i);
+            if (reqId == null) reqChecked.add(null);
+            else reqChecked.add(false);
+
+            reqStatuses.add(null);
+        }
+
+        // Find & Record
+        for (CurriculumProgress progress : progressList) {
+
+            for (int i = 0; i < 3; i++) {
+                Long reqId = course.getRequisiteIdAt(i);
+                if (reqId == null) continue;
+
+                // Found req
+                if (Objects.equals(progress.getCourseId(), reqId)) {
+
+                    reqChecked.set(i, true);
+                    reqStatuses.set(i, progress.getStatus());
+                }
+            }
+        }
+
+        // Evaluate
+        boolean eligible = true;
+        String reason = "All requisites have been met.";
+        int reqNotTakenCount = 0;
+        int hardReqFailCount = 0;
+        int reqInProgressCount = 0;
+
+        for (int i = 0; i < 3; i++) {
+
+            if (reqChecked.get(i) == null) continue;
+
+            // NOT TAKEN
+            if (!reqChecked.get(i)) {
+                eligible = false;
+                reqNotTakenCount++;
+            }
+
+            String reqType = course.getRequisiteTypeAt(i);
+
+            if (reqStatuses.get(i) == CourseStatus.FAILED && Objects.equals(reqType, "H")) {
+                eligible = false;
+                hardReqFailCount++;
+            }
+            if (reqStatuses.get(i) == CourseStatus.IN_PROGRESS) {
+                if (Objects.equals(reqType, "H") || Objects.equals(reqType, "S")) {
+                    eligible = false;
+                    reqInProgressCount++;
+                }
+            }
+
+        }
+        if (!eligible) {
+            StringBuilder sb = new StringBuilder();
+
+            if (reqNotTakenCount > 0) sb.append(reqNotTakenCount).append(" requisite not yet taken   ");
+            if (reqInProgressCount > 0) sb.append(reqInProgressCount).append(" Hard/Soft requisite in-progress   ");
+            if (hardReqFailCount > 0) sb.append(hardReqFailCount).append(" Hard requisite failed");
+
+            reason = sb.toString();
+        }
+
+        return new EnrollEligibility(eligible, reason);
     }
+
+    public record EnrollEligibility(boolean eligible, String reason) {}
 }
