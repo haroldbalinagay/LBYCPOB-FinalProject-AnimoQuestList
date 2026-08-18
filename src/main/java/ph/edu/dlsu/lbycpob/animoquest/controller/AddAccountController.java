@@ -136,5 +136,118 @@ public class AddAccountController {
             e.printStackTrace();
         }
     }
+// ============================================================
+    // SHOW / HIDE PASSWORD
+    // ============================================================
 
-    
+    @FXML
+    private void handleShowPassword(ActionEvent event) {
+
+        if (showPasswordCheckBox.isSelected()) {
+
+            // Copy hidden password to visible field
+            passwordTextField.setText(
+                    passwordField.getText()
+            );
+
+            // Hide PasswordField
+            passwordField.setVisible(false);
+            passwordField.setManaged(false);
+
+            // Show normal TextField
+            passwordTextField.setVisible(true);
+            passwordTextField.setManaged(true);
+
+        } else {
+
+            // Copy visible password back to PasswordField
+            passwordField.setText(
+                    passwordTextField.getText()
+            );
+
+            // Hide normal TextField
+            passwordTextField.setVisible(false);
+            passwordTextField.setManaged(false);
+
+            // Show PasswordField
+            passwordField.setVisible(true);
+            passwordField.setManaged(true);
+        }
+    }
+
+
+    // ============================================================
+    // BACK BUTTON
+    // ============================================================
+
+    @FXML
+    private void handleBack(ActionEvent event) {
+
+        try {
+
+            Parent root = fxWeaver.loadView(
+                    WelcomeController.class
+            );
+
+            Stage stage = (Stage) ((Node) event.getSource())
+                    .getScene()
+                    .getWindow();
+
+            stage.setScene(
+                    new Scene(root)
+            );
+
+            stage.show();
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+    }
+
+
+    // ============================================================
+    // ALERT
+    // ============================================================
+
+    private void showAlert(
+            Alert.AlertType type,
+            String title,
+            String message
+    ) {
+
+        Alert alert = new Alert(type);
+
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+
+        alert.showAndWait();
+    }
+
+
+    // ============================================================
+    // CLEAR FIELDS
+    // ============================================================
+
+    private void clearFields() {
+
+        idNumberField.clear();
+
+        passwordField.clear();
+        passwordTextField.clear();
+
+        showPasswordCheckBox.setSelected(false);
+
+        passwordTextField.setVisible(false);
+        passwordTextField.setManaged(false);
+
+        passwordField.setVisible(true);
+        passwordField.setManaged(true);
+
+        firstNameField.clear();
+        middleNameField.clear();
+        lastNameField.clear();
+        majorField.clear();
+    }
+}
