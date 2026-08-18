@@ -92,7 +92,7 @@ public class TermChecklistService {
      * @return EnrollEligibility record containing whether eligible or not, and accompanying reason
      */
     public EnrollEligibility checkEnrollEligibilityOf(MasterlistCourse course, List<CurriculumProgress> progressList) {
-        // Setup
+        // Setup tracking lists
         List<Boolean> reqChecked = new ArrayList<>();
         List<CourseStatus> reqStatuses = new ArrayList<>();
 
@@ -104,23 +104,23 @@ public class TermChecklistService {
             reqStatuses.add(null);
         }
 
-        // Find & Record
+        // Loop through each progress record of the student
         for (CurriculumProgress progress : progressList) {
-
+            // Check each req slot
             for (int i = 0; i < 3; i++) {
                 Long reqId = course.getRequisiteIdAt(i);
                 if (reqId == null) continue;
 
-                // Found req
+                // Check if source course is the same as course in record
                 if (Objects.equals(progress.getCourseId(), reqId)) {
-
+                    // Update tracking lists
                     reqChecked.set(i, true);
                     reqStatuses.set(i, progress.getStatus());
                 }
             }
         }
 
-        // Evaluate
+        // Evaluate each req against general and H/S/C req rules
         boolean eligible = true;
         String reason = "All requisites have been met.";
         int reqNotTakenCount = 0;
@@ -128,10 +128,9 @@ public class TermChecklistService {
         int reqInProgressCount = 0;
 
         for (int i = 0; i < 3; i++) {
-
             if (reqChecked.get(i) == null) continue;
 
-            // NOT TAKEN
+            // Check if req is NOT TAKEN
             if (!reqChecked.get(i)) {
                 eligible = false;
                 reqNotTakenCount++;
@@ -139,6 +138,7 @@ public class TermChecklistService {
 
             String reqType = course.getRequisiteTypeAt(i);
 
+            // Check H/S/C rules
             if (reqStatuses.get(i) == CourseStatus.FAILED && Objects.equals(reqType, "H")) {
                 eligible = false;
                 hardReqFailCount++;
@@ -151,6 +151,7 @@ public class TermChecklistService {
             }
 
         }
+        // Format output reason
         if (!eligible) {
             StringBuilder sb = new StringBuilder();
 
@@ -161,8 +162,14 @@ public class TermChecklistService {
             reason = sb.toString();
         }
 
+        // Return using a record
         return new EnrollEligibility(eligible, reason);
     }
 
+    /**
+     * A data transfer object.
+     * @param eligible Whether a course is eligible to be enrolled in or not
+     * @param reason Brief explanation of eligibility status
+     */
     public record EnrollEligibility(boolean eligible, String reason) {}
 }

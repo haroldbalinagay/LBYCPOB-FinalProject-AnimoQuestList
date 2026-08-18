@@ -115,7 +115,7 @@ public class ChecklistViewController {
 
         showCourseRequisites(course);
         showTotalCourseDependents(course);
-        showCourseStatus(course);
+        showCourseStatusAndEligibility(course);
     }
 
     /**
@@ -170,12 +170,19 @@ public class ChecklistViewController {
         courseDependentsLabel.setText(String.valueOf(totalCount));
     }
 
-    // TODO: NEEDS ELIGIBILITY LOGIC + CURRICULUM PROGRESS
-    private void showCourseStatus(MasterlistCourse course) {
+    /**
+     * Displays the eligibility of a course to be enrolled in, and an accompanying reason.
+     * @param course The clicked on course
+     */
+    private void showCourseStatusAndEligibility(MasterlistCourse course) {
         CourseStatus status = checklistService.getStatusOf(course, progressList);
-
         courseStatusLabel.setText(status.getStatus());
-        eligibleLabel.setText("TBD");
-        eligibleReasonLabel.setText("TBD");
+
+        TermChecklistService.EnrollEligibility eligibleData = checklistService.checkEnrollEligibilityOf(course, progressList);
+
+        if (eligibleData.eligible()) eligibleLabel.setText("YES");
+        else eligibleLabel.setText("NO");
+
+        eligibleReasonLabel.setText(eligibleData.reason());
     }
 }
