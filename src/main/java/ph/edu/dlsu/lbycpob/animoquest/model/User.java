@@ -70,4 +70,8 @@ public abstract class User {
         this.lastName = lastName;
         this.password = password;
     }
+
+    public String getFullName() {
+        return firstName + " " + middleName + " " + lastName;
+    }
 }
