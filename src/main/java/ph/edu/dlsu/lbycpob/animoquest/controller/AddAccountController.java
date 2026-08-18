@@ -82,3 +82,46 @@ public class AddAccountController {
             );
 
             clearFields();
+
+        } catch (IllegalArgumentException e) {
+
+            showAlert(
+                    Alert.AlertType.WARNING,
+                    "Account Creation Failed",
+                    e.getMessage()
+            );
+
+        } catch (Exception e) {
+
+            showAlert(
+                    Alert.AlertType.ERROR,
+                    "Database Error",
+                    "An unexpected error occurred while creating the account."
+            );
+
+            e.printStackTrace();
+        }
+    }
+
+    private void showAlert(
+            Alert.AlertType type,
+            String title,
+            String message
+    ) {
+
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    private void clearFields() {
+        idNumberField.clear();
+        passwordField.clear();
+        firstNameField.clear();
+        middleNameField.clear();
+        lastNameField.clear();
+        majorField.clear();
+    }
+}
