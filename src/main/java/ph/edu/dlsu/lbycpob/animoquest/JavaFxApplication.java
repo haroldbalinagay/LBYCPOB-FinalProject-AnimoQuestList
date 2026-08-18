@@ -29,6 +29,8 @@ public class JavaFxApplication extends Application {
         Parent root = fxWeaver.loadView(WelcomeController.class);
         Scene scene = new Scene(root);
         stage.setScene(scene);
+        stage.setTitle("AnimoQuest");
+
         stage.show();
     }
 
