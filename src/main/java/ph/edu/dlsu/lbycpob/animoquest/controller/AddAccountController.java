@@ -14,13 +14,19 @@ import ph.edu.dlsu.lbycpob.animoquest.service.LoginService;
 public class AddAccountController {
 
     @FXML
+    private TextField usernameField;
+
+    @FXML
     private TextField idNumberField;
 
     @FXML
-    private TextField nameField;
+    private PasswordField passwordField;
 
     @FXML
-    private PasswordField passwordField;
+    private TextField firstNameField;
+
+    @FXML
+    private TextField lastNameField;
 
     @FXML
     private TextField majorField;
@@ -34,15 +40,19 @@ public class AddAccountController {
     @FXML
     private void handleAddAccount(ActionEvent event) {
 
+        String username = usernameField.getText().trim();
         String idNumber = idNumberField.getText().trim();
-        String name = nameField.getText().trim();
         String password = passwordField.getText();
+        String firstName = firstNameField.getText().trim();
+        String lastName = lastNameField.getText().trim();
         String major = majorField.getText().trim();
 
         // Check if any field is empty
-        if (idNumber.isEmpty()
-                || name.isEmpty()
+        if (username.isEmpty()
+                || idNumber.isEmpty()
                 || password.isEmpty()
+                || firstName.isEmpty()
+                || lastName.isEmpty()
                 || major.isEmpty()) {
 
             showAlert(
@@ -57,9 +67,11 @@ public class AddAccountController {
         try {
 
             loginService.addStudentAccount(
+                    username,
                     idNumber,
-                    name,
                     password,
+                    firstName,
+                    lastName,
                     major
             );
 
@@ -105,9 +117,11 @@ public class AddAccountController {
     }
 
     private void clearFields() {
+        usernameField.clear();
         idNumberField.clear();
-        nameField.clear();
         passwordField.clear();
+        firstNameField.clear();
+        lastNameField.clear();
         majorField.clear();
     }
 }
