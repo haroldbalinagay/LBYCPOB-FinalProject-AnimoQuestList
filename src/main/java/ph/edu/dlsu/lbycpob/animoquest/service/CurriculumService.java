@@ -16,19 +16,14 @@ public class CurriculumService {
     }
 
     // ============================================================
-    // GET ALL ENROLLED COURSES FOR A STUDENT
+    // GET ALL COURSES FOR A STUDENT
     // ============================================================
 
     public List<CurriculumProgress> getStudentCourses(Long studentId) {
 
-        if (studentId == null) {
-            throw new IllegalArgumentException(
-                    "Student ID cannot be null."
-            );
-        }
-
         return curriculumRepository.findByStudentId(studentId);
     }
+
 
     // ============================================================
     // GET COURSES FOR A SPECIFIC TERM
@@ -39,69 +34,53 @@ public class CurriculumService {
             int term
     ) {
 
-        if (studentId == null) {
-            throw new IllegalArgumentException(
-                    "Student ID cannot be null."
-            );
-        }
+        return curriculumRepository.findByStudentIdAndTermTaken(
+                studentId,
+                term
+        );
+    }
 
-        if (term <= 0) {
-            throw new IllegalArgumentException(
-                    "Term must be greater than zero."
-            );
-        }
+
+    // ============================================================
+    // FIND A SPECIFIC COURSE
+    // ============================================================
+
+    public CurriculumProgress getStudentCourse(
+            Long studentId,
+            Long courseId
+    ) {
 
         return curriculumRepository
-                .findByStudentIdAndTermTaken(studentId, term);
+                .findByStudentIdAndCourseId(studentId, courseId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "Course was not found in the student's curriculum."
+                        )
+                );
     }
+
 
     // ============================================================
     // UPDATE COURSE STATUS
     // ============================================================
 
-    public CurriculumProgress updateCourseStatus(
+    public void updateCourseStatus(
             Long studentId,
             Long courseId,
             String status
     ) {
 
-        if (studentId == null) {
-            throw new IllegalArgumentException(
-                    "Student ID cannot be null."
-            );
-        }
-
-        if (courseId == null) {
-            throw new IllegalArgumentException(
-                    "Course ID cannot be null."
-            );
-        }
-
-        if (status == null || status.trim().isEmpty()) {
-            throw new IllegalArgumentException(
-                    "Course status cannot be empty."
-            );
-        }
-
         CurriculumProgress progress =
-                curriculumRepository
-                        .findByStudentIdAndCourseId(
-                                studentId,
-                                courseId
-                        )
-                        .orElseThrow(() ->
-                                new IllegalArgumentException(
-                                        "Course enrollment was not found."
-                                )
-                        );
+                getStudentCourse(studentId, courseId);
 
-        progress.setStatus(status.trim().toUpperCase());
+        progress.setStatus(status);
 
-        return curriculumRepository.save(progress);
+        curriculumRepository.save(progress);
     }
 
+
     // ============================================================
-    // REMOVE COURSE FROM STUDENT'S ENROLLMENT
+    // REMOVE COURSE
     // ============================================================
 
     public void removeCourse(
@@ -109,29 +88,8 @@ public class CurriculumService {
             Long courseId
     ) {
 
-        if (studentId == null) {
-            throw new IllegalArgumentException(
-                    "Student ID cannot be null."
-            );
-        }
-
-        if (courseId == null) {
-            throw new IllegalArgumentException(
-                    "Course ID cannot be null."
-            );
-        }
-
         CurriculumProgress progress =
-                curriculumRepository
-                        .findByStudentIdAndCourseId(
-                                studentId,
-                                courseId
-                        )
-                        .orElseThrow(() ->
-                                new IllegalArgumentException(
-                                        "Course enrollment was not found."
-                                )
-                        );
+                getStudentCourse(studentId, courseId);
 
         curriculumRepository.delete(progress);
     }
