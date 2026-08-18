@@ -30,7 +30,7 @@
         <Label text="DLSU ID Number"/>
 
         <TextField fx:id="idNumberField"
-                   promptText="Enter 8-digit ID number"/>
+                   promptText="Enter valid 8-digit ID number"/>
 
         <Label text="Password"/>
 
