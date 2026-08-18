@@ -16,39 +16,69 @@ public class LoginService {
     }
 
     public Student addStudentAccount(
+            String username,
             String idNumber,
-            String name,
             String password,
+            String firstName,
+            String lastName,
             String major
     ) {
-
-        // Check if the ID follows the DLSU ID format/checksum
         if (!IDValidator.validateID(idNumber)) {
-            throw new IllegalArgumentException("Invalid DLSU ID number.");
+            throw new IllegalArgumentException(
+                    "Invalid DLSU ID number."
+            );
+        }
+
+        if (username == null || username.trim().isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Username cannot be empty."
+            );
+        }
+
+        if (password == null || password.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Password cannot be empty."
+            );
+        }
+
+        if (firstName == null || firstName.trim().isEmpty()) {
+            throw new IllegalArgumentException(
+                    "First name cannot be empty."
+            );
+        }
+
+        if (lastName == null || lastName.trim().isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Last name cannot be empty."
+            );
         }
 
         Long id = Long.parseLong(idNumber);
 
-        // Prevent duplicate accounts
         if (userRepository.findByIdNumber(id).isPresent()) {
             throw new IllegalArgumentException(
                     "An account with this ID number already exists."
             );
         }
 
-        // Create the Student account
+        if (userRepository.existsByUsername(username.trim())) {
+            throw new IllegalArgumentException(
+                    "That username is already taken."
+            );
+        }
+
         Student student = new Student(
                 "STUDENT",
+                username.trim(),
                 id,
-                name,
+                firstName.trim(),
+                lastName.trim(),
                 password,
                 major
         );
 
-        // Save the account to the database
         return userRepository.save(student);
     }
-
     public User login(String idNumber, String password) {
 
         // Validate ID format
