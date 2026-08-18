@@ -66,7 +66,7 @@ public class TermChecklistController {
             return;
         }
 
-        courses = checklistService.getCourseDetailsOf(checklist.getCourseIds());
+        courses = checklistService.getCourseDetailsOf(checklist);
 
         // Set up each course listed in the term checklist
         int orderIdx = 0;

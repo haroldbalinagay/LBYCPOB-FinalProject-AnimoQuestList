@@ -6,7 +6,9 @@ import ph.edu.dlsu.lbycpob.animoquest.model.TermChecklist;
 import ph.edu.dlsu.lbycpob.animoquest.repository.MasterlistCourseRepository;
 import ph.edu.dlsu.lbycpob.animoquest.repository.TermChecklistRepository;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TermChecklistService {
@@ -28,7 +30,26 @@ public class TermChecklistService {
         return checklistRepository.findTermChecklistByDegreeAndBatchAndTermNumber(degree, batch, termNumber);
     }
 
-    public List<MasterlistCourse> getCourseDetailsOf(long[] courseIds) {
-        return courseRepository.findByIdIn(courseIds);
+    public List<MasterlistCourse> getCourseDetailsOf(TermChecklist checklist) {
+        return courseRepository.findByIdIn(checklist.getCourseIds());
+    }
+
+    /**
+     * Finds the requisite course associated with each requisite ID of the provided course.
+     * @param course The source to get the requisite IDs
+     * @return A list of requisite course codes
+     */
+    public List<String> getCompleteRequisitesOf(MasterlistCourse course) {
+        List<String> reqs = new ArrayList<>();
+
+        for (int i = 0; i < 3; i++) {
+            Long reqId = course.getRequisiteIdOf(i);
+
+            if (reqId == null) continue;
+
+            Optional<MasterlistCourse> reqObject = courseRepository.findById(reqId);
+            reqObject.ifPresent(masterlistCourse -> reqs.add(masterlistCourse.getCode()));
+        }
+        return reqs;
     }
 }
