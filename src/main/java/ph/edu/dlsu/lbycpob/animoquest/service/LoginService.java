@@ -2,6 +2,7 @@ package ph.edu.dlsu.lbycpob.animoquest.service;
 
 import org.springframework.stereotype.Service;
 import ph.edu.dlsu.lbycpob.animoquest.model.Student;
+import ph.edu.dlsu.lbycpob.animoquest.model.User;
 import ph.edu.dlsu.lbycpob.animoquest.repository.UserRepository;
 import ph.edu.dlsu.lbycpob.animoquest.util.IDValidator;
 
@@ -46,5 +47,34 @@ public class LoginService {
 
         // Save the account to the database
         return userRepository.save(student);
+    }
+
+    public User login(String idNumber, String password) {
+
+        // Validate ID format
+        if (!IDValidator.validateID(idNumber)) {
+            throw new IllegalArgumentException(
+                    "Invalid DLSU ID number."
+            );
+        }
+
+        Long id = Long.parseLong(idNumber);
+
+        // Find the user
+        User user = userRepository.findByIdNumber(id)
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "No account was found with this ID number."
+                        )
+                );
+
+        // Check password
+        if (!user.getPassword().equals(password)) {
+            throw new IllegalArgumentException(
+                    "Incorrect password."
+            );
+        }
+
+        return user;
     }
 }
