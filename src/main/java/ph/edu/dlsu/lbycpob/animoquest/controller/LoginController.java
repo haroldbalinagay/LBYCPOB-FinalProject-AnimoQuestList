@@ -71,3 +71,78 @@ public class LoginController {
             );
 
             if (user instanceof Student) {
+
+                showAlert(
+                        Alert.AlertType.INFORMATION,
+                        "Login Successful",
+                        "Welcome, " + user.getFullName() + "!"
+                );
+
+                // TODO:
+                // Open Student Dashboard
+
+            } else if (user instanceof Admin) {
+
+                showAlert(
+                        Alert.AlertType.INFORMATION,
+                        "Login Successful",
+                        "Welcome, " + user.getFullName() + "!"
+                );
+
+                // TODO:
+                // Open Admin Dashboard
+            }
+
+        } catch (IllegalArgumentException e) {
+
+            showAlert(
+                    Alert.AlertType.WARNING,
+                    "Login Failed",
+                    e.getMessage()
+            );
+
+        } catch (Exception e) {
+
+            showAlert(
+                    Alert.AlertType.ERROR,
+                    "Login Error",
+                    "An unexpected error occurred while logging in."
+            );
+
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleBack(ActionEvent event) {
+
+        try {
+
+            Parent root = fxWeaver.loadView(WelcomeController.class);
+
+            Stage stage = (Stage) ((Node) event.getSource())
+                    .getScene()
+                    .getWindow();
+
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+    }
+
+    private void showAlert(
+            Alert.AlertType type,
+            String title,
+            String message
+    ) {
+
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+}
