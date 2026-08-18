@@ -83,3 +83,89 @@ public class LoginService {
         String cleanFirstName = firstName.trim();
         String cleanMiddleName = middleName.trim();
         String cleanLastName = lastName.trim();
+
+        // Automatically create username
+        String username =
+                cleanFirstName + " "
+                        + cleanMiddleName + " "
+                        + cleanLastName;
+
+        // Check if generated username already exists
+        if (userRepository.existsByUsername(username)) {
+            throw new IllegalArgumentException(
+                    "An account with this name already exists."
+            );
+        }
+
+        // Create Student
+        Student student = new Student(
+                "STUDENT",
+                username,
+                id,
+                cleanFirstName,
+                cleanMiddleName,
+                cleanLastName,
+                password,
+                major.trim()
+        );
+
+        // Save to database
+        return userRepository.save(student);
+    }
+
+
+    // ============================================================
+    // LOGIN
+    // ============================================================
+
+    public User login(
+            String username,
+            String idNumber,
+            String password
+    ) {
+
+        // Validate ID number
+        if (!IDValidator.validateID(idNumber)) {
+            throw new IllegalArgumentException(
+                    "Invalid DLSU ID number."
+            );
+        }
+
+        // Validate username
+        if (username == null || username.trim().isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Username cannot be empty."
+            );
+        }
+
+        // Validate password
+        if (password == null || password.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Password cannot be empty."
+            );
+        }
+
+        Long id = Long.parseLong(idNumber);
+
+        // Find account using username + ID
+        User user = userRepository
+                .findByUsernameAndIdNumber(
+                        username.trim(),
+                        id
+                )
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "No account was found with those credentials."
+                        )
+                );
+
+        // Check password
+        if (!user.getPassword().equals(password)) {
+            throw new IllegalArgumentException(
+                    "Incorrect password."
+            );
+        }
+
+        return user;
+    }
+}
