@@ -17,3 +17,15 @@
 .course-box:dependent {
     -fx-background-color: #0088ff;
 }
+
+.course-box:source-eligible {
+    -fx-background-color: #36cc36;
+    -fx-border-width: 3;
+    -fx-border-color: #235a23;
+}
+
+.course-box:source-ineligible {
+    -fx-background-color: #f13c3c;
+    -fx-border-width: 3;
+    -fx-border-color: #6a1b1b;
+}

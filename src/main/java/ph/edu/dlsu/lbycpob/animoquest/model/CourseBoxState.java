@@ -8,7 +8,9 @@ public enum CourseBoxState {
     REQ_PASSED("requisite-passed"),
     REQ_FAILED("requisite-failed"),
     REQ_IN_PROGRESS("requisite-in-progress"),
-    DEPENDENT("dependent");
+    DEPENDENT("dependent"),
+    ELIGIBLE("source-eligible"),
+    INELIGIBLE("source-ineligible");
 
     private final PseudoClass pseudoClass;
 

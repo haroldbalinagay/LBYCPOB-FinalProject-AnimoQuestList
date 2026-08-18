@@ -5,6 +5,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import lombok.Getter;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -26,8 +27,6 @@ public class CourseBoxController {
 
     // The listener that will notify the checklist controller of a click
     private IntConsumer onClickListener;
-
-    // JavaFX Pseudo-Classes for handling dynamic styling states
 
     // SETTERS
     public void setCourseCode(String courseCode) {
@@ -80,6 +79,18 @@ public class CourseBoxController {
         if (newState == null) return; // Meaning course is NOT TAKEN (keep default highlight)
 
         // Activate the corresponding highlight
+        courseBox.pseudoClassStateChanged(newState.getPseudoClass(), true);
+    }
+
+    /**
+     * Sets a highlight on the course box based on the given state.
+     * This method does not need to convert from course status to course box state.
+     * @param newState The specific highlight type.
+     */
+    public void updateHighlight(CourseBoxState newState) {
+        if (newState == null) return;
+        resetHighlight();
+
         courseBox.pseudoClassStateChanged(newState.getPseudoClass(), true);
     }
 

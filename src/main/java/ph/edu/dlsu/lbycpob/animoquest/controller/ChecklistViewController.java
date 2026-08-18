@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.stereotype.Component;
+import ph.edu.dlsu.lbycpob.animoquest.model.CourseBoxState;
 import ph.edu.dlsu.lbycpob.animoquest.model.CourseStatus;
 import ph.edu.dlsu.lbycpob.animoquest.model.CurriculumProgress;
 import ph.edu.dlsu.lbycpob.animoquest.model.MasterlistCourse;
@@ -178,11 +179,20 @@ public class ChecklistViewController {
         CourseStatus status = checklistService.getStatusOf(course, progressList);
         courseStatusLabel.setText(status.getStatus());
 
+        // Ask the service to check if course is eligible
         TermChecklistService.EnrollEligibility eligibleData = checklistService.checkEnrollEligibilityOf(course, progressList);
 
         if (eligibleData.eligible()) eligibleLabel.setText("YES");
         else eligibleLabel.setText("NO");
 
         eligibleReasonLabel.setText(eligibleData.reason());
+
+        // Ask each checklist to highlight the clicked on course (if it contains said course)
+        for (TermChecklistController controller : checklistControllers) {
+            if (eligibleData.eligible()) {
+                controller.highlightSourceCourse(course, CourseBoxState.ELIGIBLE);
+            }
+            else controller.highlightSourceCourse(course, CourseBoxState.INELIGIBLE);
+        }
     }
 }

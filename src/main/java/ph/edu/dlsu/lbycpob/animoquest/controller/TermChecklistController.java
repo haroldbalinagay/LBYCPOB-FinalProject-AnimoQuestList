@@ -8,16 +8,14 @@ import javafx.scene.layout.VBox;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import ph.edu.dlsu.lbycpob.animoquest.model.CourseStatus;
-import ph.edu.dlsu.lbycpob.animoquest.model.CurriculumProgress;
-import ph.edu.dlsu.lbycpob.animoquest.model.MasterlistCourse;
-import ph.edu.dlsu.lbycpob.animoquest.model.TermChecklist;
+import ph.edu.dlsu.lbycpob.animoquest.model.*;
 import ph.edu.dlsu.lbycpob.animoquest.service.FxmlLoaderService;
 import ph.edu.dlsu.lbycpob.animoquest.service.TermChecklistService;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 @Component
@@ -35,6 +33,7 @@ public class TermChecklistController {
     private TermChecklist checklist;
     private List<MasterlistCourse> courses = new ArrayList<>();
 
+    private int sourceCourseIdx = -1;
     private List<CourseBoxController> highlightedCourses = new ArrayList<>();
 
     private Consumer<MasterlistCourse> onCourseClickListener;
@@ -106,12 +105,16 @@ public class TermChecklistController {
     }
 
     /**
-     * Executes when ANY child (course) instance is clicked.
-     * Passes the course model of the clicked on course to the parent (checklist view) controller.
-     * @param orderIdx The order index of the clicked on course
+     * Executes when ANY child (course box) instance is clicked.
+     * Passes the course model of the clicked on course box to the parent (checklist view) controller.
+     * @param orderIdx The order index of the clicked on course box
      */
     private void handleOnCourseClick(int orderIdx) {
         if (onCourseClickListener != null) {
+            // Save the clicked on course box
+            sourceCourseIdx = orderIdx;
+            IO.println("Saved " + courses.get(orderIdx).getCode());
+
             // Pass the data back to the main controller listener
             onCourseClickListener.accept(courses.get(orderIdx));
         }
@@ -225,9 +228,28 @@ public class TermChecklistController {
      */
     public void resetHighlights() {
         for (CourseBoxController courseBox : highlightedCourses) {
-            courseBox.setCourseUnits(10); // TODO: TEMP
             courseBox.resetHighlight();
         }
         highlightedCourses.clear();
+    }
+
+    /**
+     * Highlights the (clicked on) course based on the given state.
+     * @param sourceCourse The clicked on course
+     * @param newState The state to base the highlighting style on
+     */
+    public void highlightSourceCourse(MasterlistCourse sourceCourse, CourseBoxState newState) {
+        if (sourceCourse == null) return;
+
+        // Loop through each course in the checklist to find the source course
+        int idx = 0;
+        for (MasterlistCourse course : courses) {
+            if (Objects.equals(sourceCourse.getId(), course.getId())) {
+                CourseBoxController courseBox = courseControllers.get(idx);
+                highlightedCourses.add(courseBox);
+                courseBox.updateHighlight(newState);
+            }
+            idx++;
+        }
     }
 }
