@@ -25,9 +25,11 @@ public class CurriculumProgress {
     @Column(name = "term_taken", nullable = false)
     private int termTaken;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private CourseStatus status;
+    private boolean passed;
+
+    @Column(name = "in_progress", nullable = false)
+    private boolean inProgress;
 
     @Column(name = "created_at", insertable = false, updatable = false)
     private OffsetDateTime createdAt;
@@ -39,11 +41,58 @@ public class CurriculumProgress {
             Long studentId,
             Long courseId,
             int termTaken,
-            CourseStatus status
+            boolean passed,
+            boolean inProgress
     ) {
         this.studentId = studentId;
         this.courseId = courseId;
         this.termTaken = termTaken;
-        this.status = status;
+        this.passed = passed;
+        this.inProgress = inProgress;
+    }
+
+    /**
+     * Returns the status of the course as text.
+     */
+    public String getStatus() {
+
+        if (passed) {
+            return "PASSED";
+        }
+
+        if (inProgress) {
+            return "IN-PROGRESS";
+        }
+
+        return "FAILED";
+    }
+
+    /**
+     * Updates the database flags based on the selected status.
+     */
+    public void setStatus(String status) {
+
+        switch (status) {
+
+            case "PASSED":
+                this.passed = true;
+                this.inProgress = false;
+                break;
+
+            case "IN-PROGRESS":
+                this.passed = false;
+                this.inProgress = true;
+                break;
+
+            case "FAILED":
+                this.passed = false;
+                this.inProgress = false;
+                break;
+
+            default:
+                throw new IllegalArgumentException(
+                        "Invalid course status."
+                );
+        }
     }
 }
