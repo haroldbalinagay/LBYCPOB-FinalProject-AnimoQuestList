@@ -1,16 +1,15 @@
 package ph.edu.dlsu.lbycpob.animoquest.controller;
 
-import javafx.css.PseudoClass;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import lombok.Getter;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import ph.edu.dlsu.lbycpob.animoquest.model.CourseBoxState;
+import ph.edu.dlsu.lbycpob.animoquest.model.CourseStatus;
 
 import java.util.function.IntConsumer;
 
@@ -29,10 +28,6 @@ public class CourseBoxController {
     private IntConsumer onClickListener;
 
     // JavaFX Pseudo-Classes for handling dynamic styling states
-    private static final PseudoClass REQ_PASSED_STATE = PseudoClass.getPseudoClass("requisite-passed");
-    private static final PseudoClass REQ_FAILED_STATE = PseudoClass.getPseudoClass("requisite-failed");
-    private static final PseudoClass REQ_IN_PROGRESS_STATE = PseudoClass.getPseudoClass("requisite-in-progress");
-    private static final PseudoClass DEPENDENT_STATE = PseudoClass.getPseudoClass("dependent");
 
     // SETTERS
     public void setCourseCode(String courseCode) {
@@ -70,27 +65,31 @@ public class CourseBoxController {
         }
     }
 
+    // HIGHLIGHTING
+
     /**
-     * Sets a highlight on the course box.
-     * @param type
+     * Sets a highlight on the course box based on the given status.
+     * @param status The specific highlight type
      */
-    public void updateHighlight(int type) {
+    public void updateHighlight(CourseStatus status) {
+        if (status == null) return;
         resetHighlight();
-        switch (type) { // TODO: TEMP
-            case 0 -> courseBox.pseudoClassStateChanged(REQ_PASSED_STATE, true);
-            case 1 -> courseBox.pseudoClassStateChanged(REQ_FAILED_STATE, true);
-            case 2 -> courseBox.pseudoClassStateChanged(REQ_IN_PROGRESS_STATE, true);
-            case 3 -> courseBox.pseudoClassStateChanged(DEPENDENT_STATE, true);
-        }
+
+        // Converts the status to the corresponding JavaFX PseudoClass enum state
+        CourseBoxState newState = CourseBoxState.convertStatusToState(status);
+        if (newState == null) return; // Meaning course is NOT TAKEN (keep default highlight)
+
+        // Activate the corresponding highlight
+        courseBox.pseudoClassStateChanged(newState.getPseudoClass(), true);
     }
 
     /**
      * Resets the highlight on the course box.
      */
     public void resetHighlight() {
-        courseBox.pseudoClassStateChanged(REQ_PASSED_STATE, false);
-        courseBox.pseudoClassStateChanged(REQ_FAILED_STATE, false);
-        courseBox.pseudoClassStateChanged(REQ_IN_PROGRESS_STATE, false);
-        courseBox.pseudoClassStateChanged(DEPENDENT_STATE, false);
+        // Turn off all JavaFX PseudoClass enum states to prevent overlapping rules
+        for (CourseBoxState state : CourseBoxState.values()) {
+            courseBox.pseudoClassStateChanged(state.getPseudoClass(), false);
+        }
     }
 }

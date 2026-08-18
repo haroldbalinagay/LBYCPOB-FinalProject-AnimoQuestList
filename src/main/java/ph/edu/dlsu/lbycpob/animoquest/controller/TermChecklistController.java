@@ -8,6 +8,8 @@ import javafx.scene.layout.VBox;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import ph.edu.dlsu.lbycpob.animoquest.model.CourseStatus;
+import ph.edu.dlsu.lbycpob.animoquest.model.CurriculumProgress;
 import ph.edu.dlsu.lbycpob.animoquest.model.MasterlistCourse;
 import ph.edu.dlsu.lbycpob.animoquest.model.TermChecklist;
 import ph.edu.dlsu.lbycpob.animoquest.service.FxmlLoaderService;
@@ -16,7 +18,6 @@ import ph.edu.dlsu.lbycpob.animoquest.service.TermChecklistService;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Consumer;
 
 @Component
@@ -28,7 +29,7 @@ public class TermChecklistController {
     @FXML private Label maxUnitsLabel;
     @FXML private VBox coursesView;
 
-    private int TERM_NUMBER;
+    private int termNumber;
     private List<CourseBoxController> courseControllers = new ArrayList<>();
 
     private TermChecklist checklist;
@@ -52,7 +53,7 @@ public class TermChecklistController {
      */
     public void setTermNumber(int number) {
         if (number <= 0) return;
-        TERM_NUMBER = number;
+        termNumber = number;
         termNumberLabel.setText("TERM " + number);
         populateCourses();
     }
@@ -61,7 +62,7 @@ public class TermChecklistController {
      * Populates the courses of the checklist.
      */
     private void populateCourses() {
-        checklist = checklistService.getChecklistOf("CPE", 125, TERM_NUMBER); // TODO: TEMP
+        checklist = checklistService.getChecklistOf("CPE", 125, termNumber); // TODO: HARMONY POINT
 
         // Do not attempt to generate course boxes if the checklist is not found
         if (checklist == null) {
@@ -152,7 +153,6 @@ public class TermChecklistController {
                 if (reqId.equals(sourceCourse.getId())) {
                     count++;
                     IO.println(course.getCode() + " is a dependent of " + sourceCourse.getCode());
-                    // TODO: Trigger for dependent coloring
                     highlightDependent(idx);
                 }
             }
@@ -162,9 +162,10 @@ public class TermChecklistController {
 
     /**
      * Highlights all requisites of the source course found in the checklist.
-     * @param sourceCourse The course to match against
+     * @param sourceCourse   The course to match against
+     * @param progressList   The complete curriculum progress records of a student
      */
-    public void highlightRequisitesOf(MasterlistCourse sourceCourse) {
+    public void highlightRequisitesOf(MasterlistCourse sourceCourse, List<CurriculumProgress> progressList) {
         // Simply return if the source course has no reqs
         if (sourceCourse.hasNoRequisites()) return;
 
@@ -182,7 +183,7 @@ public class TermChecklistController {
             for (MasterlistCourse course : courses) {
                 if (reqId.equals(course.getId())) {
                     IO.println(course.getCode() + " is a requisite of " + sourceCourse.getCode());
-                    highlightRequisite(idx);
+                    highlightRequisite(idx, progressList);
                 }
                 idx++;
             }
@@ -190,27 +191,33 @@ public class TermChecklistController {
     }
 
     /**
-     * Highlights the course as a requisite.
-     * @param courseIdx The order index of the course
+     * Instructs the course box to highlight itself as a requisite.
+     * The specific type of requisite is first determined before being passed on to the course box.
+     * @param courseIdx      The order index of the course
+     * @param progressList   The complete curriculum progress records of a student
      */
-    private void highlightRequisite(int courseIdx) {
+    private void highlightRequisite(int courseIdx, List<CurriculumProgress> progressList) {
+        // Get the specific controller and save it to a list
         CourseBoxController courseBox = courseControllers.get(courseIdx);
         highlightedCourses.add(courseBox);
 
-        courseBox.setCourseUnits(5000);
-        courseBox.updateHighlight(0); // TODO: TEMP
+        // Ask the checklist service to get the status of the course based on the progress records
+        CourseStatus status = checklistService.getStatusOf(courses.get(courseIdx), progressList);
+        // Instruct the course box
+        courseBox.updateHighlight(status);
     }
 
     /**
-     * Highlights the course as a dependent.
+     * Instructs the course box to highlight itself as a dependent.
      * @param courseIdx The order index of the course
      */
     private void highlightDependent(int courseIdx) {
+        // Get the specific controller and save it to a list
         CourseBoxController courseBox = courseControllers.get(courseIdx);
         highlightedCourses.add(courseBox);
 
-        courseBox.setCourseUnits(1000);
-        courseBox.updateHighlight(3); // TODO: TEMP
+        // Instruct the course box
+        courseBox.updateHighlight(CourseStatus.DEPENDENT);
     }
 
     /**
@@ -218,7 +225,7 @@ public class TermChecklistController {
      */
     public void resetHighlights() {
         for (CourseBoxController courseBox : highlightedCourses) {
-            courseBox.setCourseUnits(10);
+            courseBox.setCourseUnits(10); // TODO: TEMP
             courseBox.resetHighlight();
         }
         highlightedCourses.clear();

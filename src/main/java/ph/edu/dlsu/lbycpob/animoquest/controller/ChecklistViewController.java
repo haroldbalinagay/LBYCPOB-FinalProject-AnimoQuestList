@@ -7,7 +7,9 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.stereotype.Component;
+import ph.edu.dlsu.lbycpob.animoquest.model.CurriculumProgress;
 import ph.edu.dlsu.lbycpob.animoquest.model.MasterlistCourse;
+import ph.edu.dlsu.lbycpob.animoquest.service.CurriculumService;
 import ph.edu.dlsu.lbycpob.animoquest.service.FxmlLoaderService;
 import ph.edu.dlsu.lbycpob.animoquest.service.TermChecklistService;
 
@@ -36,16 +38,20 @@ public class ChecklistViewController {
 
     private List<TermChecklistController> checklistControllers = new ArrayList<>();
 
+    private List<CurriculumProgress> progressList = new ArrayList<>();
+
     private final FxmlLoaderService fxmlLoader;
     private final TermChecklistService checklistService;
+    private final CurriculumService progressService; // TODO: May be missing when merging
 
-    public ChecklistViewController(FxmlLoaderService fxmlLoader, TermChecklistService checklistService) {
+    public ChecklistViewController(FxmlLoaderService fxmlLoader, TermChecklistService checklistService, CurriculumService progressService) {
         this.fxmlLoader = fxmlLoader;
         this.checklistService = checklistService;
+        this.progressService = progressService;
     }
 
     /**
-     * Creates the 12 Term Checklists in the checklist grid pane.
+     * Creates the 12 Term Checklists in the checklist grid pane. Loads in the student's curriculum progress records.
      */
     @FXML
     public void initialize() {
@@ -79,6 +85,9 @@ public class ChecklistViewController {
                 checklistGrid.add(subView, col, row);
             }
         }
+
+        // Ask the curriculum service for the student's progress records
+        progressList = progressService.getProgressOf(null); // TODO: HARMONY POINT
     }
 
     /**
@@ -140,7 +149,7 @@ public class ChecklistViewController {
 
         // Ask each checklist to check if it contains the reqs to highlight on screen
         for (TermChecklistController controller : checklistControllers) {
-            controller.highlightRequisitesOf(course);
+            controller.highlightRequisitesOf(course, progressList);
         }
     }
 
@@ -160,6 +169,7 @@ public class ChecklistViewController {
         courseDependentsLabel.setText(String.valueOf(totalCount));
     }
 
+    // TODO: NEEDS ELIGIBILITY LOGIC + CURRICULUM PROGRESS
     private void showCourseStatus(MasterlistCourse course) {
         courseStatusLabel.setText("TBD");
         eligibleLabel.setText("TBD");
