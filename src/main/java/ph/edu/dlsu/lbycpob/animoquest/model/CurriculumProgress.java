@@ -11,6 +11,7 @@ import java.time.OffsetDateTime;
 @Entity
 @Table(name = "curriculum_progress")
 public class CurriculumProgress {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,8 +25,9 @@ public class CurriculumProgress {
     @Column(name = "term_taken", nullable = false)
     private int termTaken;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private boolean passed;
+    private CourseStatus status;
 
     @Column(name = "created_at", insertable = false, updatable = false)
     private OffsetDateTime createdAt;
@@ -33,12 +35,15 @@ public class CurriculumProgress {
     public CurriculumProgress() {
     }
 
-    public CurriculumProgress(Long studentId, Long courseId, int termTaken, boolean passed) {
+    public CurriculumProgress(
+            Long studentId,
+            Long courseId,
+            int termTaken,
+            CourseStatus status
+    ) {
         this.studentId = studentId;
         this.courseId = courseId;
         this.termTaken = termTaken;
-        this.passed = passed;
+        this.status = status;
     }
-
-    // TODO: Add attributes & behaviors for curriculum progress of a student
 }
