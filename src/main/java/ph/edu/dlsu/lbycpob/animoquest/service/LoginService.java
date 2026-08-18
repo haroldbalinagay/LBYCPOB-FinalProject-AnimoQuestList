@@ -15,6 +15,10 @@ public class LoginService {
         this.userRepository = userRepository;
     }
 
+    // ============================================================
+    // SIGN UP
+    // ============================================================
+
     public Student addStudentAccount(
             String idNumber,
             String password,
@@ -66,112 +70,16 @@ public class LoginService {
             );
         }
 
-        // Clean up the names
-        String cleanFirstName = firstName.trim();
-        String cleanMiddleName = middleName.trim();
-        String cleanLastName = lastName.trim();
-
-        /*
-         * Automatically create the username
-         * using the student's complete name.
-         *
-         * Example:
-         * Juan + Dela + Cruz
-         * = "Juan Dela Cruz"
-         */
-        String username = cleanFirstName
-                + " "
-                + cleanMiddleName
-                + " "
-                + cleanLastName;
-
-        // Convert ID from String to Long
         Long id = Long.parseLong(idNumber);
 
-        // Check if ID already exists
+        // Check if ID number already exists
         if (userRepository.findByIdNumber(id).isPresent()) {
             throw new IllegalArgumentException(
                     "An account with this ID number already exists."
             );
         }
 
-        // Check if generated username already exists
-        if (userRepository.existsByUsername(username)) {
-            throw new IllegalArgumentException(
-                    "An account with this name already exists."
-            );
-        }
-
-        // Create Student
-        Student student = new Student(
-                "STUDENT",
-                username,
-                id,
-                cleanFirstName,
-                cleanMiddleName,
-                cleanLastName,
-                password,
-                major.trim()
-        );
-
-        // Save to Supabase
-        return userRepository.save(student);
-    }
-
-    public User login(
-            String username,
-            String idNumber,
-            String password
-    ) {
-
-        // Validate ID number
-        if (!IDValidator.validateID(idNumber)) {
-            throw new IllegalArgumentException(
-                    "Invalid DLSU ID number."
-            );
-        }
-
-        // Validate username
-        if (username == null || username.trim().isEmpty()) {
-            throw new IllegalArgumentException(
-                    "Username cannot be empty."
-            );
-        }
-
-        // Validate password
-        if (password == null || password.isEmpty()) {
-            throw new IllegalArgumentException(
-                    "Password cannot be empty."
-            );
-        }
-
-        Long id = Long.parseLong(idNumber);
-
-        /*
-         * Find account using:
-         *
-         * Username
-         * +
-         * ID Number
-         */
-        User user = userRepository
-                .findByUsernameAndIdNumber(
-                        username.trim(),
-                        id
-                )
-                .orElseThrow(() ->
-                        new IllegalArgumentException(
-                                "No account was found with those credentials."
-                        )
-                );
-
-        // Check password
-        if (!user.getPassword().equals(password)) {
-            throw new IllegalArgumentException(
-                    "Incorrect password."
-            );
-        }
-
-        return user;
-    }
-}
+        // Clean up the names
+        String cleanFirstName = firstName.trim();
+        String cleanMiddleName = middleName.trim();
+        String cleanLastName = lastName.trim();
