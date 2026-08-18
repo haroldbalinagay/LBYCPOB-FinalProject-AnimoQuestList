@@ -38,6 +38,9 @@ public abstract class User {
     @Column(name = "first_name", nullable = false)
     private String firstName;
 
+    @Column(name = "middle_name", nullable = false)
+    private String middleName;
+
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
@@ -55,6 +58,7 @@ public abstract class User {
             String username,
             Long idNumber,
             String firstName,
+            String middleName,
             String lastName,
             String password
     ) {
@@ -62,6 +66,7 @@ public abstract class User {
         this.username = username;
         this.idNumber = idNumber;
         this.firstName = firstName;
+        this.middleName = middleName;
         this.lastName = lastName;
         this.password = password;
     }
