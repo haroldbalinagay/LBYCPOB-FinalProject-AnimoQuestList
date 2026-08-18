@@ -43,7 +43,7 @@ public class TermChecklistService {
         List<String> reqs = new ArrayList<>();
 
         for (int i = 0; i < 3; i++) {
-            Long reqId = course.getRequisiteIdOf(i);
+            Long reqId = course.getRequisiteIdAt(i);
 
             if (reqId == null) continue;
 

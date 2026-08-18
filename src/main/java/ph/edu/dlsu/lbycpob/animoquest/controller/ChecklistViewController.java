@@ -125,7 +125,7 @@ public class ChecklistViewController {
             if (req == null) continue;
             if (i > 1) sb.append(", ");
 
-            sb.append(req).append(" (").append(course.getRequisiteTypeOf(i)).append(")");
+            sb.append(req).append(" (").append(course.getRequisiteTypeAt(i)).append(")");
             i++;
         }
 
@@ -133,8 +133,20 @@ public class ChecklistViewController {
         courseRequisitesLabel.setText(sb.toString());
     }
 
+    /**
+     * Displays the total number of courses across all checklists that have the given course as 1 of its requisites.
+     * @param course The clicked on course
+     */
     private void showTotalCourseDependents(MasterlistCourse course) {
-        courseDependentsLabel.setText("TBD");
+        int totalCount = 0;
+
+        // Ask each checklist to check if it has any courses that depend on the given course
+        for (TermChecklistController controller : checklistControllers) {
+            totalCount += controller.countDependentsOf(course); // Increment the counter
+        }
+
+        // Update the label
+        courseDependentsLabel.setText(String.valueOf(totalCount));
     }
 
     private void showCourseStatus(MasterlistCourse course) {

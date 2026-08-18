@@ -72,7 +72,7 @@ public class MasterlistCourse {
      * @param requisite The requisite "number"
      * @return The desired requisite ID
      */
-    public Long getRequisiteIdOf(int requisite) {
+    public Long getRequisiteIdAt(int requisite) {
         switch (requisite) {
             case 1 -> { return reqId1; }
             case 2 -> { return reqId2; }
@@ -85,7 +85,7 @@ public class MasterlistCourse {
      * @param requisite The requisite "number"
      * @return The desired requisite type
      */
-    public String getRequisiteTypeOf(int requisite) {
+    public String getRequisiteTypeAt(int requisite) {
         switch (requisite) {
             case 1 -> { return reqType1; }
             case 2 -> { return reqType2; }

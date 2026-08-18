@@ -16,6 +16,7 @@ import ph.edu.dlsu.lbycpob.animoquest.service.TermChecklistService;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 @Component
@@ -119,5 +120,38 @@ public class TermChecklistController {
      */
     public void addListener(Consumer<MasterlistCourse> listener) {
         onCourseClickListener = listener;
+    }
+
+    /**
+     * Counts how many courses have the source course as 1 of its requisites.
+     * @param sourceCourse The course to match against
+     * @return A count of dependents
+     */
+    public int countDependentsOf(MasterlistCourse sourceCourse) {
+        int count = 0;
+
+        // Simply return 0 if there are no courses
+        if (courses.isEmpty()) return count;
+
+        // Loop through each course in the checklist
+        for (MasterlistCourse course : courses) {
+            // Skip this course if it has no reqs
+            if (course.hasNoRequisites()) continue;
+
+            // Check each req slot of the course
+            for (int i = 1; i <= 3; i++) {
+                Long reqId = course.getRequisiteIdAt(i);
+
+                if (reqId == null) continue; // Skip req slot if empty
+
+                // If req does match source course, increment counter and trigger dependent visualization
+                if (reqId.equals(sourceCourse.getId())) {
+                    count++;
+                    IO.println(course.getCode() + " is a dependent of " + sourceCourse.getCode());
+                    // TODO: Trigger for dependent coloring
+                }
+            }
+        }
+        return count;
     }
 }
