@@ -3,7 +3,6 @@ package ph.edu.dlsu.lbycpob.animoquest.controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import net.rgielen.fxweaver.core.FxmlView;
@@ -25,9 +24,6 @@ public class LoginController {
 
     @FXML
     private PasswordField passwordField;
-
-    @FXML
-    private Button loginButton;
 
     private final LoginService loginService;
 
@@ -69,62 +65,10 @@ public class LoginController {
                 showAlert(
                         Alert.AlertType.INFORMATION,
                         "Login Successful",
-                        "Welcome, "
-                                + user.getFirstName()
-                                + " "
-                                + user.getLastName()
-                                + "!"
+                        "Welcome, " + user.getFullName() + "!"
                 );
 
                 // TODO:
                 // Open Student Dashboard
 
             } else if (user instanceof Admin) {
-
-                showAlert(
-                        Alert.AlertType.INFORMATION,
-                        "Login Successful",
-                        "Welcome, "
-                                + user.getFirstName()
-                                + " "
-                                + user.getLastName()
-                                + "!"
-                );
-
-                // TODO:
-                // Open Admin Dashboard
-            }
-
-        } catch (IllegalArgumentException e) {
-
-            showAlert(
-                    Alert.AlertType.WARNING,
-                    "Login Failed",
-                    e.getMessage()
-            );
-
-        } catch (Exception e) {
-
-            showAlert(
-                    Alert.AlertType.ERROR,
-                    "Login Error",
-                    "An unexpected error occurred while logging in."
-            );
-
-            e.printStackTrace();
-        }
-    }
-
-    private void showAlert(
-            Alert.AlertType type,
-            String title,
-            String message
-    ) {
-
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-}
