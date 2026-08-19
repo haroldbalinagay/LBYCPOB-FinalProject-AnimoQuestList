@@ -71,7 +71,7 @@
         <Label text="Major"/>
 
         <TextField fx:id="majorField"
-                   promptText="e.g. BS Computer Engineering"/>
+                   promptText="e.g. CPE"/>
 
 
         <!-- CREATE ACCOUNT -->
