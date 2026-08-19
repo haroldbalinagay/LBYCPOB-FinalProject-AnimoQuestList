@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="ph.edu.dlsu.lbycpob.animoquest.controller.TermChecklistController"
+      spacing="15"
+      prefWidth="900"
+      prefHeight="650">
+
+    <padding>
+        <Insets top="20"
+                right="20"
+                bottom="20"
+                left="20"/>
+    </padding>
+
+    <Label text="BS Computer Engineering - Batch 125"
+           style="-fx-font-size: 20px;"/>
+
+    <Label text="Select the courses you want to enroll in."/>
+
+    <TabPane fx:id="termTabPane"
+             VBox.vgrow="ALWAYS"/>
+
+    <Button fx:id="addSelectedButton"
+            text="Add Selected Courses"
+            onAction="#handleAddSelectedCourses"/>
+
+</VBox>
