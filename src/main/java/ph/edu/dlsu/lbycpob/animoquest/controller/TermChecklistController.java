@@ -3,9 +3,14 @@ package ph.edu.dlsu.lbycpob.animoquest.controller;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import net.rgielen.fxweaver.core.FxmlView;
+import net.rgielen.fxweaver.core.FxWeaver;
 import org.springframework.stereotype.Component;
 import ph.edu.dlsu.lbycpob.animoquest.model.MasterlistCourse;
 import ph.edu.dlsu.lbycpob.animoquest.model.TermChecklist;
@@ -37,6 +42,8 @@ public class TermChecklistController {
 
     private final CurriculumService curriculumService;
 
+    private final FxWeaver fxWeaver;
+
     /*
      * The student who is currently logged in.
      */
@@ -62,11 +69,13 @@ public class TermChecklistController {
 
     public TermChecklistController(
             TermChecklistService termChecklistService,
-            CurriculumService curriculumService
+            CurriculumService curriculumService,
+            FxWeaver fxWeaver
     ) {
 
         this.termChecklistService = termChecklistService;
         this.curriculumService = curriculumService;
+        this.fxWeaver = fxWeaver;
     }
 
     // ============================================================
@@ -92,8 +101,9 @@ public class TermChecklistController {
         }
 
         this.currentDegree = degree;
-    }
 
+        loadTermChecklists();
+    }
     // ============================================================
     // SET CURRENT TERM
     // ============================================================
@@ -116,8 +126,8 @@ public class TermChecklistController {
 
     @FXML
     public void initialize() {
-
-        loadTermChecklists();
+        // Checklist will be loaded after the student's
+        // degree is supplied.
     }
 
     // ============================================================
@@ -394,16 +404,68 @@ public class TermChecklistController {
     // BACK
     // ============================================================
 
+    // ============================================================
+// BACK
+// ============================================================
+
     @FXML
     private void handleBack(ActionEvent event) {
 
-        /*
-         * Keep your existing back-navigation code here.
-         *
-         * We are not changing navigation in this step.
-         */
-    }
+        try {
 
+            Parent root =
+                    fxWeaver.loadView(
+                            EnrollmentController.class
+                    );
+
+            EnrollmentController controller =
+                    fxWeaver.getBean(
+                            EnrollmentController.class
+                    );
+
+            /*
+             * Restore the logged-in student.
+             */
+            if (currentStudentId != null) {
+
+                controller.setStudentId(
+                        currentStudentId
+                );
+            }
+
+            /*
+             * Restore the current term.
+             */
+            controller.setCurrentTerm(
+                    currentTerm
+            );
+
+            Stage stage =
+                    (Stage) ((Node) event.getSource())
+                            .getScene()
+                            .getWindow();
+
+            stage.setScene(
+                    new Scene(root)
+            );
+
+            stage.setTitle(
+                    "AnimoQuestList - Enrollment"
+            );
+
+            stage.show();
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            showAlert(
+                    Alert.AlertType.ERROR,
+                    "Navigation Error",
+                    "Unable to return to the enrollment page."
+            );
+        }
+    }
     // ============================================================
     // ALERT
     // ============================================================
