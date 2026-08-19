@@ -27,6 +27,7 @@ public class CurriculumDisplay {
             boolean valid,
             String warningMessage
     ) {
+
         this.courseId = courseId;
         this.code = code;
         this.name = name;
