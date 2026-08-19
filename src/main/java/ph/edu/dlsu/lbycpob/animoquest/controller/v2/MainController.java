@@ -15,7 +15,7 @@ import ph.edu.dlsu.lbycpob.animoquest.service.v2.FxmlLoaderService;
 import java.io.IOException;
 import java.util.Objects;
 
-@Component
+
 @FxmlView("app-window.fxml")
 public class MainController {
 

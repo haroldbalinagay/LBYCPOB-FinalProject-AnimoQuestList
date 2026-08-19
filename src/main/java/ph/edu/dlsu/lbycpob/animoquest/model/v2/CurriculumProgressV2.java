@@ -10,7 +10,7 @@ import java.time.OffsetDateTime;
 @Setter
 @Entity
 @Table(name = "curriculum_progress")
-public class CurriculumProgress {
+public class CurriculumProgressV2 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,10 +33,10 @@ public class CurriculumProgress {
     @Column(name = "created_at", insertable = false, updatable = false)
     private OffsetDateTime createdAt;
 
-    public CurriculumProgress() {
+    public CurriculumProgressV2() {
     }
 
-    public CurriculumProgress(Long studentId, Long courseId, int termTaken, boolean passed) {
+    public CurriculumProgressV2(Long studentId, Long courseId, int termTaken, boolean passed) {
         this.studentId = studentId;
         this.courseId = courseId;
         this.termTaken = termTaken;
@@ -45,9 +45,9 @@ public class CurriculumProgress {
 
     // TODO: Add attributes & behaviors for curriculum progress of a student
 
-    public CourseStatus getStatus() {
-        if (passed) return CourseStatus.PASSED;
-        else if (inProgress) return CourseStatus.IN_PROGRESS;
-        else return CourseStatus.FAILED;
+    public CourseStatusV2 getStatus() {
+        if (passed) return CourseStatusV2.PASSED;
+        else if (inProgress) return CourseStatusV2.IN_PROGRESS;
+        else return CourseStatusV2.FAILED;
     }
 }

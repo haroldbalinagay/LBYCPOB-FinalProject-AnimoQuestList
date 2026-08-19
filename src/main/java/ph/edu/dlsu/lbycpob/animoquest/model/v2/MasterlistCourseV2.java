@@ -11,7 +11,7 @@ import java.util.Objects;
 @Setter
 @Entity
 @Table(name = "course_masterlist")
-public class MasterlistCourse {
+public class MasterlistCourseV2 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -49,11 +49,11 @@ public class MasterlistCourse {
     @Column(name = "created_at", insertable = false, updatable = false)
     private OffsetDateTime createdAt;
 
-    public MasterlistCourse() {
+    public MasterlistCourseV2() {
     }
 
     // TODO: missing reqIds & reqTypes (use builder)
-    public MasterlistCourse(String code, String name, int units, boolean passFail) {
+    public MasterlistCourseV2(String code, String name, int units, boolean passFail) {
         this.code = code;
         this.name = name;
         this.units = units;
@@ -99,7 +99,7 @@ public class MasterlistCourse {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        MasterlistCourse that = (MasterlistCourse) o;
+        MasterlistCourseV2 that = (MasterlistCourseV2) o;
         return Objects.equals(this.code, that.code); // Match by course code
     }
 

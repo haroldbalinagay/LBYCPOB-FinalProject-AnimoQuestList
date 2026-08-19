@@ -10,7 +10,7 @@ import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import ph.edu.dlsu.lbycpob.animoquest.model.v2.CourseBoxState;
-import ph.edu.dlsu.lbycpob.animoquest.model.v2.CourseStatus;
+import ph.edu.dlsu.lbycpob.animoquest.model.v2.CourseStatusV2;
 
 import java.util.function.IntConsumer;
 
@@ -24,7 +24,7 @@ public class CourseBoxController {
     @FXML private GridPane courseBox;
 
     private int orderIdxInChecklist;
-    @Getter private CourseStatus status;
+    @Getter private CourseStatusV2 status;
 
     // The listener that will notify the checklist controller of a click
     private IntConsumer onClickListener;
@@ -44,11 +44,11 @@ public class CourseBoxController {
         this.orderIdxInChecklist = index;
     }
 
-    public void setStatus(CourseStatus status) {
+    public void setStatus(CourseStatusV2 status) {
         this.status = status;
 
         // Disables the checkbox if already passed
-        if (status == CourseStatus.PASSED) enrollInCheckbox.setDisable(true);
+        if (status == CourseStatusV2.PASSED) enrollInCheckbox.setDisable(true);
     }
 
     // LISTENER
@@ -85,7 +85,7 @@ public class CourseBoxController {
      * Sets a highlight on the course box based on the given status.
      * @param status The specific highlight type
      */
-    public void updateHighlight(CourseStatus status) {
+    public void updateHighlight(CourseStatusV2 status) {
         if (status == null) return;
         resetHighlight();
 

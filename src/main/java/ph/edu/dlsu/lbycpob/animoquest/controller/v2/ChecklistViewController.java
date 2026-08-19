@@ -14,12 +14,12 @@ import javafx.util.StringConverter;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.stereotype.Component;
 import ph.edu.dlsu.lbycpob.animoquest.model.v2.CourseBoxState;
-import ph.edu.dlsu.lbycpob.animoquest.model.v2.CourseStatus;
-import ph.edu.dlsu.lbycpob.animoquest.model.v2.CurriculumProgress;
-import ph.edu.dlsu.lbycpob.animoquest.model.v2.MasterlistCourse;
-import ph.edu.dlsu.lbycpob.animoquest.service.v2.CurriculumService;
+import ph.edu.dlsu.lbycpob.animoquest.model.v2.CourseStatusV2;
+import ph.edu.dlsu.lbycpob.animoquest.model.v2.CurriculumProgressV2;
+import ph.edu.dlsu.lbycpob.animoquest.model.v2.MasterlistCourseV2;
+import ph.edu.dlsu.lbycpob.animoquest.service.v2.CurriculumServiceV2;
 import ph.edu.dlsu.lbycpob.animoquest.service.v2.FxmlLoaderService;
-import ph.edu.dlsu.lbycpob.animoquest.service.v2.TermChecklistService;
+import ph.edu.dlsu.lbycpob.animoquest.service.v2.TermChecklistServiceV2;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,15 +46,15 @@ public class ChecklistViewController {
     @FXML private GridPane checklistGrid;
     private boolean checklistGridClickLock = false; // A set-reset latch
 
-    private List<TermChecklistController> checklistControllers = new ArrayList<>();
+    private List<TermChecklistControllerV2> checklistControllers = new ArrayList<>();
 
-    private List<CurriculumProgress> progressList = new ArrayList<>();
+    private List<CurriculumProgressV2> progressList = new ArrayList<>();
 
     private final FxmlLoaderService fxmlLoader;
-    private final TermChecklistService checklistService;
-    private final CurriculumService progressService; // TODO: May be missing when merging
+    private final TermChecklistServiceV2 checklistService;
+    private final CurriculumServiceV2 progressService; // TODO: May be missing when merging
 
-    public ChecklistViewController(FxmlLoaderService fxmlLoader, TermChecklistService checklistService, CurriculumService progressService) {
+    public ChecklistViewController(FxmlLoaderService fxmlLoader, TermChecklistServiceV2 checklistService, CurriculumServiceV2 progressService) {
         this.fxmlLoader = fxmlLoader;
         this.checklistService = checklistService;
         this.progressService = progressService;
@@ -100,7 +100,7 @@ public class ChecklistViewController {
         }
 
         // Extract and save the instance's controller into a list
-        TermChecklistController controller = fxmlLoader.getController();
+        TermChecklistControllerV2 controller = fxmlLoader.getController();
         checklistControllers.add(controller);
 
         // Define the listener for the instance
@@ -135,7 +135,7 @@ public class ChecklistViewController {
         }
 
         // Extract and save the instance's controller into a list (by overriding)
-        TermChecklistController controller = fxmlLoader.getController();
+        TermChecklistControllerV2 controller = fxmlLoader.getController();
         checklistControllers.set(insertAtIdx, controller);
 
         // Define the listener for the instance
@@ -153,7 +153,7 @@ public class ChecklistViewController {
      * Executes when ANY course is clicked from ANY checklist.
      * @param course The course model of the clicked on course
      */
-    private void handleOnCourseClick(MasterlistCourse course) {
+    private void handleOnCourseClick(MasterlistCourseV2 course) {
         checklistGridClickLock = true; // Prevents the same click from triggering the grid pane on-mouse click
         showCourseDetails(course);
     }
@@ -162,13 +162,13 @@ public class ChecklistViewController {
      * Displays the course details of the clicked on course.
      * @param course The clicked on course
      */
-    private void showCourseDetails(MasterlistCourse course) {
+    private void showCourseDetails(MasterlistCourseV2 course) {
         courseNameLabel.setText(course.getName());
         courseCodeLabel.setText(course.getCode());
         courseUnitsLabel.setText(String.valueOf(course.getUnits()));
 
         // Reset all course highlights across all checklists
-        for (TermChecklistController controller : checklistControllers) {
+        for (TermChecklistControllerV2 controller : checklistControllers) {
             controller.resetHighlights();
         }
 
@@ -181,7 +181,7 @@ public class ChecklistViewController {
      * Displays the requisites of the clicked on course
      * @param course The clicked on course
      */
-    private void showCourseRequisites(MasterlistCourse course) {
+    private void showCourseRequisites(MasterlistCourseV2 course) {
         StringBuilder sb = new StringBuilder();
 
         // Simply show "N/A" if course has no requisites
@@ -209,7 +209,7 @@ public class ChecklistViewController {
 
         // Ask each checklist to check if it contains the reqs to highlight on screen (ONLY IF checkbox is selected)
         if (showTargetReqsCheckbox.isSelected()) {
-            for (TermChecklistController controller : checklistControllers) {
+            for (TermChecklistControllerV2 controller : checklistControllers) {
                 controller.highlightRequisitesOf(course, progressList);
             }
         }
@@ -219,11 +219,11 @@ public class ChecklistViewController {
      * Displays the total number of courses across all checklists that have the given course as 1 of its requisites.
      * @param course The clicked on course
      */
-    private void showTotalCourseDependents(MasterlistCourse course) {
+    private void showTotalCourseDependents(MasterlistCourseV2 course) {
         int totalCount = 0;
 
         // Ask each checklist to check if it has any courses that depend on the given course
-        for (TermChecklistController controller : checklistControllers) {
+        for (TermChecklistControllerV2 controller : checklistControllers) {
             // Increment the counter
             totalCount += controller.countDependentsOf(course, showTargetDependentsCheckbox.isSelected());
         }
@@ -236,12 +236,12 @@ public class ChecklistViewController {
      * Displays the eligibility of a course to be enrolled in, and an accompanying reason.
      * @param course The clicked on course
      */
-    private void showCourseStatusAndEligibility(MasterlistCourse course) {
-        CourseStatus status = checklistService.getStatusOf(course, progressList);
+    private void showCourseStatusAndEligibility(MasterlistCourseV2 course) {
+        CourseStatusV2 status = checklistService.getStatusOf(course, progressList);
         courseStatusLabel.setText(status.getStatus());
 
         // Ask the service to check if course is eligible
-        TermChecklistService.EnrollEligibility eligibleData = checklistService.checkEnrollEligibilityOf(course, progressList);
+        TermChecklistServiceV2.EnrollEligibility eligibleData = checklistService.checkEnrollEligibilityOf(course, progressList);
 
         if (eligibleData.eligible()) eligibleLabel.setText("YES");
         else eligibleLabel.setText("NO");
@@ -249,7 +249,7 @@ public class ChecklistViewController {
         eligibleReasonLabel.setText(eligibleData.reason());
 
         // Ask each checklist to highlight the clicked on course (if it contains said course)
-        for (TermChecklistController controller : checklistControllers) {
+        for (TermChecklistControllerV2 controller : checklistControllers) {
             if (eligibleData.eligible()) {
                 controller.highlightSourceCourse(course, CourseBoxState.ELIGIBLE);
             }
@@ -273,7 +273,7 @@ public class ChecklistViewController {
         }
 
         // Instruct each checklist to restore its course highlights
-        for (TermChecklistController controller : checklistControllers) {
+        for (TermChecklistControllerV2 controller : checklistControllers) {
             if (showColorCodingCheckbox.isSelected()) {
                 controller.restoreHighlights();
             } else {
@@ -288,7 +288,7 @@ public class ChecklistViewController {
     @FXML private VBox comboBoxGroup;
     @FXML private Button saveBtn;
 
-    List<ComboBox<MasterlistCourse>> comboBoxList = new ArrayList<>();
+    List<ComboBox<MasterlistCourseV2>> comboBoxList = new ArrayList<>();
 
     /**
      * Sets up the checklist editor UI.
@@ -307,11 +307,11 @@ public class ChecklistViewController {
         });
 
         // Create the observable list (options)
-        ObservableList<MasterlistCourse> options = FXCollections.observableArrayList(checklistService.getAllCourses());
+        ObservableList<MasterlistCourseV2> options = FXCollections.observableArrayList(checklistService.getAllCourses());
 
         // Create 15 combo boxes (1 for each course slot in a checklist)
         for (int i = 0; i < 15; i++) {
-            ComboBox<MasterlistCourse> courseComboBox = new ComboBox<>();
+            ComboBox<MasterlistCourseV2> courseComboBox = new ComboBox<>();
 
             // Add options
             courseComboBox.getItems().add(null); // Blank option
@@ -320,12 +320,12 @@ public class ChecklistViewController {
             // Define how the MasterlistCourse object converts to text and vice versa
             courseComboBox.setConverter(new StringConverter<>() {
                 @Override
-                public String toString(MasterlistCourse course) {
+                public String toString(MasterlistCourseV2 course) {
                     return course == null ? "" : course.getCode(); // Display name in UI
                 }
 
                 @Override
-                public MasterlistCourse fromString(String string) {
+                public MasterlistCourseV2 fromString(String string) {
                     return courseComboBox.getItems().stream()
                             .filter(course -> course.getCode().equals(string))
                             .findFirst()
@@ -346,12 +346,12 @@ public class ChecklistViewController {
      */
     private void handleTermChange(int termNumber) {
         // Get the complete list of courses from a checklist
-        List<MasterlistCourse> courses = checklistControllers.get(termNumber - 1).getCourses();
+        List<MasterlistCourseV2> courses = checklistControllers.get(termNumber - 1).getCourses();
         IO.println();
 
         // Loop through all combo boxes to clear and repopulate safely
         for (int i = 0; i < comboBoxList.size(); i++) {
-            ComboBox<MasterlistCourse> comboBox = comboBoxList.get(i);
+            ComboBox<MasterlistCourseV2> comboBox = comboBoxList.get(i);
 
             // Pause the event handler to stop cascading null loops
             EventHandler<ActionEvent> currentHandler = comboBox.getOnAction();
@@ -363,10 +363,10 @@ public class ChecklistViewController {
 
                 // If a course exists, set it in the slot
                 if (i < courses.size()) {
-                    MasterlistCourse targetCourse = courses.get(i);
+                    MasterlistCourseV2 targetCourse = courses.get(i);
 
                     // Find the exact object reference inside the items list to prevent null-resets
-                    MasterlistCourse matchedCourse = comboBox.getItems().stream()
+                    MasterlistCourseV2 matchedCourse = comboBox.getItems().stream()
                             .filter(Objects::nonNull) // Filter out null entries in the list
                             .filter(item -> item.equals(targetCourse))
                             .findFirst()
@@ -396,11 +396,11 @@ public class ChecklistViewController {
         int termNumber = Integer.parseInt(checklistEditorComboBox.getValue().substring(5));
 
         // Get the complete list of courses from a checklist
-        TermChecklistController checklist = checklistControllers.get(termNumber - 1);
+        TermChecklistControllerV2 checklist = checklistControllers.get(termNumber - 1);
 
-        List<MasterlistCourse> courses = new ArrayList<>();
+        List<MasterlistCourseV2> courses = new ArrayList<>();
 
-        for (ComboBox<MasterlistCourse> comboBox : comboBoxList) {
+        for (ComboBox<MasterlistCourseV2> comboBox : comboBoxList) {
             courses.add(comboBox.getValue());
         }
 
@@ -410,7 +410,7 @@ public class ChecklistViewController {
         initializeChecklist(termNumber, termNumber - 1);
 
         // Restore / reset course highlights
-        for (TermChecklistController controller : checklistControllers) {
+        for (TermChecklistControllerV2 controller : checklistControllers) {
             if (showColorCodingCheckbox.isSelected()) {
                 controller.restoreHighlights();
             } else {

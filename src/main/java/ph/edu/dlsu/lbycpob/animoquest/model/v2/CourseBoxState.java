@@ -27,7 +27,7 @@ public enum CourseBoxState {
      * @param status The CourseStatus to convert
      * @return The corresponding CourseBoxState
      */
-    public static CourseBoxState convertStatusToState(CourseStatus status) {
+    public static CourseBoxState convertStatusToState(CourseStatusV2 status) {
         CourseBoxState state = null;
         switch (status) {
             case PASSED -> state = REQ_PASSED;

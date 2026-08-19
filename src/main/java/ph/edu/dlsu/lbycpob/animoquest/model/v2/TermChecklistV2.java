@@ -10,7 +10,7 @@ import java.time.OffsetDateTime;
 @Setter
 @Entity
 @Table(name = "term_checklists")
-public class TermChecklist {
+public class TermChecklistV2 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,11 +33,11 @@ public class TermChecklist {
     @Column(name = "created_at", insertable = false, updatable = false)
     private OffsetDateTime createdAt;
 
-    public TermChecklist() {
+    public TermChecklistV2() {
     }
 
     // TODO: Might change long[] courseIds with arraylist
-    public TermChecklist(int batch, String degree, int termNumber, int maxUnits, long[] courseIds) {
+    public TermChecklistV2(int batch, String degree, int termNumber, int maxUnits, long[] courseIds) {
         this.batch = batch;
         this.degree = degree;
         this.termNumber = termNumber;

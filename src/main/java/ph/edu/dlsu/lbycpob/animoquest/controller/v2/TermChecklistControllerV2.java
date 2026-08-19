@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import ph.edu.dlsu.lbycpob.animoquest.model.v2.*;
 import ph.edu.dlsu.lbycpob.animoquest.service.v2.FxmlLoaderService;
-import ph.edu.dlsu.lbycpob.animoquest.service.v2.TermChecklistService;
+import ph.edu.dlsu.lbycpob.animoquest.service.v2.TermChecklistServiceV2;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ import java.util.function.Consumer;
 @Component
 @Scope("prototype") // Ensures that Spring creates new controller instance for each fxml instance
 @FxmlView("term-checklist.fxml")
-public class TermChecklistController {
+public class TermChecklistControllerV2 {
     @FXML private Label termNumberLabel;
     @FXML private CheckBox enrollInAllCheckbox;
     @FXML private Label maxUnitsLabel;
@@ -33,18 +33,18 @@ public class TermChecklistController {
     private int termNumber;
     private List<CourseBoxController> courseControllers = new ArrayList<>();
 
-    private TermChecklist checklist;
+    private TermChecklistV2 checklist;
     @Getter
-    private List<MasterlistCourse> courses = new ArrayList<>();
+    private List<MasterlistCourseV2> courses = new ArrayList<>();
 
     private List<CourseBoxController> highlightedCourses = new ArrayList<>();
 
-    private Consumer<MasterlistCourse> onCourseClickListener;
+    private Consumer<MasterlistCourseV2> onCourseClickListener;
 
     private final FxmlLoaderService fxmlLoader;
-    private final TermChecklistService checklistService;
+    private final TermChecklistServiceV2 checklistService;
 
-    public TermChecklistController(FxmlLoaderService fxmlLoader, TermChecklistService checklistService) {
+    public TermChecklistControllerV2(FxmlLoaderService fxmlLoader, TermChecklistServiceV2 checklistService) {
         this.fxmlLoader = fxmlLoader;
         this.checklistService = checklistService;
     }
@@ -62,7 +62,7 @@ public class TermChecklistController {
     /**
      * Populates the courses of the checklist.
      */
-    public void populateCourses(List<CurriculumProgress> progressList) {
+    public void populateCourses(List<CurriculumProgressV2> progressList) {
         // Get the appropriate checklist
         checklist = checklistService.getChecklistOf("CPE", 125, termNumber); // TODO: HARMONY POINT
 
@@ -76,7 +76,7 @@ public class TermChecklistController {
 
         // Set up each course listed in the term checklist
         int orderIdx = 0;
-        for (MasterlistCourse course : courses) {
+        for (MasterlistCourseV2 course : courses) {
             Parent courseBox;
             // Load an instance of the course box
             try {
@@ -95,7 +95,7 @@ public class TermChecklistController {
             controller.setCourseUnits(course.getUnits());
             controller.setOrderInChecklist(orderIdx);
 
-            CourseStatus status = checklistService.getStatusOf(course, progressList);
+            CourseStatusV2 status = checklistService.getStatusOf(course, progressList);
             controller.setStatus(status);
             orderIdx++; // Increment the index
 
@@ -130,7 +130,7 @@ public class TermChecklistController {
      * Attaches a listener to the controller.
      * @param listener
      */
-    public void addListener(Consumer<MasterlistCourse> listener) {
+    public void addListener(Consumer<MasterlistCourseV2> listener) {
         onCourseClickListener = listener;
     }
 
@@ -139,7 +139,7 @@ public class TermChecklistController {
      * @param sourceCourse The course to match against
      * @return A count of dependents
      */
-    public int countDependentsOf(MasterlistCourse sourceCourse, boolean renderHighlights) {
+    public int countDependentsOf(MasterlistCourseV2 sourceCourse, boolean renderHighlights) {
         int count = 0;
 
         // Simply return 0 if there are no courses
@@ -147,7 +147,7 @@ public class TermChecklistController {
 
         // Loop through each course in the checklist
         int idx = -1;
-        for (MasterlistCourse course : courses) {
+        for (MasterlistCourseV2 course : courses) {
             idx++;
             // Skip this course if it has no reqs
             if (course.hasNoRequisites()) continue;
@@ -176,7 +176,7 @@ public class TermChecklistController {
      * @param sourceCourse   The course to match against
      * @param progressList   The complete curriculum progress records of a student
      */
-    public void highlightRequisitesOf(MasterlistCourse sourceCourse, List<CurriculumProgress> progressList) {
+    public void highlightRequisitesOf(MasterlistCourseV2 sourceCourse, List<CurriculumProgressV2> progressList) {
         // Simply return if the source course has no reqs
         if (sourceCourse.hasNoRequisites()) return;
 
@@ -191,7 +191,7 @@ public class TermChecklistController {
 
             // Loop through each course in the checklist
             int idx = 0;
-            for (MasterlistCourse course : courses) {
+            for (MasterlistCourseV2 course : courses) {
                 if (reqId.equals(course.getId())) {
                     IO.println(course.getCode() + " is a requisite of " + sourceCourse.getCode());
                     highlightRequisite(idx, progressList);
@@ -207,13 +207,13 @@ public class TermChecklistController {
      * @param courseIdx      The order index of the course
      * @param progressList   The complete curriculum progress records of a student
      */
-    private void highlightRequisite(int courseIdx, List<CurriculumProgress> progressList) {
+    private void highlightRequisite(int courseIdx, List<CurriculumProgressV2> progressList) {
         // Get the specific controller and save it to a list
         CourseBoxController courseBox = courseControllers.get(courseIdx);
         highlightedCourses.add(courseBox);
 
         // Ask the checklist service to get the status of the course based on the progress records
-        CourseStatus status = checklistService.getStatusOf(courses.get(courseIdx), progressList);
+        CourseStatusV2 status = checklistService.getStatusOf(courses.get(courseIdx), progressList);
         // Instruct the course box
         courseBox.updateHighlight(status);
     }
@@ -228,7 +228,7 @@ public class TermChecklistController {
         highlightedCourses.add(courseBox);
 
         // Instruct the course box
-        courseBox.updateHighlight(CourseStatus.DEPENDENT);
+        courseBox.updateHighlight(CourseStatusV2.DEPENDENT);
     }
 
     /**
@@ -246,12 +246,12 @@ public class TermChecklistController {
      * @param sourceCourse The clicked on course
      * @param newState The state to base the highlighting style on
      */
-    public void highlightSourceCourse(MasterlistCourse sourceCourse, CourseBoxState newState) {
+    public void highlightSourceCourse(MasterlistCourseV2 sourceCourse, CourseBoxState newState) {
         if (sourceCourse == null) return;
 
         // Loop through each course in the checklist to find the source course
         int idx = 0;
-        for (MasterlistCourse course : courses) {
+        for (MasterlistCourseV2 course : courses) {
             if (Objects.equals(sourceCourse.getId(), course.getId())) {
                 CourseBoxController courseBox = courseControllers.get(idx);
                 highlightedCourses.add(courseBox);
