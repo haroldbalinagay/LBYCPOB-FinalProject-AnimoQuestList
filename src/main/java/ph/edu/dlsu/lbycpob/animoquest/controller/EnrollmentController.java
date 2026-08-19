@@ -47,6 +47,9 @@ public class EnrollmentController {
     @FXML
     private Label recommendationLabel;
 
+    @FXML
+    private Label welcomeLabel;
+
     private final CurriculumService curriculumService;
 
     private final ObservableList<CurriculumDisplay> courses =
@@ -60,6 +63,7 @@ public class EnrollmentController {
      */
     private Long currentStudentId;
     private String currentDegree;
+    private String currentStudentName;
     private int currentTerm = 1;
 
 
@@ -85,6 +89,14 @@ public class EnrollmentController {
 
         this.currentStudentId = student.getId();
         this.currentDegree = student.getMajor();
+        this.currentStudentName = student.getFullName();
+
+        if (welcomeLabel != null) {
+
+            welcomeLabel.setText(
+                    "Welcome, " + currentStudentName + "!"
+            );
+        }
 
         loadCourses();
     }
