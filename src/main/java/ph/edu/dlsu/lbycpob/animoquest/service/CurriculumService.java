@@ -389,6 +389,10 @@ public class CurriculumService {
     // ADD COURSE
     // ============================================================
 
+    // ============================================================
+// ADD COURSE
+// ============================================================
+
     public CurriculumProgress addCourse(
             Long studentId,
             Long courseId,
@@ -408,11 +412,28 @@ public class CurriculumService {
             );
         }
 
-        if (termTaken < 1) {
+        if (termTaken < 1 || termTaken > 12) {
             throw new IllegalArgumentException(
-                    "Invalid term."
+                    "Invalid term. Term must be between 1 and 12."
             );
         }
+
+        // --------------------------------------------------------
+        // FIND COURSE IN MASTERLIST
+        // --------------------------------------------------------
+
+        MasterlistCourse course =
+                masterlistCourseRepository
+                        .findById(courseId)
+                        .orElseThrow(() ->
+                                new IllegalArgumentException(
+                                        "Course was not found in the masterlist."
+                                )
+                        );
+
+        // --------------------------------------------------------
+        // CHECK IF ALREADY ENROLLED
+        // --------------------------------------------------------
 
         if (curriculumRepository
                 .findByStudentIdAndCourseId(
@@ -425,6 +446,45 @@ public class CurriculumService {
                     "This course is already in your enrollment list."
             );
         }
+
+        // --------------------------------------------------------
+        // GET ALL COURSES ALREADY TAKEN BY STUDENT
+        // --------------------------------------------------------
+
+        List<CurriculumProgress> studentProgress =
+                curriculumRepository.findByStudentId(studentId);
+
+        // --------------------------------------------------------
+        // CHECK REQUISITES
+        // --------------------------------------------------------
+
+        checkEnrollmentRequisite(
+                course,
+                course.getReqId1(),
+                course.getReqType1(),
+                termTaken,
+                studentProgress
+        );
+
+        checkEnrollmentRequisite(
+                course,
+                course.getReqId2(),
+                course.getReqType2(),
+                termTaken,
+                studentProgress
+        );
+
+        checkEnrollmentRequisite(
+                course,
+                course.getReqId3(),
+                course.getReqType3(),
+                termTaken,
+                studentProgress
+        );
+
+        // --------------------------------------------------------
+        // CREATE CURRICULUM PROGRESS
+        // --------------------------------------------------------
 
         CurriculumProgress progress =
                 new CurriculumProgress();
