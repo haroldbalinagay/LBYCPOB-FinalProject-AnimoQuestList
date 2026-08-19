@@ -530,6 +530,67 @@ public class CurriculumService {
     }
 
     // ============================================================
+// CHECK PREREQUISITES FOR RECOMMENDATION
+// ============================================================
+
+    private boolean hasSatisfiedPrerequisites(
+            MasterlistCourse course,
+            int nextTerm,
+            List<CurriculumProgress> studentProgress,
+            List<MasterlistCourse> recommendations
+    ) {
+
+        // --------------------------------------------------------
+        // REQUIREMENT 1
+        // --------------------------------------------------------
+
+        if (!isRequisiteSatisfiedForRecommendation(
+                course.getReqId1(),
+                course.getReqType1(),
+                nextTerm,
+                studentProgress,
+                recommendations
+        )) {
+
+            return false;
+        }
+
+        // --------------------------------------------------------
+        // REQUIREMENT 2
+        // --------------------------------------------------------
+
+        if (!isRequisiteSatisfiedForRecommendation(
+                course.getReqId2(),
+                course.getReqType2(),
+                nextTerm,
+                studentProgress,
+                recommendations
+        )) {
+
+            return false;
+        }
+
+        // --------------------------------------------------------
+        // REQUIREMENT 3
+        // --------------------------------------------------------
+
+        if (!isRequisiteSatisfiedForRecommendation(
+                course.getReqId3(),
+                course.getReqType3(),
+                nextTerm,
+                studentProgress,
+                recommendations
+        )) {
+
+            return false;
+        }
+
+        return true;
+    }
+
+
+
+    // ============================================================
 // ADD COURSE
 // ============================================================
 
