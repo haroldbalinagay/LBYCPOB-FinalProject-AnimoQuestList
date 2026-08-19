@@ -15,6 +15,8 @@ import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.stereotype.Component;
 import ph.edu.dlsu.lbycpob.animoquest.service.LoginService;
 
+import java.util.Objects;
+
 @Component
 @FxmlView("add-account.fxml")
 public class AddAccountController {
@@ -188,6 +190,8 @@ public class AddAccountController {
             Parent root = fxWeaver.loadView(
                     WelcomeController.class
             );
+
+            root.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/style.css")).toExternalForm());
 
             Stage stage = (Stage) ((Node) event.getSource())
                     .getScene()

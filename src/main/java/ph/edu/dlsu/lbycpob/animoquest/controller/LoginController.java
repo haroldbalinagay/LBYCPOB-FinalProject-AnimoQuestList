@@ -17,6 +17,8 @@ import ph.edu.dlsu.lbycpob.animoquest.model.Student;
 import ph.edu.dlsu.lbycpob.animoquest.model.User;
 import ph.edu.dlsu.lbycpob.animoquest.service.LoginService;
 
+import java.util.Objects;
+
 @Component
 @FxmlView("login.fxml")
 public class LoginController {
@@ -145,6 +147,8 @@ public class LoginController {
                             EnrollmentController.class
                     );
 
+            root.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/style.css")).toExternalForm());
+
             /*
              * Get the EnrollmentController instance
              * that belongs to this FXML view.
@@ -182,7 +186,7 @@ public class LoginController {
             );
 
             stage.setTitle(
-                    "AnimoQuestList - Enrollment"
+                    "AnimoQuest - Enrollment"
             );
 
             stage.show();

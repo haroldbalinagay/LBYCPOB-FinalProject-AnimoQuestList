@@ -847,6 +847,8 @@ private void handleCourseSelection() {
                             TermChecklistController.class
                     );
 
+            root.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/style.css")).toExternalForm());
+
             /*
              * Get the controller used by the loaded view.
              */
@@ -883,7 +885,7 @@ private void handleCourseSelection() {
             );
 
             stage.setTitle(
-                    "AnimoQuestList - Term Checklist"
+                    "AnimoQuest - Term Checklist"
             );
 
             stage.setMaximized(true);
@@ -927,13 +929,13 @@ private void handleCourseSelection() {
 
         // Create the Stage and Scene
         Stage popupStage = new Stage();
-        popupStage.setTitle("Term Checklist Visualization");
+        popupStage.setTitle("AnimoQuest - Term Checklist Visualization");
 
         Scene scene = new Scene(root);
 
         // Load and add the global CSS file
-//        String cssPath = Objects.requireNonNull(getClass().getResource("/css/style.css")).toExternalForm();
-//        scene.getStylesheets().add(cssPath);
+        String cssPath = Objects.requireNonNull(getClass().getResource("/css/style.css")).toExternalForm();
+        scene.getStylesheets().add(cssPath);
 
         popupStage.setScene(scene);
 
@@ -943,6 +945,7 @@ private void handleCourseSelection() {
         popupStage.initModality(Modality.WINDOW_MODAL);
         popupStage.initOwner(ownerStage);
 
+        popupStage.setMaximized(true);
         popupStage.show();
     }
 }

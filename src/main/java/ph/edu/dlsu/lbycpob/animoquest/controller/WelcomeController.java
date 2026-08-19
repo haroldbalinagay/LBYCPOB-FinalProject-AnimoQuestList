@@ -10,6 +10,8 @@ import net.rgielen.fxweaver.core.FxWeaver;
 import org.springframework.stereotype.Component;
 import net.rgielen.fxweaver.core.FxmlView;
 
+import java.util.Objects;
+
 @Component
 @FxmlView("welcome.fxml")
 public class WelcomeController {
@@ -36,6 +38,7 @@ public class WelcomeController {
     ) {
         try {
             Parent root = fxWeaver.loadView(controllerClass);
+            root.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/style.css")).toExternalForm());
 
             Stage stage = (Stage) ((Node) event.getSource())
                     .getScene()

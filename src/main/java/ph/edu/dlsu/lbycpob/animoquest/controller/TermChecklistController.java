@@ -18,12 +18,7 @@ import ph.edu.dlsu.lbycpob.animoquest.service.CurriculumService;
 import ph.edu.dlsu.lbycpob.animoquest.service.TermChecklistService;
 import ph.edu.dlsu.lbycpob.animoquest.model.Student;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Component
 @FxmlView("term-checklist.fxml")
@@ -426,6 +421,8 @@ public class TermChecklistController {
                             EnrollmentController.class
                     );
 
+            root.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/style.css")).toExternalForm());
+
             EnrollmentController controller =
                     fxWeaver.getBean(
                             EnrollmentController.class
@@ -453,7 +450,7 @@ public class TermChecklistController {
             );
 
             stage.setTitle(
-                    "AnimoQuestList - Enrollment"
+                    "AnimoQuest - Enrollment"
             );
 
             stage.setMaximized(true);

@@ -60,6 +60,8 @@ public class TermChecklistServiceV2 {
     public List<MasterlistCourseV2> getCourseDetailsOf(TermChecklistV2 checklist) {
         long[] ids = checklist.getCourseIds();
 
+        if (ids == null) return null;
+
         // Fetch unordered records from repository
         List<MasterlistCourseV2> courses = courseRepository.findByIdIn(ids);
 

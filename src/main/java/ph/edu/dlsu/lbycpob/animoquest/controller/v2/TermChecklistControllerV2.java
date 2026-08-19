@@ -66,8 +66,8 @@ public class TermChecklistControllerV2 {
         // Get the appropriate checklist
         checklist = checklistService.getChecklistOf("CPE", 125, termNumber); // TODO: HARMONY POINT
 
-        // Do not attempt to generate course boxes if the checklist is not found
-        if (checklist == null) {
+        // Do not attempt to generate course boxes if the checklist is not found, or it has no contents
+        if (checklist == null || checklist.getCourseIds() == null) {
             coursesView.getChildren().add(new Label("Checklist not found"));
             return;
         }

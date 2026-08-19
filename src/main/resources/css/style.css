@@ -23,12 +23,24 @@
     -fx-text-fill: #006633;
 }
 
+.majorTitleLabel {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #006633;
+}
+
+/*causes problems*/
 .section-title {
     -fx-font-size: 18px;
     -fx-font-weight: bold;
     -fx-text-fill: #006633;
 }
 
+.subsection-title {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: black;
+}
 
 /* ============================================================
    CONTROL BAR
@@ -58,6 +70,10 @@
     -fx-background-radius: 6px;
 }
 
+.combo-box:selected {
+    -fx-background-color: white;
+}
+
 .combo-box:hover {
     -fx-border-color: #008844;
 }
@@ -65,6 +81,16 @@
 .combo-box:focused {
     -fx-border-color: #004d26;
     -fx-border-width: 2px;
+}
+
+.combo-box .arrow-button {
+    -fx-background-color: #006835;
+    /*-fx-border-radius: 6px;*/
+    /*-fx-background-radius: 6px;*/
+}
+
+.combo-box .arrow-button .arrow {
+    -fx-background-color: white;
 }
 
 
@@ -80,6 +106,7 @@
     -fx-border-radius: 6px;
     -fx-padding: 8px 14px;
     -fx-cursor: hand;
+    -fx-text-alignment: center;
 }
 
 .button:hover {
@@ -97,6 +124,7 @@
     -fx-text-fill: #006633;
     -fx-border-color: #006633;
     -fx-border-width: 1px;
+    -fx-text-alignment: center;
 }
 
 .secondary-button:hover {
@@ -126,8 +154,27 @@
 }
 
 .list-cell:selected {
-    -fx-background-color: #006633;
+    -fx-background-color: #099f55;
     -fx-text-fill: white;
+}
+
+/* ============================================================
+   TEXT FIELD
+   ============================================================ */
+
+.text-field {
+    -fx-border-color: #235a23;
+    -fx-border-width: 1;
+    -fx-border-radius: 2;
+    -fx-min-height: 15;
+}
+
+.text-field:selected {
+    -fx-border-color: #409840;
+}
+
+.text-field:hover {
+    -fx-border-color: #409840;
 }
 
 

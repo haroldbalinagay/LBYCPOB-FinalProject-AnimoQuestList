@@ -7,6 +7,7 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <VBox prefHeight="700" prefWidth="800" spacing="15" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ph.edu.dlsu.lbycpob.animoquest.controller.EnrollmentController">
 
@@ -24,7 +25,10 @@
     <Label fx:id="welcomeLabel" text="Welcome!" />
 
 
-    <Label text="Enrollment Planning List" />
+    <Label styleClass="subsection-title" text="Enrollment Planning List">
+      <font>
+         <Font name="System Bold" size="18.0" />
+      </font></Label>
 
 
     <!-- ======================================================== -->
@@ -89,7 +93,10 @@
     <!-- ======================================================== -->
 
 
-    <Label text="Enrolled Courses" />
+    <Label styleClass="subsection-title" text="Enrolled Courses">
+      <font>
+         <Font name="System Bold" size="14.0" />
+      </font></Label>
 
 
     <ListView fx:id="courseListView" VBox.vgrow="ALWAYS" />
@@ -120,7 +127,7 @@
     <!-- ======================================================== -->
 
 
-    <Label fx:id="recommendationLabel" text="Recommended Courses" />
+    <Label fx:id="recommendationLabel" styleClass="subsection-title" text="Recommended Courses" />
 
 
     <ListView fx:id="recommendedCourseListView" prefHeight="180" />

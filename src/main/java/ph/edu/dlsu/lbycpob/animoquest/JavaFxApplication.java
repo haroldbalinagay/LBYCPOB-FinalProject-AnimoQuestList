@@ -27,12 +27,13 @@ public class JavaFxApplication extends Application {
 
     @Override
     public void start(Stage stage) {
-        // Load and add the global CSS file
-        String cssPath = Objects.requireNonNull(getClass().getResource("/css/style.css")).toExternalForm();
-        Application.setUserAgentStylesheet(cssPath);
-
         FxWeaver fxWeaver = applicationContext.getBean(FxWeaver.class);
         Parent root = fxWeaver.loadView(WelcomeController.class);
+
+        // Load and add the global CSS file
+        String cssPath = Objects.requireNonNull(getClass().getResource("/css/style.css")).toExternalForm();
+        root.getStylesheets().add(cssPath);
+
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle("AnimoQuest");
