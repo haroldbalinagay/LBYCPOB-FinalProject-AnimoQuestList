@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<SplitPane dividerPositions="0.8512628624883068" prefHeight="486.0" prefWidth="989.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ph.edu.dlsu.lbycpob.animoquest.controller.v2.ChecklistViewController">
+   <items>
+      <VBox prefHeight="200.0" prefWidth="100.0">
+         <children>
+            <HBox prefHeight="97.0" prefWidth="560.0">
+               <children>
+                  <VBox minWidth="-Infinity" prefHeight="95.0" prefWidth="240.0">
+                     <children>
+                        <Label maxWidth="1.7976931348623157E308" text="Visual Controls" />
+                        <CheckBox fx:id="showColorCodingCheckbox" maxWidth="1.7976931348623157E308" mnemonicParsing="false" selected="true" text="Show status color coding" />
+                        <CheckBox fx:id="showTargetReqsCheckbox" maxWidth="1.7976931348623157E308" mnemonicParsing="false" selected="true" text="Show requisites of target course" />
+                        <CheckBox fx:id="showTargetDependentsCheckbox" maxWidth="1.7976931348623157E308" mnemonicParsing="false" selected="true" text="Show dependents of target course" />
+                     </children>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </VBox>
+                  <VBox layoutX="250.0" layoutY="10.0" minWidth="-Infinity" prefHeight="95.0" prefWidth="115.0">
+                     <children>
+                        <Label text="Legend" />
+                        <Label text="Passed" />
+                        <Label text="Failed" />
+                        <Label text="In-progress" />
+                        <Label text="Not yet taken" />
+                     </children>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </VBox>
+                  <VBox minWidth="-Infinity" prefHeight="95.0" prefWidth="115.0" HBox.hgrow="NEVER">
+                     <children>
+                        <Label text="Course Name" />
+                        <Label text="Course Code" />
+                        <Label text="Units" />
+                        <Label text="Requisites" />
+                        <Label text="No. of Dependents" />
+                     </children>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </VBox>
+                  <VBox layoutX="253.0" layoutY="10.0" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="95.0" prefWidth="350.0">
+                     <children>
+                        <Label fx:id="courseNameLabel" maxWidth="1.7976931348623157E308" text="-" />
+                        <Label fx:id="courseCodeLabel" maxWidth="1.7976931348623157E308" text="-" />
+                        <Label fx:id="courseUnitsLabel" maxWidth="1.7976931348623157E308" text="-" />
+                        <Label fx:id="courseRequisitesLabel" maxWidth="1.7976931348623157E308" text="-" />
+                        <Label fx:id="courseDependentsLabel" maxWidth="1.7976931348623157E308" text="-" />
+                     </children>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </VBox>
+                  <VBox layoutX="253.0" layoutY="10.0" minWidth="-Infinity" prefHeight="95.0" prefWidth="130.0">
+                     <children>
+                        <Label text="Status" />
+                        <Label text="Eligible for Enrollment" />
+                        <Label text="Reason" />
+                     </children>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </VBox>
+                  <VBox layoutX="547.0" layoutY="10.0" minWidth="-Infinity" prefHeight="95.0" prefWidth="160.0">
+                     <children>
+                        <Label fx:id="courseStatusLabel" text="-" />
+                        <Label fx:id="eligibleLabel" text="-" />
+                        <Label fx:id="eligibleReasonLabel" maxWidth="1.7976931348623157E308" text="-" wrapText="true" />
+                     </children>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </VBox>
+               </children>
+            </HBox>
+            <ScrollPane fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="391.0" prefWidth="560.0" VBox.vgrow="ALWAYS">
+               <content>
+                  <VBox alignment="CENTER">
+                     <children>
+                        <Label fx:id="checklistTitleLabel" text="BS Computer Engineering (ID 125) - CHECKLIST">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <GridPane fx:id="checklistGrid" gridLinesVisible="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" onMouseClicked="#handleChecklistGridClick" prefWidth="1091.0">
+                          <columnConstraints>
+                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="30.0" vgrow="ALWAYS" />
+                            <RowConstraints minHeight="30.0" vgrow="ALWAYS" />
+                            <RowConstraints minHeight="30.0" vgrow="ALWAYS" />
+                              <RowConstraints minHeight="30.0" vgrow="ALWAYS" />
+                          </rowConstraints>
+                        </GridPane>
+                     </children>
+                  </VBox>
+               </content></ScrollPane>
+         </children>
+      </VBox>
+      <Accordion prefHeight="483.0" prefWidth="138.0">
+        <panes>
+          <TitledPane text="Term Checklist Editor">
+               <content>
+                  <VBox>
+                     <children>
+                        <ComboBox fx:id="checklistEditorComboBox" maxWidth="1.7976931348623157E308" prefWidth="150.0" promptText="Select a Term" visibleRowCount="12" />
+                        <Pane prefHeight="15.0" />
+                        <VBox fx:id="comboBoxGroup" prefWidth="65.0" />
+                        <Pane layoutX="20.0" layoutY="45.0" prefHeight="15.0" />
+                        <Button fx:id="saveBtn" mnemonicParsing="false" onAction="#handleSaveChecklist" text="Save" />
+                     </children>
+                  </VBox>
+               </content>
+          </TitledPane>
+        </panes>
+      </Accordion>
+   </items>
+</SplitPane>

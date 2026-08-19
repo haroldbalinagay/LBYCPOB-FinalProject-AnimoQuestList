@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+
+<GridPane fx:id="courseBox" gridLinesVisible="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#handleSelfClick" prefHeight="25.0" prefWidth="250.0" styleClass="course-box" stylesheets="@course-box-style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ph.edu.dlsu.lbycpob.animoquest.controller.v2.CourseBoxController">
+  <columnConstraints>
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="195.0" prefWidth="130.0" />
+    <ColumnConstraints hgrow="NEVER" maxWidth="154.0" prefWidth="40.0" />
+      <ColumnConstraints hgrow="NEVER" maxWidth="154.0" prefWidth="40.0" />
+      <ColumnConstraints hgrow="NEVER" maxWidth="92.5" prefWidth="40.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints minHeight="-Infinity" prefHeight="15.0" vgrow="ALWAYS" />
+  </rowConstraints>
+   <children>
+      <Label fx:id="courseCodeLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" text="LBYCPOB" />
+      <Label fx:id="courseUnitsLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" text="3" GridPane.columnIndex="1" />
+      <CheckBox fx:id="enrollInCheckbox" alignment="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onMouseClicked="#handleSelfClick" GridPane.columnIndex="3" />
+      <StackPane GridPane.columnIndex="2" />
+   </children>
+</GridPane>
