@@ -159,12 +159,8 @@ public class LoginController {
                             EnrollmentController.class
                     );
 
-            /*
-             * Pass the actual database ID of the
-             * student who just logged in.
-             */
-            controller.setStudentId(
-                    student.getId()
+            controller.setStudent(
+                    student
             );
             controller.setDegree(
                     student.getMajor()
