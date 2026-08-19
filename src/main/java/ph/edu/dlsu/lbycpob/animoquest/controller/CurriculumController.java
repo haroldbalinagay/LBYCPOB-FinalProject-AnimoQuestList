@@ -74,3 +74,74 @@ public class CurriculumController {
                 "FAILED"
         );
     }
+
+    /**
+     * Receives the ID of the student who logged in.
+     */
+    public void setStudentId(Long studentId) {
+
+        this.studentId = studentId;
+
+        loadStudentCourses();
+    }
+
+    /**
+     * Loads this student's courses from the database.
+     */
+    private void loadStudentCourses() {
+
+        if (studentId == null) {
+            return;
+        }
+
+        var courses =
+                curriculumService.getStudentCourses(studentId);
+
+        courseTable.getItems().setAll(courses);
+    }
+
+    @FXML
+    private void handleApplyFilter(ActionEvent event) {
+
+        if (studentId == null) {
+            return;
+        }
+
+        if ("Current Term".equals(filterComboBox.getValue())) {
+
+            Integer term = termComboBox.getValue();
+
+            if (term != null) {
+
+                courseTable.getItems().setAll(
+                        curriculumService
+                                .getStudentCoursesByTerm(
+                                        studentId,
+                                        term
+                                )
+                );
+            }
+
+        } else if ("All Terms".equals(filterComboBox.getValue())) {
+
+            loadStudentCourses();
+
+        } else if ("Alphabetical".equals(filterComboBox.getValue())) {
+
+            // We'll implement alphabetical sorting later.
+            loadStudentCourses();
+        }
+    }
+
+    @FXML
+    private void handleSaveStatus(ActionEvent event) {
+
+        System.out.println("Save Status pressed.");
+    }
+
+    @FXML
+    private void handleRemoveCourse(ActionEvent event) {
+
+        System.out.println("Remove Course pressed.");
+    }
+}
