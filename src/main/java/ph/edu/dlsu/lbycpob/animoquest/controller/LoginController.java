@@ -191,6 +191,7 @@ public class LoginController {
             );
 
             stage.show();
+            stage.setMaximized(true);
 
         } catch (Exception e) {
 

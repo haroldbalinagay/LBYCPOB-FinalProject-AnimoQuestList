@@ -457,6 +457,7 @@ public class TermChecklistController {
             );
 
             stage.show();
+            stage.setMaximized(true);
 
         } catch (Exception e) {
 

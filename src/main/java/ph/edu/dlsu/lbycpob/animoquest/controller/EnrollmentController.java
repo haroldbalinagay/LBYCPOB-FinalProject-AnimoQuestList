@@ -878,6 +878,7 @@ private void handleCourseSelection() {
             );
 
             stage.show();
+            stage.setMaximized(true);
 
         } catch (Exception e) {
 
