@@ -638,4 +638,23 @@ private void handleCourseSelection() {
             );
         }
     }
+    public void setCurrentTerm(int currentTerm) {
+
+        if (currentTerm < 1 || currentTerm > 12) {
+
+            throw new IllegalArgumentException(
+                    "Current term must be between 1 and 12."
+            );
+        }
+
+        this.currentTerm = currentTerm;
+
+        if (currentTermComboBox != null) {
+            currentTermComboBox.setValue(currentTerm);
+        }
+
+        if (termFilterComboBox != null) {
+            termFilterComboBox.setValue(currentTerm);
+        }
+    }
 }
