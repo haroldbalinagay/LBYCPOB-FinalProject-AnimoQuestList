@@ -25,8 +25,7 @@ public class TermChecklistController {
 
     private static final int CURRENT_BATCH = 125;
 
-    private static final String CURRENT_DEGREE =
-            "BS Computer Engineering";
+    private String currentDegree;
 
     @FXML
     private TabPane termTabPane;
@@ -80,6 +79,22 @@ public class TermChecklistController {
     }
 
     // ============================================================
+// SET DEGREE
+// ============================================================
+
+    public void setDegree(String degree) {
+
+        if (degree == null || degree.isBlank()) {
+
+            throw new IllegalArgumentException(
+                    "Student degree cannot be empty."
+            );
+        }
+
+        this.currentDegree = degree;
+    }
+
+    // ============================================================
     // SET CURRENT TERM
     // ============================================================
 
@@ -114,7 +129,7 @@ public class TermChecklistController {
         List<TermChecklist> checklists =
                 termChecklistService.getChecklists(
                         CURRENT_BATCH,
-                        CURRENT_DEGREE
+                        currentDegree
                 );
 
         termTabPane.getTabs().clear();
@@ -158,7 +173,7 @@ public class TermChecklistController {
         List<MasterlistCourse> courses =
                 termChecklistService.getCoursesForTerm(
                         CURRENT_BATCH,
-                        CURRENT_DEGREE,
+                        currentDegree,
                         termNumber
                 );
 
