@@ -16,6 +16,7 @@ import ph.edu.dlsu.lbycpob.animoquest.model.MasterlistCourse;
 import ph.edu.dlsu.lbycpob.animoquest.model.TermChecklist;
 import ph.edu.dlsu.lbycpob.animoquest.service.CurriculumService;
 import ph.edu.dlsu.lbycpob.animoquest.service.TermChecklistService;
+import ph.edu.dlsu.lbycpob.animoquest.model.Student;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,6 +44,8 @@ public class TermChecklistController {
     private final CurriculumService curriculumService;
 
     private final FxWeaver fxWeaver;
+
+    private Student currentStudent;
 
     /*
      * The student who is currently logged in.
@@ -86,7 +89,12 @@ public class TermChecklistController {
 
         this.currentStudentId = studentId;
     }
+    public void setStudent(Student student) {
 
+        this.currentStudent = student;
+        this.currentStudentId = student.getId();
+        this.currentDegree = student.getMajor();
+    }
     // ============================================================
 // SET DEGREE
 // ============================================================
@@ -423,19 +431,14 @@ public class TermChecklistController {
                             EnrollmentController.class
                     );
 
-            /*
-             * Restore the logged-in student.
-             */
-            if (currentStudentId != null) {
+            controller.setStudentId(
+                    currentStudentId
+            );
 
-                controller.setStudentId(
-                        currentStudentId
-                );
-            }
+            controller.setDegree(
+                    currentDegree
+            );
 
-            /*
-             * Restore the current term.
-             */
             controller.setCurrentTerm(
                     currentTerm
             );
