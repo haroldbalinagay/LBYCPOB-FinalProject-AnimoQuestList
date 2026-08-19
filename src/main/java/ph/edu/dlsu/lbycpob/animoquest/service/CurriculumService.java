@@ -389,8 +389,145 @@ public class CurriculumService {
     }
 
     // ============================================================
-    // ADD COURSE
-    // ============================================================
+// GET RECOMMENDED COURSES FOR NEXT TERM
+// ============================================================
+
+    public List<MasterlistCourse> getRecommendedCourses(
+            Long studentId,
+            String degree,
+            int currentTerm
+    ) {
+
+        if (studentId == null) {
+            throw new IllegalArgumentException(
+                    "Student ID cannot be null."
+            );
+        }
+
+        if (degree == null || degree.isBlank()) {
+            throw new IllegalArgumentException(
+                    "Student degree cannot be empty."
+            );
+        }
+
+        if (currentTerm < 1 || currentTerm >= 12) {
+            throw new IllegalArgumentException(
+                    "Current term must be between 1 and 11 " +
+                            "to generate a next-term recommendation."
+            );
+        }
+
+        int nextTerm = currentTerm + 1;
+
+        // --------------------------------------------------------
+        // GET THE CHECKLIST FOR THE NEXT TERM
+        // --------------------------------------------------------
+
+        List<MasterlistCourse> nextTermCourses =
+                termChecklistService.getCoursesForTerm(
+                        125,
+                        degree,
+                        nextTerm
+                );
+
+        // --------------------------------------------------------
+        // GET STUDENT'S CURRENT PROGRESS
+        // --------------------------------------------------------
+
+        List<CurriculumProgress> studentProgress =
+                curriculumRepository.findByStudentId(studentId);
+
+        List<MasterlistCourse> recommendations =
+                new ArrayList<>();
+
+        // --------------------------------------------------------
+        // CHECK EACH COURSE
+        // --------------------------------------------------------
+
+        for (MasterlistCourse course : nextTermCourses) {
+
+            CurriculumProgress existingProgress =
+                    findProgress(
+                            course.getId(),
+                            studentProgress
+                    );
+
+            // Already passed
+            if (existingProgress != null
+                    && existingProgress.isPassed()) {
+
+                continue;
+            }
+
+            // Already in progress
+            if (existingProgress != null
+                    && existingProgress.isInProgress()) {
+
+                continue;
+            }
+
+            // ----------------------------------------------------
+            // CHECK PREREQUISITES
+            // ----------------------------------------------------
+
+            if (!hasSatisfiedPrerequisites(
+                    course,
+                    nextTerm,
+                    studentProgress,
+                    recommendations
+            )) {
+
+                continue;
+            }
+
+            recommendations.add(course);
+        }
+
+        // --------------------------------------------------------
+        // RESPECT MAXIMUM UNITS
+        // --------------------------------------------------------
+
+        TermChecklist checklist =
+                termChecklistService
+                        .getChecklists(
+                                125,
+                                degree
+                        )
+                        .stream()
+                        .filter(
+                                c -> c.getTermNumber() == nextTerm
+                        )
+                        .findFirst()
+                        .orElse(null);
+
+        if (checklist == null) {
+            return recommendations;
+        }
+
+        int maxUnits =
+                checklist.getMaxUnits();
+
+        List<MasterlistCourse> finalRecommendations =
+                new ArrayList<>();
+
+        int totalUnits = 0;
+
+        for (MasterlistCourse course :
+                recommendations) {
+
+            if (totalUnits + course.getUnits()
+                    > maxUnits) {
+
+                continue;
+            }
+
+            finalRecommendations.add(course);
+
+            totalUnits += course.getUnits();
+        }
+
+        return finalRecommendations;
+    }
 
     // ============================================================
 // ADD COURSE
