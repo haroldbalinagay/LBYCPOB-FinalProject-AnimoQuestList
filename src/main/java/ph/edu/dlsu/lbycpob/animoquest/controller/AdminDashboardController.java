@@ -87,3 +87,74 @@ public class AdminDashboardController {
 // ============================================================
 // LOGOUT
 // ============================================================
+@FXML
+private void handleLogout(
+        ActionEvent event
+) {
+
+    try {
+
+        // ----------------------------------------------------
+        // CLEAR CURRENT SESSION
+        // ----------------------------------------------------
+
+        sessionService.logout();
+
+        // ----------------------------------------------------
+        // RETURN TO WELCOME PAGE
+        // ----------------------------------------------------
+
+        Parent root =
+                fxWeaver.loadView(
+                        WelcomeController.class
+                );
+
+        Stage stage =
+                (Stage) ((Node) event.getSource())
+                        .getScene()
+                        .getWindow();
+
+        stage.setScene(
+                new Scene(root)
+        );
+
+        stage.setTitle(
+                "AnimoQuest"
+        );
+
+        stage.show();
+
+        stage.setMaximized(false);
+
+    } catch (Exception e) {
+
+        e.printStackTrace();
+
+        showAlert(
+                Alert.AlertType.ERROR,
+                "Logout Error",
+                "Unable to log out."
+        );
+    }
+}
+
+    // ============================================================
+    // ALERT
+    // ============================================================
+
+    private void showAlert(
+            Alert.AlertType type,
+            String title,
+            String message
+    ) {
+
+        Alert alert =
+                new Alert(type);
+
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+
+        alert.showAndWait();
+    }
+}
