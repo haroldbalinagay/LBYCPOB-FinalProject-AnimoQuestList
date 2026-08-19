@@ -17,6 +17,9 @@ import java.util.Comparator;
 public class EnrollmentController {
 
     @FXML
+    private ComboBox<Integer> currentTermComboBox;
+
+    @FXML
     private ComboBox<Integer> termFilterComboBox;
 
     @FXML
@@ -40,6 +43,7 @@ public class EnrollmentController {
      * who successfully logged in.
      */
     private Long currentStudentId;
+    private int currentTerm = 1;
 
 
 
@@ -67,14 +71,42 @@ public class EnrollmentController {
         // TERM OPTIONS
         // --------------------------------------------------------
 
+        // --------------------------------------------------------
+// CURRENT TERM
+// --------------------------------------------------------
+
+        currentTermComboBox.setItems(
+                FXCollections.observableArrayList(
+                        1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+                )
+        );
+
+// Default current term
+        currentTermComboBox.setValue(1);
+
+// Keep the controller's currentTerm synchronized
+        currentTermComboBox.setOnAction(event -> {
+
+            Integer selectedTerm =
+                    currentTermComboBox.getValue();
+
+            if (selectedTerm != null) {
+                currentTerm = selectedTerm;
+            }
+        });
+
+// --------------------------------------------------------
+// TERM FILTER
+// --------------------------------------------------------
+
         termFilterComboBox.setItems(
                 FXCollections.observableArrayList(
                         1, 2, 3, 4, 5, 6, 7, 8, 9, 10
                 )
         );
 
-        // Default current term
-        termFilterComboBox.setValue(1);
+// Default filter = current term
+        termFilterComboBox.setValue(currentTerm);
 
         // --------------------------------------------------------
         // SORT OPTIONS
