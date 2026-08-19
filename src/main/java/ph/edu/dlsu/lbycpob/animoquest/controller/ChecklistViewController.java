@@ -2,16 +2,12 @@ package ph.edu.dlsu.lbycpob.animoquest.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.control.*;
+import javafx.scene.input.*;
 import javafx.scene.layout.GridPane;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.stereotype.Component;
-import ph.edu.dlsu.lbycpob.animoquest.model.CourseBoxState;
-import ph.edu.dlsu.lbycpob.animoquest.model.CourseStatus;
-import ph.edu.dlsu.lbycpob.animoquest.model.CurriculumProgress;
-import ph.edu.dlsu.lbycpob.animoquest.model.MasterlistCourse;
+import ph.edu.dlsu.lbycpob.animoquest.model.*;
 import ph.edu.dlsu.lbycpob.animoquest.service.CurriculumService;
 import ph.edu.dlsu.lbycpob.animoquest.service.FxmlLoaderService;
 import ph.edu.dlsu.lbycpob.animoquest.service.TermChecklistService;
@@ -39,6 +35,11 @@ public class ChecklistViewController {
 
     @FXML private GridPane checklistGrid;
     private boolean checklistGridClickLock = false; // A set-reset latch
+
+    // Checklist Editor
+    @FXML private TableView<MasterlistCourse> checklistCourseEditor;
+    @FXML private ComboBox<String> checklistCourseEditorCombobox;
+    @FXML private TableView<TermChecklist> checklistOrderEditor;
 
     private List<TermChecklistController> checklistControllers = new ArrayList<>();
 
@@ -93,6 +94,8 @@ public class ChecklistViewController {
                 checklistGrid.add(subView, col, row);
             }
         }
+
+        initializeChecklistCourseEditor();
     }
 
     /**
@@ -226,5 +229,76 @@ public class ChecklistViewController {
                 controller.resetHighlights();
             }
         }
+    }
+
+    // EDITORS
+
+    // Define a custom identifier for your internal row data transfer
+    private static final DataFormat SERIALIZED_MIME_TYPE = new DataFormat("application/x-java-serialized-object");
+
+    private void initializeChecklistCourseEditor() {
+        // Add combo box items
+        for (int i = 1; i <= 12 ; i++) {
+            checklistCourseEditorCombobox.getItems().add("Term " + i);
+        }
+
+        // Put this in your controller / initialization block:
+        TableView<MasterlistCourse> tableView = checklistCourseEditor;
+
+        tableView.setRowFactory(tv -> {
+            TableRow<MasterlistCourse> row = new TableRow<>();
+
+            // 1. START DRAG: When user starts dragging a non-empty row
+            row.setOnDragDetected(event -> {
+                if (!row.isEmpty()) {
+                    Integer index = row.getIndex();
+                    Dragboard db = row.startDragAndDrop(TransferMode.MOVE);
+                    db.setDragView(row.snapshot(null, null)); // Optional: Shows ghostly row preview
+
+                    ClipboardContent cc = new ClipboardContent();
+                    cc.put(SERIALIZED_MIME_TYPE, index); // Store original index
+                    db.setContent(cc);
+                    event.consume();
+                }
+            });
+
+            // 2. DRAG OVER: Accept the drag only if it is a valid row move
+            row.setOnDragOver(event -> {
+                Dragboard db = event.getDragboard();
+                if (db.hasContent(SERIALIZED_MIME_TYPE)) {
+                    // Find out which row index we are dragging from
+                    int draggedIndex = (Integer) db.getContent(SERIALIZED_MIME_TYPE);
+
+                    // Don't drop a row onto itself
+                    if (draggedIndex != row.getIndex()) {
+                        event.acceptTransferModes(TransferMode.MOVE);
+                        event.consume();
+                    }
+                }
+            });
+
+            // 3. DROP: Rearrange the observableArrayList
+            row.setOnDragDropped(event -> {
+                Dragboard db = event.getDragboard();
+                if (db.hasContent(SERIALIZED_MIME_TYPE)) {
+                    int draggedIndex = (Integer) db.getContent(SERIALIZED_MIME_TYPE);
+
+                    // Calculate targets (handle drop on empty space vs filled row)
+                    int dropIndex = row.isEmpty() ? tableView.getItems().size() : row.getIndex();
+
+                    // Perform atomic item move within the underlying list
+                    MasterlistCourse draggedItem = tableView.getItems().remove(draggedIndex);
+                    tableView.getItems().add(dropIndex, draggedItem);
+
+                    // Re-select the dragged item so it stays highlighted
+                    tableView.getSelectionModel().select(dropIndex);
+
+                    event.setDropCompleted(true);
+                    event.consume();
+                }
+            });
+
+            return row;
+        });
     }
 }

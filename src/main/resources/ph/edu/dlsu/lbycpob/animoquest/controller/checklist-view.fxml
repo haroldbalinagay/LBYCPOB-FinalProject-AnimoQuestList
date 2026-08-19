@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
@@ -95,7 +96,7 @@
                <content>
                   <VBox alignment="CENTER">
                      <children>
-                        <Label fx:id="checklistTitleLabel" text="BS CPE   ID125   CHECKLIST">
+                        <Label fx:id="checklistTitleLabel" text="BS Computer Engineering (ID 125) - CHECKLIST">
                            <font>
                               <Font size="18.0" />
                            </font>
@@ -124,7 +125,8 @@
                <content>
                   <VBox>
                      <children>
-                        <TableView maxHeight="1.7976931348623157E308" prefHeight="434.0" prefWidth="138.0" VBox.vgrow="ALWAYS">
+                        <ComboBox fx:id="checklistCourseEditorCombobox" maxWidth="1.7976931348623157E308" prefWidth="150.0" promptText="Term Selector" visibleRowCount="12" />
+                        <TableView fx:id="checklistCourseEditor" maxHeight="1.7976931348623157E308" prefHeight="434.0" prefWidth="138.0" VBox.vgrow="ALWAYS">
                           <columns>
                             <TableColumn prefWidth="28.5" text="C1" />
                             <TableColumn prefWidth="121.5" text="C2" />
@@ -141,7 +143,7 @@
                <content>
                   <VBox prefHeight="200.0" prefWidth="100.0">
                      <children>
-                        <TableView prefHeight="441.0" prefWidth="119.0" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="checklistOrderEditor" prefHeight="441.0" prefWidth="119.0" VBox.vgrow="ALWAYS">
                           <columns>
                             <TableColumn prefWidth="60.33331298828125" text="C1" />
                             <TableColumn prefWidth="89.66668701171875" text="C2" />
