@@ -5,6 +5,7 @@ import ph.edu.dlsu.lbycpob.animoquest.model.CurriculumProgress;
 import ph.edu.dlsu.lbycpob.animoquest.model.MasterlistCourse;
 import ph.edu.dlsu.lbycpob.animoquest.repository.CurriculumRepository;
 import ph.edu.dlsu.lbycpob.animoquest.repository.MasterlistCourseRepository;
+import ph.edu.dlsu.lbycpob.animoquest.model.CurriculumDisplay;
 
 import java.util.List;
 
@@ -115,5 +116,28 @@ public class CurriculumService {
                 getStudentCourse(studentId, courseId);
 
         curriculumRepository.delete(progress);
+    }
+
+    public List<CurriculumDisplay> getStudentCourseDisplay(Long studentId) {
+
+        List<CurriculumProgress> progressList =
+                curriculumRepository.findByStudentId(studentId);
+
+        return progressList.stream()
+                .map(progress -> {
+
+                    MasterlistCourse course =
+                            getMasterlistCourse(progress.getCourseId());
+
+                    return new CurriculumDisplay(
+                            progress.getCourseId(),
+                            course.getCode(),
+                            course.getName(),
+                            course.getUnits(),
+                            progress.getStatus(),
+                            progress.getTermTaken()
+                    );
+                })
+                .toList();
     }
 }
