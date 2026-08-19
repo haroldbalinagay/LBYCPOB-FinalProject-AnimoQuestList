@@ -16,6 +16,7 @@ import ph.edu.dlsu.lbycpob.animoquest.model.Admin;
 import ph.edu.dlsu.lbycpob.animoquest.model.Student;
 import ph.edu.dlsu.lbycpob.animoquest.model.User;
 import ph.edu.dlsu.lbycpob.animoquest.service.LoginService;
+import ph.edu.dlsu.lbycpob.animoquest.service.SessionService;
 
 import java.util.Objects;
 
@@ -32,15 +33,17 @@ public class LoginController {
 
     private final LoginService loginService;
     private final FxWeaver fxWeaver;
+    private final SessionService sessionService;
 
     public LoginController(
             LoginService loginService,
-            FxWeaver fxWeaver
+            FxWeaver fxWeaver,
+            SessionService sessionService
     ) {
         this.loginService = loginService;
         this.fxWeaver = fxWeaver;
+        this.sessionService = sessionService;
     }
-
     // ============================================================
     // LOGIN
     // ============================================================
@@ -77,6 +80,8 @@ public class LoginController {
                     idNumber,
                     password
             );
+
+            sessionService.login(user);
 
             // ----------------------------------------------------
             // STUDENT LOGIN
