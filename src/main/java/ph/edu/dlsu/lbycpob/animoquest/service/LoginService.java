@@ -119,7 +119,6 @@ public class LoginService {
     // ============================================================
 
     public User login(
-            String username,
             String idNumber,
             String password
     ) {
@@ -128,13 +127,6 @@ public class LoginService {
         if (!IDValidator.validateID(idNumber)) {
             throw new IllegalArgumentException(
                     "Invalid DLSU ID number."
-            );
-        }
-
-        // Validate username
-        if (username == null || username.trim().isEmpty()) {
-            throw new IllegalArgumentException(
-                    "Username cannot be empty."
             );
         }
 
@@ -147,15 +139,12 @@ public class LoginService {
 
         Long id = Long.parseLong(idNumber);
 
-        // Find account using username + ID
+        // Find account using ID number
         User user = userRepository
-                .findByUsernameAndIdNumber(
-                        username.trim(),
-                        id
-                )
+                .findByIdNumber(id)
                 .orElseThrow(() ->
                         new IllegalArgumentException(
-                                "No account was found with those credentials."
+                                "No account was found with that ID number."
                         )
                 );
 
