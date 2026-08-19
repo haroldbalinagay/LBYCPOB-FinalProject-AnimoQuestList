@@ -333,3 +333,359 @@ public class TermChecklistController {
         container.getChildren().add(
                 maxUnitsLabel
         );
+
+        // --------------------------------------------------------
+        // GET COURSES FOR TERM
+        // --------------------------------------------------------
+
+        List<MasterlistCourse> courses =
+                termChecklistService.getCoursesForTerm(
+                        CURRENT_BATCH,
+                        currentDegree,
+                        termNumber
+                );
+
+
+        // --------------------------------------------------------
+        // CREATE CHECKBOXES
+        // --------------------------------------------------------
+
+        List<CheckBox> checkBoxes =
+                new ArrayList<>();
+
+
+        for (MasterlistCourse course :
+                courses) {
+
+            CheckBox checkBox =
+                    new CheckBox();
+
+
+            checkBox.setText(
+                    course.getCode()
+                            + " - "
+                            + course.getName()
+                            + " ("
+                            + course.getUnits()
+                            + " units)"
+            );
+
+
+            /*
+             * Store the course ID inside
+             * the CheckBox.
+             */
+            checkBox.setUserData(
+                    course.getId()
+            );
+
+
+            checkBoxes.add(
+                    checkBox
+            );
+
+
+            container.getChildren().add(
+                    checkBox
+            );
+        }
+
+
+        // --------------------------------------------------------
+        // STORE CHECKBOXES
+        // --------------------------------------------------------
+
+        termCheckBoxes.put(
+                termNumber,
+                checkBoxes
+        );
+
+
+        // --------------------------------------------------------
+        // CREATE TAB
+        // --------------------------------------------------------
+
+        Tab tab =
+                new Tab(
+                        "Term " + termNumber
+                );
+
+
+        tab.setContent(
+                container
+        );
+
+
+        tab.setClosable(
+                false
+        );
+
+
+        termTabPane.getTabs().add(
+                tab
+        );
+    }
+
+
+    // ============================================================
+    // ADD SELECTED COURSES
+    // ============================================================
+
+    @FXML
+    private void handleAddSelectedCourses() {
+
+        // --------------------------------------------------------
+        // CHECK STUDENT
+        // --------------------------------------------------------
+
+        if (currentStudentId == null) {
+
+            showAlert(
+                    Alert.AlertType.ERROR,
+                    "Student Not Found",
+                    "No student is currently logged in."
+            );
+
+            return;
+        }
+
+
+        // --------------------------------------------------------
+        // CHECK CURRENT DEGREE
+        // --------------------------------------------------------
+
+        if (currentDegree == null ||
+                currentDegree.isBlank()) {
+
+            showAlert(
+                    Alert.AlertType.ERROR,
+                    "Degree Not Found",
+                    "The student's degree could not be determined."
+            );
+
+            return;
+        }
+
+
+        // --------------------------------------------------------
+        // COLLECT SELECTED COURSES
+        // --------------------------------------------------------
+
+        Set<Long> selectedCourseIds =
+                new HashSet<>();
+
+
+        for (List<CheckBox> checkBoxes :
+                termCheckBoxes.values()) {
+
+            for (CheckBox checkBox :
+                    checkBoxes) {
+
+                if (checkBox.isSelected()) {
+
+                    Long courseId =
+                            (Long) checkBox.getUserData();
+
+                    selectedCourseIds.add(
+                            courseId
+                    );
+                }
+            }
+        }
+
+
+        // --------------------------------------------------------
+        // NO COURSES SELECTED
+        // --------------------------------------------------------
+
+        if (selectedCourseIds.isEmpty()) {
+
+            showAlert(
+                    Alert.AlertType.WARNING,
+                    "No Courses Selected",
+                    "Please select at least one course."
+            );
+
+            return;
+        }
+
+
+        // --------------------------------------------------------
+        // ADD COURSES
+        // --------------------------------------------------------
+
+        int successful = 0;
+
+        StringBuilder errors =
+                new StringBuilder();
+
+
+        for (Long courseId :
+                selectedCourseIds) {
+
+            try {
+
+                curriculumService.addCourse(
+                        currentStudentId,
+                        courseId,
+                        currentTerm,
+                        "IN-PROGRESS"
+                );
+
+                successful++;
+
+            } catch (Exception e) {
+
+                errors.append(
+                        e.getMessage()
+                );
+
+                errors.append(
+                        "\n\n"
+                );
+            }
+        }
+
+
+        // --------------------------------------------------------
+        // SUCCESS MESSAGE
+        // --------------------------------------------------------
+
+        if (successful > 0) {
+
+            showAlert(
+                    Alert.AlertType.INFORMATION,
+                    "Courses Added",
+                    successful
+                            + " course(s) were added "
+                            + "to Term "
+                            + currentTerm
+                            + "."
+            );
+        }
+
+
+        // --------------------------------------------------------
+        // ERRORS
+        // --------------------------------------------------------
+
+        if (!errors.isEmpty()) {
+
+            showAlert(
+                    Alert.AlertType.WARNING,
+                    "Some Courses Were Not Added",
+                    errors.toString()
+            );
+        }
+
+
+        // --------------------------------------------------------
+        // CLEAR SELECTIONS
+        // --------------------------------------------------------
+
+        clearSelections();
+    }
+
+
+    // ============================================================
+    // CLEAR CHECKBOX SELECTIONS
+    // ============================================================
+
+    private void clearSelections() {
+
+        for (List<CheckBox> checkBoxes :
+                termCheckBoxes.values()) {
+
+            for (CheckBox checkBox :
+                    checkBoxes) {
+
+                checkBox.setSelected(
+                        false
+                );
+            }
+        }
+    }
+
+
+    // ============================================================
+    // BACK BUTTON
+    // ============================================================
+
+    @FXML
+    private void handleBack(
+            ActionEvent event
+    ) {
+
+        try {
+
+            Node source =
+                    (Node) event.getSource();
+
+            Stage stage =
+                    (Stage) source
+                            .getScene()
+                            .getWindow();
+
+
+            Parent root =
+                    fxWeaver.loadView(
+                            EnrollmentController.class
+                    );
+
+
+            Scene scene =
+                    new Scene(root);
+
+
+            stage.setScene(
+                    scene
+            );
+
+
+            stage.setTitle(
+                    "Enrollment Planning List"
+            );
+
+
+            stage.show();
+
+        } catch (Exception e) {
+
+            showAlert(
+                    Alert.AlertType.ERROR,
+                    "Navigation Error",
+                    "Unable to return to the Enrollment Planning List.\n\n"
+                            + e.getMessage()
+            );
+        }
+    }
+
+
+    // ============================================================
+    // ALERT
+    // ============================================================
+
+    private void showAlert(
+            Alert.AlertType type,
+            String title,
+            String message
+    ) {
+
+        Alert alert =
+                new Alert(type);
+
+        alert.setTitle(
+                title
+        );
+
+        alert.setHeaderText(
+                null
+        );
+
+        alert.setContentText(
+                message
+        );
+
+        alert.showAndWait();
+    }
+}
