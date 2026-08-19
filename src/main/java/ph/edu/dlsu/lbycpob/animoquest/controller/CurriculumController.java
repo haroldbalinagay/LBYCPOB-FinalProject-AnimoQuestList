@@ -79,3 +79,98 @@ public class CurriculumController {
                 )
         );
 
+        // --------------------------------------------------------
+        // Sorting options
+        // --------------------------------------------------------
+
+        sortComboBox.setItems(
+                FXCollections.observableArrayList(
+                        "By Term",
+                        "Alphabetical"
+                )
+        );
+
+
+        // --------------------------------------------------------
+        // Course status options
+        // --------------------------------------------------------
+
+        statusComboBox.setItems(
+                FXCollections.observableArrayList(
+                        "IN-PROGRESS",
+                        "PASSED",
+                        "FAILED"
+                )
+        );
+
+
+        // --------------------------------------------------------
+        // How each course appears in the ListView
+        // --------------------------------------------------------
+
+        courseListView.setCellFactory(
+                listView -> new ListCell<>() {
+
+                    @Override
+                    protected void updateItem(
+                            CurriculumProgress course,
+                            boolean empty
+                    ) {
+
+                        super.updateItem(course, empty);
+
+                        if (empty || course == null) {
+
+                            setText(null);
+
+                        } else {
+
+                            setText(
+                                    "Course ID: "
+                                            + course.getCourseId()
+                                            + " | Term: "
+                                            + course.getTermTaken()
+                                            + " | Status: "
+                                            + course.getStatus()
+                            );
+                        }
+                    }
+                }
+        );
+
+
+        // --------------------------------------------------------
+        // Load student's courses
+        // --------------------------------------------------------
+
+        loadCourses();
+    }
+
+
+    // ============================================================
+    // LOAD COURSES
+    // ============================================================
+
+    private void loadCourses() {
+
+        try {
+
+            courses.setAll(
+                    curriculumService.getStudentCourses(
+                            currentStudentId
+                    )
+            );
+
+            courseListView.setItems(courses);
+
+        } catch (Exception e) {
+
+            showAlert(
+                    Alert.AlertType.ERROR,
+                    "Error",
+                    "Unable to load your enrollment list."
+            );
+
+            e.printStackTrace();
+        }
+    }
