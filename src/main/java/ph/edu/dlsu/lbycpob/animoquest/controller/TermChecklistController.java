@@ -1,10 +1,24 @@
 package ph.edu.dlsu.lbycpob.animoquest.controller;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+
 import net.rgielen.fxweaver.core.FxmlView;
+import net.rgielen.fxweaver.core.FxWeaver;
+
 import org.springframework.stereotype.Component;
+
 import ph.edu.dlsu.lbycpob.animoquest.model.MasterlistCourse;
 import ph.edu.dlsu.lbycpob.animoquest.model.TermChecklist;
 import ph.edu.dlsu.lbycpob.animoquest.service.CurriculumService;
@@ -21,10 +35,16 @@ import java.util.Set;
 @FxmlView("term-checklist.fxml")
 public class TermChecklistController {
 
+    // ============================================================
+    // CURRENT BATCH
+    // ============================================================
+
     private static final int CURRENT_BATCH = 125;
 
-    private static final String CURRENT_DEGREE =
-            "BS Computer Engineering";
+
+    // ============================================================
+    // FXML COMPONENTS
+    // ============================================================
 
     @FXML
     private TabPane termTabPane;
@@ -32,23 +52,63 @@ public class TermChecklistController {
     @FXML
     private Button addSelectedButton;
 
+
+    // ============================================================
+    // SERVICES
+    // ============================================================
+
     private final TermChecklistService termChecklistService;
 
     private final CurriculumService curriculumService;
 
+    private final FxWeaver fxWeaver;
+
+
+    // ============================================================
+    // CURRENT STUDENT
+    // ============================================================
+
     /*
-     * Student who is currently logged in.
+     * ID of the student who is currently logged in.
      */
     private Long currentStudentId;
 
+
     /*
-     * Current term selected by the student
-     * in the Enrollment Planning screen.
+     * Major/degree of the currently logged-in student.
+     *
+     * This comes from Student.major during Sign Up/Login.
+     *
+     * Example:
+     *
+     * "BS Computer Engineering"
+     * "BS Electronics Engineering"
+     */
+    private String currentDegree;
+
+
+    // ============================================================
+    // CURRENT TERM
+    // ============================================================
+
+    /*
+     * Current term selected in the Enrollment screen.
+     *
+     * This is an application/UI value.
+     *
+     * It is NOT stored as a separate database field.
+     *
+     * It is used as term_taken when adding a new course.
      */
     private int currentTerm = 1;
 
+
+    // ============================================================
+    // CHECKBOX STORAGE
+    // ============================================================
+
     /*
-     * Stores the CheckBoxes for each term.
+     * Stores all course CheckBoxes according to their term.
      *
      * Example:
      *
@@ -65,37 +125,18 @@ public class TermChecklistController {
 
     public TermChecklistController(
             TermChecklistService termChecklistService,
-            CurriculumService curriculumService
+            CurriculumService curriculumService,
+            FxWeaver fxWeaver
     ) {
-        this.termChecklistService = termChecklistService;
-        this.curriculumService = curriculumService;
-    }
 
+        this.termChecklistService =
+                termChecklistService;
 
-    // ============================================================
-    // SET STUDENT ID
-    // ============================================================
+        this.curriculumService =
+                curriculumService;
 
-    public void setStudentId(Long studentId) {
-
-        this.currentStudentId = studentId;
-    }
-
-
-    // ============================================================
-    // SET CURRENT TERM
-    // ============================================================
-
-    public void setCurrentTerm(int currentTerm) {
-
-        if (currentTerm < 1 || currentTerm > 12) {
-
-            throw new IllegalArgumentException(
-                    "Current term must be between 1 and 12."
-            );
-        }
-
-        this.currentTerm = currentTerm;
+        this.fxWeaver =
+                fxWeaver;
     }
 
 
@@ -106,290 +147,31 @@ public class TermChecklistController {
     @FXML
     public void initialize() {
 
-        loadTermChecklists();
+        /*
+         * Do NOT load the checklist here.
+         *
+         * currentStudentId and currentDegree have not
+         * necessarily been provided yet.
+         *
+         * The checklist will be loaded after
+         * setStudentId() and setDegree() are called.
+         */
     }
 
 
     // ============================================================
-    // LOAD TERMS
+    // SET STUDENT ID
     // ============================================================
 
-    private void loadTermChecklists() {
+    public void setStudentId(Long studentId) {
 
-        List<TermChecklist> checklists =
-                termChecklistService.getChecklists(
-                        CURRENT_BATCH,
-                        CURRENT_DEGREE
-                );
+        this.currentStudentId = studentId;
 
-        termTabPane.getTabs().clear();
-
-        termCheckBoxes.clear();
-
-        for (TermChecklist checklist : checklists) {
-
-            createTermTab(checklist);
-        }
+        tryLoadChecklist();
     }
 
 
 // ============================================================
-// CREATE TERM TAB
+// SET DEGREE / MAJOR
 // ============================================================
 
-    private void createTermTab(
-            TermChecklist checklist
-    ) {
-
-        int termNumber =
-                checklist.getTermNumber();
-
-        VBox container =
-                new VBox(10);
-
-        container.setPadding(
-                new javafx.geometry.Insets(15)
-        );
-
-        Label maxUnitsLabel =
-                new Label(
-                        "Maximum Units: "
-                                + checklist.getMaxUnits()
-                );
-
-        container.getChildren().add(
-                maxUnitsLabel
-        );
-
-        List<MasterlistCourse> courses =
-                termChecklistService.getCoursesForTerm(
-                        CURRENT_BATCH,
-                        CURRENT_DEGREE,
-                        termNumber
-                );
-
-        List<CheckBox> checkBoxes =
-                new ArrayList<>();
-
-        for (MasterlistCourse course : courses) {
-
-            CheckBox checkBox =
-                    new CheckBox();
-
-            checkBox.setText(
-                    course.getCode()
-                            + " - "
-                            + course.getName()
-                            + " ("
-                            + course.getUnits()
-                            + " units)"
-            );
-
-            /*
-             * Store the course ID inside the CheckBox.
-             */
-            checkBox.setUserData(
-                    course.getId()
-            );
-
-            checkBoxes.add(checkBox);
-
-            container.getChildren().add(
-                    checkBox
-            );
-        }
-
-        termCheckBoxes.put(
-                termNumber,
-                checkBoxes
-        );
-
-        Tab tab =
-                new Tab(
-                        "Term " + termNumber
-                );
-
-        tab.setContent(container);
-
-        tab.setClosable(false);
-
-        termTabPane.getTabs().add(tab);
-    }
-
-
-    // ============================================================
-    // ADD SELECTED COURSES
-    // ============================================================
-
-    @FXML
-    private void handleAddSelectedCourses() {
-
-        /*
-         * Make sure a student is logged in.
-         */
-        if (currentStudentId == null) {
-
-            showAlert(
-                    Alert.AlertType.ERROR,
-                    "Student Not Found",
-                    "No student is currently logged in."
-            );
-
-            return;
-        }
-
-        /*
-         * Collect all selected course IDs.
-         *
-         * HashSet prevents the same course from
-         * accidentally being added more than once.
-         */
-        Set<Long> selectedCourseIds =
-                new HashSet<>();
-
-        for (List<CheckBox> checkBoxes :
-                termCheckBoxes.values()) {
-
-            for (CheckBox checkBox :
-                    checkBoxes) {
-
-                if (checkBox.isSelected()) {
-
-                    Long courseId =
-                            (Long) checkBox.getUserData();
-
-                    selectedCourseIds.add(
-                            courseId
-                    );
-                }
-            }
-        }
-
-        /*
-         * No courses selected.
-         */
-        if (selectedCourseIds.isEmpty()) {
-
-            showAlert(
-                    Alert.AlertType.WARNING,
-                    "No Courses Selected",
-                    "Please select at least one course."
-            );
-
-            return;
-        }
-
-        int successful = 0;
-
-        StringBuilder errors =
-                new StringBuilder();
-
-        /*
-         * Add each selected course to
-         * curriculum_progress.
-         */
-        for (Long courseId :
-                selectedCourseIds) {
-
-            try {
-
-                curriculumService.addCourse(
-                        currentStudentId,
-                        courseId,
-                        currentTerm,
-                        "IN-PROGRESS"
-                );
-
-                successful++;
-
-            } catch (Exception e) {
-
-                errors.append(
-                        e.getMessage()
-                );
-
-                errors.append(
-                        "\n\n"
-                );
-            }
-        }
-
-        /*
-         * Show successful additions.
-         */
-        if (successful > 0) {
-
-            showAlert(
-                    Alert.AlertType.INFORMATION,
-                    "Courses Added",
-                    successful
-                            + " course(s) were added "
-                            + "to Term "
-                            + currentTerm
-                            + "."
-            );
-        }
-
-        /*
-         * Show courses that could not be added.
-         *
-         * This can happen if:
-         * - the course already exists
-         * - a hard prerequisite is missing
-         * - a soft prerequisite is missing
-         * - a co-requisite is missing
-         */
-        if (!errors.isEmpty()) {
-
-            showAlert(
-                    Alert.AlertType.WARNING,
-                    "Some Courses Were Not Added",
-                    errors.toString()
-            );
-        }
-
-        /*
-         * Uncheck the courses after processing.
-         */
-        clearSelections();
-    }
-
-
-    // ============================================================
-    // CLEAR CHECKBOX SELECTIONS
-    // ============================================================
-
-    private void clearSelections() {
-
-        for (List<CheckBox> checkBoxes :
-                termCheckBoxes.values()) {
-
-            for (CheckBox checkBox :
-                    checkBoxes) {
-
-                checkBox.setSelected(false);
-            }
-        }
-    }
-
-
-    // ============================================================
-    // ALERT
-    // ============================================================
-
-    private void showAlert(
-            Alert.AlertType type,
-            String title,
-            String message
-    ) {
-
-        Alert alert =
-                new Alert(type);
-
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-
-        alert.showAndWait();
-    }
-}
