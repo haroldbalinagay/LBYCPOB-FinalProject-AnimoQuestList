@@ -28,7 +28,12 @@
 
     <HBox spacing="10">
 
-        <Label text="Term:"/>
+        <Label text="Current Term:"/>
+
+        <ComboBox fx:id="currentTermComboBox"
+                  promptText="Select Current Term"/>
+
+        <Label text="Filter Term:"/>
 
         <ComboBox fx:id="termFilterComboBox"
                   promptText="Select Term"/>
