@@ -12,8 +12,10 @@ public class CurriculumDisplay {
     private final String status;
     private final int term;
 
-    // Prerequisite information
+    // Requisite information for display
     private final String requisiteInfo;
+
+    // Warning shown when a requisite is not satisfied
     private final String missingPrerequisiteWarning;
 
     public CurriculumDisplay(
