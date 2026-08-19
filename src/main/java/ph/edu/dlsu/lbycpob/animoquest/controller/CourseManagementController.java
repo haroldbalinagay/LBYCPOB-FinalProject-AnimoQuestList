@@ -87,6 +87,47 @@ public class CourseManagementController {
     }
 
     @FXML
+    private void handleUpdateCourse() {
+        if (selectedCourse == null) {
+            showAlert(Alert.AlertType.WARNING, "Selection Error", "Please select a course to update.");
+            return;
+        }
+
+        try {
+            int units = Integer.parseInt(unitsField.getText().trim());
+            courseService.updateCourse(
+                    selectedCourse.getId(),
+                    codeField.getText(),
+                    nameField.getText(),
+                    units,
+                    passFailCheckBox.isSelected()
+            );
+            clearFields();
+            loadCourses();
+        } catch (NumberFormatException e) {
+            showAlert(Alert.AlertType.ERROR, "Input Error", "Units must be a valid integer (0 or greater).");
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Update Error", e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleDeleteCourse() {
+        if (selectedCourse == null) {
+            showAlert(Alert.AlertType.WARNING, "Selection Error", "Please select a course to delete.");
+            return;
+        }
+
+        try {
+            courseService.deleteCourse(selectedCourse.getId());
+            clearFields();
+            loadCourses();
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Delete Error", e.getMessage());
+        }
+    }
+
+    @FXML
     private void handleBack(ActionEvent event) {
         try {
             Parent root = fxWeaver.loadView(AdminDashboardController.class);
