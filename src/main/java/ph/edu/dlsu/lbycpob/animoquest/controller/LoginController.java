@@ -78,9 +78,45 @@ public class LoginController {
                         "Welcome, " + user.getFullName() + "!"
                 );
 
-                // TODO:
-                // Open Student Dashboard
+                try {
 
+                    Parent root =
+                            fxWeaver.loadView(CurriculumController.class);
+
+                    CurriculumController controller =
+                            fxWeaver.getBean(CurriculumController.class);
+
+                    controller.setStudentId(user.getId());
+
+                    Stage stage =
+                            (Stage) ((Node) event.getSource())
+                                    .getScene()
+                                    .getWindow();
+
+                    stage.setScene(new Scene(root));
+                    stage.show();
+
+                } catch (Exception e) {
+
+                    e.printStackTrace();
+
+                    showAlert(
+                            Alert.AlertType.ERROR,
+                            "Navigation Error",
+                            "Unable to open the enrollment planning list."
+                    );
+                }
+
+            } else if (user instanceof Admin) {
+
+                showAlert(
+                        Alert.AlertType.INFORMATION,
+                        "Login Successful",
+                        "Welcome, " + user.getFullName() + "!"
+                );
+
+                // TODO:
+                // Open Admin Dashboard
             } else if (user instanceof Admin) {
 
                 showAlert(
