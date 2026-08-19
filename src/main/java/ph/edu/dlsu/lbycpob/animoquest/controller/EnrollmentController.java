@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.List;
 import ph.edu.dlsu.lbycpob.animoquest.controller.TermChecklistController;
 import ph.edu.dlsu.lbycpob.animoquest.service.v2.FxmlLoaderService;
+import ph.edu.dlsu.lbycpob.animoquest.service.SessionService;
 
 import java.util.Comparator;
 import java.util.Objects;
@@ -63,6 +64,7 @@ public class EnrollmentController {
 
     private final ObservableList<CurriculumDisplay> courses =
             FXCollections.observableArrayList();
+    private final SessionService sessionService;
 
     /*
      * Temporary student ID.
@@ -81,10 +83,57 @@ public class EnrollmentController {
 
     public EnrollmentController(
             CurriculumService curriculumService,
-            FxWeaver fxWeaver
+            FxWeaver fxWeaver,
+            SessionService sessionService
     ) {
         this.curriculumService = curriculumService;
         this.fxWeaver = fxWeaver;
+        this.sessionService = sessionService;
+    }
+
+    // ============================================================
+// LOGOUT
+// ============================================================
+
+    @FXML
+    private void handleLogout(ActionEvent event) {
+
+        try {
+
+            sessionService.logout();
+
+            Parent root =
+                    fxWeaver.loadView(
+                            WelcomeController.class
+                    );
+
+            Stage stage =
+                    (Stage) ((Node) event.getSource())
+                            .getScene()
+                            .getWindow();
+
+            stage.setScene(
+                    new Scene(root)
+            );
+
+            stage.setTitle(
+                    "AnimoQuest"
+            );
+
+            stage.show();
+
+            stage.setMaximized(false);
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            showAlert(
+                    Alert.AlertType.ERROR,
+                    "Logout Error",
+                    "Unable to log out."
+            );
+        }
     }
     public void setStudentId(Long studentId) {
 
