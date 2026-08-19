@@ -669,6 +669,96 @@ private void handleCourseSelection() {
             );
         }
     }
+
+    // ============================================================
+// ADD RECOMMENDED COURSES
+// ============================================================
+
+    @FXML
+    private void handleAddRecommendedCourses(
+            ActionEvent event
+    ) {
+
+        if (currentStudentId == null) {
+
+            showAlert(
+                    Alert.AlertType.WARNING,
+                    "Student Not Found",
+                    "No student is currently logged in."
+            );
+
+            return;
+        }
+
+        MasterlistCourse selectedCourse =
+                recommendedCourseListView
+                        .getSelectionModel()
+                        .getSelectedItem();
+
+        if (selectedCourse == null) {
+
+            showAlert(
+                    Alert.AlertType.WARNING,
+                    "No Course Selected",
+                    "Please select a recommended course first."
+            );
+
+            return;
+        }
+
+        Integer selectedTerm =
+                currentTermComboBox.getValue();
+
+        if (selectedTerm == null) {
+
+            showAlert(
+                    Alert.AlertType.WARNING,
+                    "Current Term Required",
+                    "Please select your current term first."
+            );
+
+            return;
+        }
+
+        int nextTerm =
+                selectedTerm + 1;
+
+        try {
+
+            curriculumService.addCourse(
+                    currentStudentId,
+                    selectedCourse.getId(),
+                    nextTerm,
+                    "IN-PROGRESS"
+            );
+
+            showAlert(
+                    Alert.AlertType.INFORMATION,
+                    "Course Added",
+                    selectedCourse.getCode()
+                            + " was added to your enrollment plan "
+                            + "for Term "
+                            + nextTerm
+                            + "."
+            );
+
+            // Refresh enrolled courses
+            loadCourses();
+
+            // Remove the course from recommendations
+            recommendedCourseListView
+                    .getItems()
+                    .remove(selectedCourse);
+
+        } catch (Exception e) {
+
+            showAlert(
+                    Alert.AlertType.WARNING,
+                    "Course Could Not Be Added",
+                    e.getMessage()
+            );
+        }
+    }
     // ============================================================
     // ALERT
     // ============================================================
