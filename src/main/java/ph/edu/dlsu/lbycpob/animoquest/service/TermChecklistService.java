@@ -71,20 +71,27 @@ public class TermChecklistService {
     ) {
 
         TermChecklist checklist =
-                getChecklist(
-                        batch,
-                        degree,
-                        termNumber
-                );
+                termChecklistRepository
+                        .findByBatchAndDegreeAndTermNumber(
+                                batch,
+                                degree,
+                                termNumber
+                        )
+                        .orElseThrow(() ->
+                                new IllegalArgumentException(
+                                        "Term checklist was not found."
+                                )
+                        );
 
-        Long[] courseIds = checklist.getCourseIds();
+        List<MasterlistCourse> courses = new ArrayList<>();
 
-        if (courseIds == null || courseIds.length == 0) {
-            return new ArrayList<>();
+        for (Long courseId : checklist.getCourseIds()) {
+
+            masterlistCourseRepository
+                    .findById(courseId)
+                    .ifPresent(courses::add);
         }
 
-        return masterlistCourseRepository.findByIdIn(
-                Arrays.asList(courseIds)
-        );
+        return courses;
     }
 }
