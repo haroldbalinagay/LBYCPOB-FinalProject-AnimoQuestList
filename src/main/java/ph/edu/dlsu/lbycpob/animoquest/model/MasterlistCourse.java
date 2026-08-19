@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.OffsetDateTime;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -92,5 +93,18 @@ public class MasterlistCourse {
             case 3 -> { return reqType3; }
             default -> { return null; }
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MasterlistCourse that = (MasterlistCourse) o;
+        return Objects.equals(this.code, that.code); // Match by course code
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(code);
     }
 }

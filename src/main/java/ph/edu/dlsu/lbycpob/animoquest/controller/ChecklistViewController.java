@@ -2,13 +2,13 @@ package ph.edu.dlsu.lbycpob.animoquest.controller;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 import net.rgielen.fxweaver.core.FxmlView;
@@ -21,6 +21,7 @@ import ph.edu.dlsu.lbycpob.animoquest.service.TermChecklistService;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 @FxmlView("checklist-view.fxml")
@@ -238,6 +239,8 @@ public class ChecklistViewController {
     @FXML private VBox comboBoxGroup;
     @FXML private Button saveBtn;
 
+    List<ComboBox<MasterlistCourse>> comboBoxList = new ArrayList<>();
+
     /**
      * Sets up the checklist editor UI.
      */
@@ -247,6 +250,13 @@ public class ChecklistViewController {
             checklistEditorComboBox.getItems().add("Term " + i);
         }
 
+        // Trigger refresh code when the value changes
+        checklistEditorComboBox.valueProperty().addListener((obs, oldValue, newValue) -> {
+            // Get only the term number
+            int termNumber = Integer.parseInt(newValue.substring(5));
+            handleTermChange(termNumber);
+        });
+
         // Create the observable list (options)
         ObservableList<MasterlistCourse> options = FXCollections.observableArrayList(checklistService.getAllCourses());
 
@@ -255,6 +265,7 @@ public class ChecklistViewController {
             ComboBox<MasterlistCourse> courseComboBox = new ComboBox<>();
 
             // Add options
+            courseComboBox.getItems().add(null); // Blank option
             courseComboBox.getItems().addAll(options);
 
             // Define how the MasterlistCourse object converts to text and vice versa
@@ -275,7 +286,59 @@ public class ChecklistViewController {
 
             // Add into the vbox group
             courseComboBox.setMaxWidth(Double.MAX_VALUE);
+            comboBoxList.add(courseComboBox);
             comboBoxGroup.getChildren().add(courseComboBox);
         }
+    }
+
+    /**
+     * Refreshes the checklist editor to display the courses of the given checklist.
+     * @param termNumber The term checklist to display
+     */
+    private void handleTermChange(int termNumber) {
+        // Get the complete list of courses from a checklist
+        List<MasterlistCourse> courses = checklistControllers.get(termNumber - 1).getCourses();
+        IO.println();
+
+        // Loop through all combo boxes to clear and repopulate safely
+        for (int i = 0; i < comboBoxList.size(); i++) {
+            ComboBox<MasterlistCourse> comboBox = comboBoxList.get(i);
+
+            // Pause the event handler to stop cascading null loops
+            EventHandler<ActionEvent> currentHandler = comboBox.getOnAction();
+            comboBox.setOnAction(null);
+
+            try {
+                // Clear the combo box
+                comboBox.setValue(null);
+
+                // If a course exists, set it in the slot
+                if (i < courses.size()) {
+                    MasterlistCourse targetCourse = courses.get(i);
+
+                    // Find the exact object reference inside the items list to prevent null-resets
+                    MasterlistCourse matchedCourse = comboBox.getItems().stream()
+                            .filter(Objects::nonNull) // Filter out null entries in the list
+                            .filter(item -> item.equals(targetCourse))
+                            .findFirst()
+                            .orElse(null); // Fall back to null if object is missing from items list
+
+                    comboBox.setValue(matchedCourse);
+
+                    if (comboBox.getValue() != null) {
+                        IO.println("Set combo box value " + i + " " + comboBox.getValue().getCode());
+                    } else {
+                        IO.println("Warning: Course " + targetCourse.getCode() + " not found in ComboBox items list!");
+                    }
+                }
+            } finally {
+                // Always restore the original action listener
+                comboBox.setOnAction(currentHandler);
+            }
+        }
+    }
+
+    public void handleSaveChecklist(ActionEvent event) {
+
     }
 }

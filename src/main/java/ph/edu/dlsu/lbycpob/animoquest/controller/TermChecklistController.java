@@ -5,6 +5,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import lombok.Getter;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -31,6 +32,7 @@ public class TermChecklistController {
     private List<CourseBoxController> courseControllers = new ArrayList<>();
 
     private TermChecklist checklist;
+    @Getter
     private List<MasterlistCourse> courses = new ArrayList<>();
 
     private List<CourseBoxController> highlightedCourses = new ArrayList<>();
