@@ -138,3 +138,122 @@ public class LoginController {
             );
 
             e.printStackTrace();
+
+        }
+    }
+
+    // ============================================================
+    // OPEN ENROLLMENT PAGE
+    // ============================================================
+
+    private void openEnrollmentPage(
+            ActionEvent event,
+            Student student
+    ) {
+
+        try {
+
+            // ----------------------------------------------------
+            // LOAD ENROLLMENT FXML
+            // ----------------------------------------------------
+
+            Parent root =
+                    fxWeaver.loadView(
+                            EnrollmentController.class
+                    );
+
+            // ----------------------------------------------------
+            // GET THE ENROLLMENT CONTROLLER
+            // ----------------------------------------------------
+
+            EnrollmentController controller =
+                    fxWeaver.getBean(
+                            EnrollmentController.class
+                    );
+
+            // ----------------------------------------------------
+            // PASS LOGGED-IN STUDENT ID
+            // ----------------------------------------------------
+
+            controller.setStudentId(
+                    student.getId()
+            );
+
+            // ----------------------------------------------------
+            // CHANGE SCENE
+            // ----------------------------------------------------
+
+            Stage stage =
+                    (Stage) ((Node) event.getSource())
+                            .getScene()
+                            .getWindow();
+
+            Scene scene =
+                    new Scene(root);
+
+            stage.setScene(scene);
+            stage.show();
+
+        } catch (Exception e) {
+
+            showAlert(
+                    Alert.AlertType.ERROR,
+                    "Navigation Error",
+                    "Unable to open the enrollment page."
+            );
+
+            e.printStackTrace();
+        }
+    }
+
+    // ============================================================
+    // BACK BUTTON
+    // ============================================================
+
+    @FXML
+    private void handleBack(ActionEvent event) {
+
+        try {
+
+            Parent root =
+                    fxWeaver.loadView(
+                            WelcomeController.class
+                    );
+
+            Stage stage =
+                    (Stage) ((Node) event.getSource())
+                            .getScene()
+                            .getWindow();
+
+            stage.setScene(
+                    new Scene(root)
+            );
+
+            stage.show();
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+    }
+
+    // ============================================================
+    // ALERT
+    // ============================================================
+
+    private void showAlert(
+            Alert.AlertType type,
+            String title,
+            String message
+    ) {
+
+        Alert alert =
+                new Alert(type);
+
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+
+        alert.showAndWait();
+    }
+}
