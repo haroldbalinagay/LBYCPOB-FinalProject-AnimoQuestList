@@ -14,6 +14,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import net.rgielen.fxweaver.core.FxWeaver;
+import ph.edu.dlsu.lbycpob.animoquest.model.Student;
 import ph.edu.dlsu.lbycpob.animoquest.controller.TermChecklistController;
 
 import java.util.Comparator;
@@ -63,10 +64,18 @@ public class EnrollmentController {
         this.curriculumService = curriculumService;
         this.fxWeaver = fxWeaver;
     }
-
     public void setStudentId(Long studentId) {
 
         this.currentStudentId = studentId;
+
+        loadCourses();
+    }
+    public void setStudent(
+            Student student
+    ) {
+
+        this.currentStudentId = student.getId();
+        this.currentDegree = student.getMajor();
 
         loadCourses();
     }
@@ -93,7 +102,7 @@ public class EnrollmentController {
 
         currentTermComboBox.setItems(
                 FXCollections.observableArrayList(
-                        1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+                        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
                 )
         );
 
@@ -119,7 +128,7 @@ public class EnrollmentController {
 
         termFilterComboBox.setItems(
                 FXCollections.observableArrayList(
-                        1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+                        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
                 )
         );
 
