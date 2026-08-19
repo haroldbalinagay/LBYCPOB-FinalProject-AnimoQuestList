@@ -52,6 +52,15 @@ public class CurriculumController {
         this.curriculumService = curriculumService;
     }
 
+    // ============================================================
+// SET CURRENT STUDENT
+// ============================================================
+
+    public void setStudentId(Long studentId) {
+        this.currentStudentId = studentId;
+        loadCourses();
+    }
+
 
     // ============================================================
     // INITIALIZE
