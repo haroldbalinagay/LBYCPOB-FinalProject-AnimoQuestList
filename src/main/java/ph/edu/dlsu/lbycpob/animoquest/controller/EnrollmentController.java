@@ -39,19 +39,21 @@ public class EnrollmentController {
      * Later, this should come from the Student
      * who successfully logged in.
      */
-    private Long currentStudentId = 1L;
+    private Long currentStudentId;
+
+
+
+    public EnrollmentController(
+            CurriculumService curriculumService
+    ) {
+        this.curriculumService = curriculumService;
+    }
 
     public void setStudentId(Long studentId) {
 
         this.currentStudentId = studentId;
 
         loadCourses();
-    }
-
-    public EnrollmentController(
-            CurriculumService curriculumService
-    ) {
-        this.curriculumService = curriculumService;
     }
 
     // ============================================================
@@ -199,7 +201,6 @@ public class EnrollmentController {
         // LOAD COURSES
         // --------------------------------------------------------
 
-        loadCourses();
     }
 
     // ============================================================
