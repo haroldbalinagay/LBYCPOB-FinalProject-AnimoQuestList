@@ -5,8 +5,11 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.stage.Modality;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.stereotype.Component;
+import ph.edu.dlsu.lbycpob.animoquest.controller.v2.ChecklistViewController;
+import ph.edu.dlsu.lbycpob.animoquest.controller.v2.TermChecklistControllerV2;
 import ph.edu.dlsu.lbycpob.animoquest.model.CurriculumDisplay;
 import ph.edu.dlsu.lbycpob.animoquest.service.CurriculumService;
 import javafx.scene.Node;
@@ -17,10 +20,13 @@ import net.rgielen.fxweaver.core.FxWeaver;
 import ph.edu.dlsu.lbycpob.animoquest.model.Student;
 import ph.edu.dlsu.lbycpob.animoquest.model.MasterlistCourse;
 
+import java.io.IOException;
 import java.util.List;
 import ph.edu.dlsu.lbycpob.animoquest.controller.TermChecklistController;
+import ph.edu.dlsu.lbycpob.animoquest.service.v2.FxmlLoaderService;
 
 import java.util.Comparator;
+import java.util.Objects;
 
 @Component
 @FxmlView("enrollment.fxml")
@@ -49,6 +55,9 @@ public class EnrollmentController {
 
     @FXML
     private Label welcomeLabel;
+
+    @FXML
+    private Button openChecklistVisualizationBtn;
 
     private final CurriculumService curriculumService;
 
@@ -877,8 +886,8 @@ private void handleCourseSelection() {
                     "AnimoQuestList - Term Checklist"
             );
 
-            stage.show();
             stage.setMaximized(true);
+            stage.show();
 
         } catch (Exception e) {
 
@@ -910,5 +919,30 @@ private void handleCourseSelection() {
         if (termFilterComboBox != null) {
             termFilterComboBox.setValue(currentTerm);
         }
+    }
+
+    public void handleOpenChecklistVisual() {
+        // Load the fxml file
+        Parent root = fxWeaver.loadView(ChecklistViewController.class);
+
+        // Create the Stage and Scene
+        Stage popupStage = new Stage();
+        popupStage.setTitle("Term Checklist Visualization");
+
+        Scene scene = new Scene(root);
+
+        // Load and add the global CSS file
+//        String cssPath = Objects.requireNonNull(getClass().getResource("/css/style.css")).toExternalForm();
+//        scene.getStylesheets().add(cssPath);
+
+        popupStage.setScene(scene);
+
+        // Gets the current window from the source button to set it as owner
+        Stage ownerStage = (Stage) openChecklistVisualizationBtn.getScene().getWindow();
+        // Configure modality
+        popupStage.initModality(Modality.WINDOW_MODAL);
+        popupStage.initOwner(ownerStage);
+
+        popupStage.show();
     }
 }

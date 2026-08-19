@@ -10,6 +10,8 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import ph.edu.dlsu.lbycpob.animoquest.controller.WelcomeController;
 
+import java.util.Objects;
+
 public class JavaFxApplication extends Application {
 
     private ConfigurableApplicationContext applicationContext;
@@ -25,6 +27,10 @@ public class JavaFxApplication extends Application {
 
     @Override
     public void start(Stage stage) {
+        // Load and add the global CSS file
+        String cssPath = Objects.requireNonNull(getClass().getResource("/css/style.css")).toExternalForm();
+        Application.setUserAgentStylesheet(cssPath);
+
         FxWeaver fxWeaver = applicationContext.getBean(FxWeaver.class);
         Parent root = fxWeaver.loadView(WelcomeController.class);
         Scene scene = new Scene(root);

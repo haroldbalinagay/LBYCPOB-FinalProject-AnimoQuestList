@@ -456,8 +456,8 @@ public class TermChecklistController {
                     "AnimoQuestList - Enrollment"
             );
 
-            stage.show();
             stage.setMaximized(true);
+            stage.show();
 
         } catch (Exception e) {
 
