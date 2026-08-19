@@ -1,57 +1,50 @@
 package ph.edu.dlsu.lbycpob.animoquest.controller;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.stereotype.Component;
 import ph.edu.dlsu.lbycpob.animoquest.model.CurriculumProgress;
 import ph.edu.dlsu.lbycpob.animoquest.service.CurriculumService;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import ph.edu.dlsu.lbycpob.animoquest.model.CurriculumDisplay;
-
 
 @Component
-@FxmlView("curriculum.fxml")
+@FxmlView("enrollment.fxml")
 public class CurriculumController {
 
     @FXML
-    private ComboBox<Integer> termComboBox;
+    private ComboBox<Integer> termFilterComboBox;
 
     @FXML
-    private ComboBox<String> filterComboBox;
+    private ComboBox<String> sortComboBox;
 
     @FXML
-    private TableView<CurriculumDisplay> courseTable;
-
-    @FXML
-    private TableColumn<CurriculumDisplay, String> codeColumn;
-
-    @FXML
-    private TableColumn<CurriculumDisplay, String> nameColumn;
-
-    @FXML
-    private TableColumn<CurriculumDisplay, Integer> unitsColumn;
-
-    @FXML
-    private TableColumn<CurriculumDisplay, String> statusColumn;
-
-    @FXML
-    private TableColumn<CurriculumDisplay, Integer> termColumn;
-
-    @FXML
-    private TableColumn<CurriculumDisplay, String> requisiteColumn;
+    private ListView<CurriculumProgress> courseListView;
 
     @FXML
     private ComboBox<String> statusComboBox;
 
     private final CurriculumService curriculumService;
 
-    // ID of the currently logged-in student
-    private Long studentId;
+    private final ObservableList<CurriculumProgress> courses =
+            FXCollections.observableArrayList();
+
+    /*
+     * TEMPORARY:
+     * This will eventually be replaced with the ID
+     * of the student who actually logged in.
+     */
+    private Long currentStudentId = 1L;
+
+
+    // ============================================================
+    // CONSTRUCTOR
+    // ============================================================
 
     public CurriculumController(
             CurriculumService curriculumService
@@ -59,105 +52,30 @@ public class CurriculumController {
         this.curriculumService = curriculumService;
     }
 
+
+    // ============================================================
+    // INITIALIZE
+    // ============================================================
+
     @FXML
-    private void initialize() {
+    public void initialize() {
 
-        termComboBox.getItems().addAll(
-                1, 2, 3, 4, 5, 6, 7, 8
-        );
+        // --------------------------------------------------------
+        // Term filter
+        // --------------------------------------------------------
 
-        filterComboBox.getItems().addAll(
-                "Current Term",
-                "All Terms",
-                "Alphabetical"
-        );
-
-        statusComboBox.getItems().addAll(
-                "IN-PROGRESS",
-                "PASSED",
-                "FAILED"
-        );
-
-        // ============================================================
-        // TABLE COLUMNS
-        // ============================================================
-
-        codeColumn.setCellValueFactory(cellData ->
-                new SimpleStringProperty(
-                        cellData.getValue().getCode()
+        termFilterComboBox.setItems(
+                FXCollections.observableArrayList(
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        6,
+                        7,
+                        8,
+                        9,
+                        10
                 )
         );
 
-        nameColumn.setCellValueFactory(cellData ->
-                new SimpleStringProperty(
-                        cellData.getValue().getName()
-                )
-        );
-
-        unitsColumn.setCellValueFactory(cellData ->
-                new SimpleIntegerProperty(
-                        cellData.getValue().getUnits()
-                ).asObject()
-        );
-
-        statusColumn.setCellValueFactory(cellData ->
-                new SimpleStringProperty(
-                        cellData.getValue().getStatus()
-                )
-        );
-
-        termColumn.setCellValueFactory(cellData ->
-                new SimpleIntegerProperty(
-                        cellData.getValue().getTerm()
-                ).asObject()
-        );
-    }
-
-    /**
-     * Receives the ID of the student who logged in.
-     */
-    public void setStudentId(Long studentId) {
-
-        this.studentId = studentId;
-
-        loadStudentCourses();
-    }
-
-    /**
-     * Loads this student's courses from the database.
-     */
-    private void loadStudentCourses() {
-
-        if (studentId == null) {
-            return;
-        }
-
-        var courses =
-                curriculumService.getStudentCourseDisplay(studentId);
-
-        courseTable.getItems().setAll(courses);
-    }
-
-
-    @FXML
-    private void handleApplyFilter(ActionEvent event) {
-
-        if (studentId == null) {
-            return;
-        }
-
-        loadStudentCourses();
-    }
-
-    @FXML
-    private void handleSaveStatus(ActionEvent event) {
-
-        System.out.println("Save Status pressed.");
-    }
-
-    @FXML
-    private void handleRemoveCourse(ActionEvent event) {
-
-        System.out.println("Remove Course pressed.");
-    }
-}
