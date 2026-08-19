@@ -1,4 +1,4 @@
-package ph.edu.dlsu.lbycpob.animoquest.controller;
+package ph.edu.dlsu.lbycpob.animoquest.controller.v2;
 
 import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;

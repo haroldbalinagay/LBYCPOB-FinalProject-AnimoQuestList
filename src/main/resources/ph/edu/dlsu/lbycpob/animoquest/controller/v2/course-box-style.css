@@ -1,0 +1,31 @@
+.course-box {
+    -fx-background-color: #a8a8a8;
+}
+
+.course-box:requisite-passed {
+    -fx-background-color: #36cc36;
+}
+
+.course-box:requisite-failed {
+    -fx-background-color: #f13c3c;
+}
+
+.course-box:requisite-in-progress {
+    -fx-background-color: #ecec72;
+}
+
+.course-box:dependent {
+    -fx-background-color: #0088ff;
+}
+
+.course-box:source-eligible {
+    -fx-background-color: #36cc36;
+    -fx-border-width: 3;
+    -fx-border-color: #235a23;
+}
+
+.course-box:source-ineligible {
+    -fx-background-color: #f13c3c;
+    -fx-border-width: 3;
+    -fx-border-color: #6a1b1b;
+}
