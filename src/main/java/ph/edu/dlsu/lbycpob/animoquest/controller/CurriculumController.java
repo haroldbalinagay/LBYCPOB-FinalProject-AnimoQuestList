@@ -11,6 +11,8 @@ import ph.edu.dlsu.lbycpob.animoquest.model.CurriculumProgress;
 import ph.edu.dlsu.lbycpob.animoquest.service.CurriculumService;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import ph.edu.dlsu.lbycpob.animoquest.model.CurriculumDisplay;
+
 
 @Component
 @FxmlView("curriculum.fxml")
@@ -23,25 +25,25 @@ public class CurriculumController {
     private ComboBox<String> filterComboBox;
 
     @FXML
-    private TableView<CurriculumProgress> courseTable;
+    private TableView<CurriculumDisplay> courseTable;
 
     @FXML
-    private TableColumn<CurriculumProgress, String> codeColumn;
+    private TableColumn<CurriculumDisplay, String> codeColumn;
 
     @FXML
-    private TableColumn<CurriculumProgress, String> nameColumn;
+    private TableColumn<CurriculumDisplay, String> nameColumn;
 
     @FXML
-    private TableColumn<CurriculumProgress, Integer> unitsColumn;
+    private TableColumn<CurriculumDisplay, Integer> unitsColumn;
 
     @FXML
-    private TableColumn<CurriculumProgress, String> statusColumn;
+    private TableColumn<CurriculumDisplay, String> statusColumn;
 
     @FXML
-    private TableColumn<CurriculumProgress, Integer> termColumn;
+    private TableColumn<CurriculumDisplay, Integer> termColumn;
 
     @FXML
-    private TableColumn<CurriculumProgress, String> requisiteColumn;
+    private TableColumn<CurriculumDisplay, String> requisiteColumn;
 
     @FXML
     private ComboBox<String> statusComboBox;
@@ -82,10 +84,20 @@ public class CurriculumController {
 
         codeColumn.setCellValueFactory(cellData ->
                 new SimpleStringProperty(
-                        String.valueOf(
-                                cellData.getValue().getCourseId()
-                        )
+                        cellData.getValue().getCode()
                 )
+        );
+
+        nameColumn.setCellValueFactory(cellData ->
+                new SimpleStringProperty(
+                        cellData.getValue().getName()
+                )
+        );
+
+        unitsColumn.setCellValueFactory(cellData ->
+                new SimpleIntegerProperty(
+                        cellData.getValue().getUnits()
+                ).asObject()
         );
 
         statusColumn.setCellValueFactory(cellData ->
@@ -96,7 +108,7 @@ public class CurriculumController {
 
         termColumn.setCellValueFactory(cellData ->
                 new SimpleIntegerProperty(
-                        cellData.getValue().getTermTaken()
+                        cellData.getValue().getTerm()
                 ).asObject()
         );
     }
@@ -121,10 +133,11 @@ public class CurriculumController {
         }
 
         var courses =
-                curriculumService.getStudentCourses(studentId);
+                curriculumService.getStudentCourseDisplay(studentId);
 
         courseTable.getItems().setAll(courses);
     }
+
 
     @FXML
     private void handleApplyFilter(ActionEvent event) {
@@ -133,30 +146,7 @@ public class CurriculumController {
             return;
         }
 
-        if ("Current Term".equals(filterComboBox.getValue())) {
-
-            Integer term = termComboBox.getValue();
-
-            if (term != null) {
-
-                courseTable.getItems().setAll(
-                        curriculumService
-                                .getStudentCoursesByTerm(
-                                        studentId,
-                                        term
-                                )
-                );
-            }
-
-        } else if ("All Terms".equals(filterComboBox.getValue())) {
-
-            loadStudentCourses();
-
-        } else if ("Alphabetical".equals(filterComboBox.getValue())) {
-
-            // We'll implement alphabetical sorting later.
-            loadStudentCourses();
-        }
+        loadStudentCourses();
     }
 
     @FXML
