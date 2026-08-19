@@ -1,4 +1,4 @@
-package ph.edu.dlsu.lbycpob.animoquest.controller;
+package ph.edu.dlsu.lbycpob.animoquest.controller.v2;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,10 +13,13 @@ import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.stereotype.Component;
-import ph.edu.dlsu.lbycpob.animoquest.model.*;
-import ph.edu.dlsu.lbycpob.animoquest.service.CurriculumService;
-import ph.edu.dlsu.lbycpob.animoquest.service.FxmlLoaderService;
-import ph.edu.dlsu.lbycpob.animoquest.service.TermChecklistService;
+import ph.edu.dlsu.lbycpob.animoquest.model.v2.CourseBoxState;
+import ph.edu.dlsu.lbycpob.animoquest.model.v2.CourseStatus;
+import ph.edu.dlsu.lbycpob.animoquest.model.v2.CurriculumProgress;
+import ph.edu.dlsu.lbycpob.animoquest.model.v2.MasterlistCourse;
+import ph.edu.dlsu.lbycpob.animoquest.service.v2.CurriculumService;
+import ph.edu.dlsu.lbycpob.animoquest.service.v2.FxmlLoaderService;
+import ph.edu.dlsu.lbycpob.animoquest.service.v2.TermChecklistService;
 
 import java.io.IOException;
 import java.util.ArrayList;

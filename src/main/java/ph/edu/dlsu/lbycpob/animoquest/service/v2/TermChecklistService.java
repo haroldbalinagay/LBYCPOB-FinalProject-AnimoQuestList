@@ -1,15 +1,15 @@
-package ph.edu.dlsu.lbycpob.animoquest.service;
+package ph.edu.dlsu.lbycpob.animoquest.service.v2;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ph.edu.dlsu.lbycpob.animoquest.model.CourseStatus;
-import ph.edu.dlsu.lbycpob.animoquest.model.CurriculumProgress;
-import ph.edu.dlsu.lbycpob.animoquest.model.MasterlistCourse;
-import ph.edu.dlsu.lbycpob.animoquest.model.TermChecklist;
-import ph.edu.dlsu.lbycpob.animoquest.repository.MasterlistCourseRepository;
-import ph.edu.dlsu.lbycpob.animoquest.repository.TermChecklistRepository;
+import ph.edu.dlsu.lbycpob.animoquest.model.v2.CourseStatus;
+import ph.edu.dlsu.lbycpob.animoquest.model.v2.CurriculumProgress;
+import ph.edu.dlsu.lbycpob.animoquest.model.v2.MasterlistCourse;
+import ph.edu.dlsu.lbycpob.animoquest.model.v2.TermChecklist;
+import ph.edu.dlsu.lbycpob.animoquest.repository.v2.MasterlistCourseRepository;
+import ph.edu.dlsu.lbycpob.animoquest.repository.v2.TermChecklistRepository;
 
 import java.util.*;
 import java.util.stream.Collectors;

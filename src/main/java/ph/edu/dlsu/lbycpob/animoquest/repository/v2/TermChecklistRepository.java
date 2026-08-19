@@ -1,11 +1,11 @@
-package ph.edu.dlsu.lbycpob.animoquest.repository;
+package ph.edu.dlsu.lbycpob.animoquest.repository.v2;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
-import ph.edu.dlsu.lbycpob.animoquest.model.TermChecklist;
+import ph.edu.dlsu.lbycpob.animoquest.model.v2.TermChecklist;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package ph.edu.dlsu.lbycpob.animoquest.service;
+package ph.edu.dlsu.lbycpob.animoquest.service.v2;
 
 import javafx.fxml.FXMLLoader;
 import org.springframework.context.ApplicationContext;

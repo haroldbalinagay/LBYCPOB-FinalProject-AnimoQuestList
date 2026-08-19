@@ -1,7 +1,7 @@
-package ph.edu.dlsu.lbycpob.animoquest.repository;
+package ph.edu.dlsu.lbycpob.animoquest.repository.v2;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import ph.edu.dlsu.lbycpob.animoquest.model.CurriculumProgress;
+import ph.edu.dlsu.lbycpob.animoquest.model.v2.CurriculumProgress;
 
 import java.util.List;
 import java.util.Optional;

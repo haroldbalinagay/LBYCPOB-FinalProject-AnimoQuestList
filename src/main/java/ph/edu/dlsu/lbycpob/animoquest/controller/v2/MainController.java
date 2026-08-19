@@ -1,19 +1,16 @@
-package ph.edu.dlsu.lbycpob.animoquest.controller;
+package ph.edu.dlsu.lbycpob.animoquest.controller.v2;
 
 import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.util.Duration;
 import net.rgielen.fxweaver.core.FxmlView;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
-import ph.edu.dlsu.lbycpob.animoquest.service.FxmlLoaderService;
+import ph.edu.dlsu.lbycpob.animoquest.service.v2.FxmlLoaderService;
 
 import java.io.IOException;
 import java.util.Objects;

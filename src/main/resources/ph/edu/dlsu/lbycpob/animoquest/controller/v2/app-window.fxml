@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="appWindow" prefHeight="542.0" prefWidth="833.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ph.edu.dlsu.lbycpob.animoquest.controller.MainController">
+<BorderPane fx:id="appWindow" prefHeight="542.0" prefWidth="833.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ph.edu.dlsu.lbycpob.animoquest.controller.v2.MainController">
    <left>
       <VBox prefHeight="522.0" prefWidth="104.0" BorderPane.alignment="CENTER">
          <children>

@@ -1,4 +1,4 @@
-package ph.edu.dlsu.lbycpob.animoquest.controller;
+package ph.edu.dlsu.lbycpob.animoquest.controller.v2;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
@@ -6,12 +6,11 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import lombok.Getter;
-import lombok.Setter;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import ph.edu.dlsu.lbycpob.animoquest.model.CourseBoxState;
-import ph.edu.dlsu.lbycpob.animoquest.model.CourseStatus;
+import ph.edu.dlsu.lbycpob.animoquest.model.v2.CourseBoxState;
+import ph.edu.dlsu.lbycpob.animoquest.model.v2.CourseStatus;
 
 import java.util.function.IntConsumer;
 

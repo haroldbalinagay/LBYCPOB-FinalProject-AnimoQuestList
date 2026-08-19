@@ -1,4 +1,4 @@
-package ph.edu.dlsu.lbycpob.animoquest.model;
+package ph.edu.dlsu.lbycpob.animoquest.model.v2;
 
 import lombok.Getter;
 

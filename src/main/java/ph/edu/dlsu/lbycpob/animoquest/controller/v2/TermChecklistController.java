@@ -1,4 +1,4 @@
-package ph.edu.dlsu.lbycpob.animoquest.controller;
+package ph.edu.dlsu.lbycpob.animoquest.controller.v2;
 
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
@@ -9,9 +9,9 @@ import lombok.Getter;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import ph.edu.dlsu.lbycpob.animoquest.model.*;
-import ph.edu.dlsu.lbycpob.animoquest.service.FxmlLoaderService;
-import ph.edu.dlsu.lbycpob.animoquest.service.TermChecklistService;
+import ph.edu.dlsu.lbycpob.animoquest.model.v2.*;
+import ph.edu.dlsu.lbycpob.animoquest.service.v2.FxmlLoaderService;
+import ph.edu.dlsu.lbycpob.animoquest.service.v2.TermChecklistService;
 
 import java.io.IOException;
 import java.util.ArrayList;

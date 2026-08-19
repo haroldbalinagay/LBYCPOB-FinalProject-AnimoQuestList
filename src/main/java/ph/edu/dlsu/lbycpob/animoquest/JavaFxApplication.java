@@ -8,7 +8,7 @@ import javafx.stage.Stage;
 import net.rgielen.fxweaver.core.FxWeaver;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
-import ph.edu.dlsu.lbycpob.animoquest.controller.MainController;
+import ph.edu.dlsu.lbycpob.animoquest.controller.v2.MainController;
 
 public class JavaFxApplication extends Application {
 
