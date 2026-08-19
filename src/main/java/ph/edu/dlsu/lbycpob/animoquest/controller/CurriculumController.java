@@ -174,3 +174,244 @@ public class CurriculumController {
             e.printStackTrace();
         }
     }
+// ============================================================
+    // APPLY TERM FILTER
+    // ============================================================
+
+    @FXML
+    private void handleApplyFilter(ActionEvent event) {
+
+        Integer selectedTerm =
+                termFilterComboBox.getValue();
+
+
+        // If no term is selected,
+        // show all courses.
+
+        if (selectedTerm == null) {
+
+            loadCourses();
+
+            return;
+        }
+
+
+        try {
+
+            courses.setAll(
+                    curriculumService.getCoursesByTerm(
+                            currentStudentId,
+                            selectedTerm
+                    )
+            );
+
+            courseListView.setItems(courses);
+
+        } catch (Exception e) {
+
+            showAlert(
+                    Alert.AlertType.ERROR,
+                    "Filter Error",
+                    "Unable to apply the selected filter."
+            );
+
+            e.printStackTrace();
+        }
+    }
+
+
+    // ============================================================
+    // SAVE COURSE STATUS
+    // ============================================================
+
+    @FXML
+    private void handleSaveStatus(ActionEvent event) {
+
+        CurriculumProgress selectedCourse =
+                courseListView
+                        .getSelectionModel()
+                        .getSelectedItem();
+
+
+        // --------------------------------------------------------
+        // Check if a course was selected
+        // --------------------------------------------------------
+
+        if (selectedCourse == null) {
+
+            showAlert(
+                    Alert.AlertType.WARNING,
+                    "No Course Selected",
+                    "Please select a course first."
+            );
+
+            return;
+        }
+
+
+        // --------------------------------------------------------
+        // Get selected status
+        // --------------------------------------------------------
+
+        String selectedStatus =
+                statusComboBox.getValue();
+
+
+        if (selectedStatus == null) {
+
+            showAlert(
+                    Alert.AlertType.WARNING,
+                    "No Status Selected",
+                    "Please select a status."
+            );
+
+            return;
+        }
+
+
+        // --------------------------------------------------------
+        // Update status
+        // --------------------------------------------------------
+
+        try {
+
+            curriculumService.updateStatus(
+                    currentStudentId,
+                    selectedCourse.getCourseId(),
+                    selectedStatus
+            );
+
+
+            showAlert(
+                    Alert.AlertType.INFORMATION,
+                    "Status Updated",
+                    "The course status was successfully updated."
+            );
+
+
+            // Refresh list
+            loadCourses();
+
+
+            // Clear selected status
+            statusComboBox.getSelectionModel().clearSelection();
+
+        } catch (Exception e) {
+
+            showAlert(
+                    Alert.AlertType.ERROR,
+                    "Update Failed",
+                    e.getMessage()
+            );
+
+            e.printStackTrace();
+        }
+    }
+
+
+    // ============================================================
+    // REMOVE COURSE
+    // ============================================================
+
+    @FXML
+    private void handleRemoveCourse(ActionEvent event) {
+
+        CurriculumProgress selectedCourse =
+                courseListView
+                        .getSelectionModel()
+                        .getSelectedItem();
+
+
+        // --------------------------------------------------------
+        // Check if a course was selected
+        // --------------------------------------------------------
+
+        if (selectedCourse == null) {
+
+            showAlert(
+                    Alert.AlertType.WARNING,
+                    "No Course Selected",
+                    "Please select a course first."
+            );
+
+            return;
+        }
+
+
+        // --------------------------------------------------------
+        // Confirm removal
+        // --------------------------------------------------------
+
+        Alert confirmation =
+                new Alert(Alert.AlertType.CONFIRMATION);
+
+        confirmation.setTitle("Remove Course");
+        confirmation.setHeaderText(null);
+
+        confirmation.setContentText(
+                "Are you sure you want to remove this course?"
+        );
+
+
+        if (confirmation.showAndWait()
+                .orElse(null)
+                != javafx.scene.control.ButtonType.OK) {
+
+            return;
+        }
+
+
+        // --------------------------------------------------------
+        // Remove course
+        // --------------------------------------------------------
+
+        try {
+
+            curriculumService.removeCourse(
+                    currentStudentId,
+                    selectedCourse.getCourseId()
+            );
+
+
+            showAlert(
+                    Alert.AlertType.INFORMATION,
+                    "Course Removed",
+                    "The course was successfully removed."
+            );
+
+
+            // Refresh list
+            loadCourses();
+
+        } catch (Exception e) {
+
+            showAlert(
+                    Alert.AlertType.ERROR,
+                    "Removal Failed",
+                    e.getMessage()
+            );
+
+            e.printStackTrace();
+        }
+    }
+
+
+    // ============================================================
+    // ALERT
+    // ============================================================
+
+    private void showAlert(
+            Alert.AlertType type,
+            String title,
+            String message
+    ) {
+
+        Alert alert = new Alert(type);
+
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+
+        alert.showAndWait();
+    }
+}
