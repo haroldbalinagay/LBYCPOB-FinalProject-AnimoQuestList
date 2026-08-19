@@ -92,6 +92,8 @@ public class EnrollmentController {
 
             if (selectedTerm != null) {
                 currentTerm = selectedTerm;
+                // Make the filter follow the current term
+                termFilterComboBox.setValue(currentTerm);
             }
         });
 
