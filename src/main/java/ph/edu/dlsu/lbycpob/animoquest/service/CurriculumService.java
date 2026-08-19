@@ -57,3 +57,63 @@ public class CurriculumService {
             Long courseId
     ) {
 
+        return curriculumRepository
+                .findByStudentIdAndCourseId(studentId, courseId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "Course was not found in the student's curriculum."
+                        )
+                );
+    }
+
+
+    // ============================================================
+    // GET MASTERLIST COURSE
+    // ============================================================
+
+    public MasterlistCourse getMasterlistCourse(Long courseId) {
+
+        return masterlistCourseRepository
+                .findById(courseId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "Course was not found in the masterlist."
+                        )
+                );
+    }
+
+
+    // ============================================================
+    // UPDATE COURSE STATUS
+    // ============================================================
+
+    public void updateCourseStatus(
+            Long studentId,
+            Long courseId,
+            String status
+    ) {
+
+        CurriculumProgress progress =
+                getStudentCourse(studentId, courseId);
+
+        progress.setStatus(status);
+
+        curriculumRepository.save(progress);
+    }
+
+
+    // ============================================================
+    // REMOVE COURSE
+    // ============================================================
+
+    public void removeCourse(
+            Long studentId,
+            Long courseId
+    ) {
+
+        CurriculumProgress progress =
+                getStudentCourse(studentId, courseId);
+
+        curriculumRepository.delete(progress);
+    }
+}
