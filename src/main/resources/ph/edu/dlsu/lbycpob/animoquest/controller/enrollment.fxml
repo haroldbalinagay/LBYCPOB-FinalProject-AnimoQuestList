@@ -48,6 +48,9 @@
 
     </HBox>
 
+    <Button text="Open Term Checklist"
+            onAction="#handleOpenTermChecklist"/>
+
     <!-- COURSE LIST -->
 
     <Label text="Enrolled Courses"/>
