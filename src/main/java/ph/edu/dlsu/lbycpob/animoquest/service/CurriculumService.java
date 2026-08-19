@@ -15,13 +15,16 @@ public class CurriculumService {
 
     private final CurriculumRepository curriculumRepository;
     private final MasterlistCourseRepository masterlistCourseRepository;
+    private final TermChecklistService termChecklistService;
 
     public CurriculumService(
             CurriculumRepository curriculumRepository,
-            MasterlistCourseRepository masterlistCourseRepository
+            MasterlistCourseRepository masterlistCourseRepository,
+            TermChecklistService termChecklistService
     ) {
         this.curriculumRepository = curriculumRepository;
         this.masterlistCourseRepository = masterlistCourseRepository;
+        this.termChecklistService = termChecklistService;
     }
 
     // ============================================================
