@@ -1,274 +1,492 @@
 package ph.edu.dlsu.lbycpob.animoquest.controller;
 
+import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-import lombok.Getter;
 import net.rgielen.fxweaver.core.FxmlView;
-import org.springframework.context.annotation.Scope;
+import net.rgielen.fxweaver.core.FxWeaver;
 import org.springframework.stereotype.Component;
-import ph.edu.dlsu.lbycpob.animoquest.model.v2.*;
-import ph.edu.dlsu.lbycpob.animoquest.service.v2.FxmlLoaderService;
-import ph.edu.dlsu.lbycpob.animoquest.service.v2.TermChecklistService;
+import ph.edu.dlsu.lbycpob.animoquest.model.MasterlistCourse;
+import ph.edu.dlsu.lbycpob.animoquest.model.TermChecklist;
+import ph.edu.dlsu.lbycpob.animoquest.service.CurriculumService;
+import ph.edu.dlsu.lbycpob.animoquest.service.TermChecklistService;
+import ph.edu.dlsu.lbycpob.animoquest.model.Student;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
-import java.util.function.Consumer;
+import java.util.Map;
+import java.util.Set;
 
 @Component
-@Scope("prototype") // Ensures that Spring creates new controller instance for each fxml instance
 @FxmlView("term-checklist.fxml")
 public class TermChecklistController {
-    @FXML private Label termNumberLabel;
-    @FXML private CheckBox enrollInAllCheckbox;
-    @FXML private Label maxUnitsLabel;
-    @FXML private VBox coursesView;
-    @Getter
-    @FXML private VBox checklistBox;
 
-    private int termNumber;
-    private List<CourseBoxController> courseControllers = new ArrayList<>();
+    private static final int CURRENT_BATCH = 125;
 
-    private TermChecklist checklist;
-    @Getter
-    private List<MasterlistCourse> courses = new ArrayList<>();
+    private String currentDegree;
 
-    private List<CourseBoxController> highlightedCourses = new ArrayList<>();
+    @FXML
+    private TabPane termTabPane;
 
-    private Consumer<MasterlistCourse> onCourseClickListener;
+    @FXML
+    private Button addSelectedButton;
 
-    private final FxmlLoaderService fxmlLoader;
-    private final TermChecklistService checklistService;
+    private final TermChecklistService termChecklistService;
 
-    public TermChecklistController(FxmlLoaderService fxmlLoader, TermChecklistService checklistService) {
-        this.fxmlLoader = fxmlLoader;
-        this.checklistService = checklistService;
+    private final CurriculumService curriculumService;
+
+    private final FxWeaver fxWeaver;
+
+    private Student currentStudent;
+
+    /*
+     * The student who is currently logged in.
+     */
+    private Long currentStudentId;
+
+    /*
+     * The term the student is currently planning for.
+     *
+     * For now, default to Term 1.
+     */
+    private int currentTerm = 1;
+
+    /*
+     * Stores the CheckBoxes for each term.
+     *
+     * Example:
+     *
+     * Term 1 -> [checkbox1, checkbox2, checkbox3]
+     * Term 2 -> [checkbox4, checkbox5, checkbox6]
+     */
+    private final Map<Integer, List<CheckBox>> termCheckBoxes =
+            new HashMap<>();
+
+    public TermChecklistController(
+            TermChecklistService termChecklistService,
+            CurriculumService curriculumService,
+            FxWeaver fxWeaver
+    ) {
+
+        this.termChecklistService = termChecklistService;
+        this.curriculumService = curriculumService;
+        this.fxWeaver = fxWeaver;
     }
 
-    /**
-     * Sets the term number of the checklist which is used to find the courses assigned to the checklist.
-     * @param number The term number
-     */
-    public void setTermNumber(int number) {
-        if (number <= 0) return;
-        termNumber = number;
-        termNumberLabel.setText("TERM " + number);
+    // ============================================================
+    // SET STUDENT
+    // ============================================================
+
+    public void setStudentId(Long studentId) {
+
+        this.currentStudentId = studentId;
+    }
+    public void setStudent(Student student) {
+
+        this.currentStudent = student;
+        this.currentStudentId = student.getId();
+        this.currentDegree = student.getMajor();
+    }
+    // ============================================================
+// SET DEGREE
+// ============================================================
+
+    public void setDegree(String degree) {
+
+        if (degree == null || degree.isBlank()) {
+
+            throw new IllegalArgumentException(
+                    "Student degree cannot be empty."
+            );
+        }
+
+        this.currentDegree = degree;
+
+        loadTermChecklists();
+    }
+    // ============================================================
+    // SET CURRENT TERM
+    // ============================================================
+
+    public void setCurrentTerm(int currentTerm) {
+
+        if (currentTerm < 1 || currentTerm > 12) {
+
+            throw new IllegalArgumentException(
+                    "Current term must be between 1 and 12."
+            );
+        }
+
+        this.currentTerm = currentTerm;
     }
 
-    /**
-     * Populates the courses of the checklist.
-     */
-    public void populateCourses(List<CurriculumProgress> progressList) {
-        // Get the appropriate checklist
-        checklist = checklistService.getChecklistOf("CPE", 125, termNumber); // TODO: HARMONY POINT
+    // ============================================================
+    // INITIALIZE
+    // ============================================================
 
-        // Do not attempt to generate course boxes if the checklist is not found
-        if (checklist == null) {
-            coursesView.getChildren().add(new Label("Checklist not found"));
+    @FXML
+    public void initialize() {
+        // Checklist will be loaded after the student's
+        // degree is supplied.
+    }
+
+    // ============================================================
+    // LOAD TERMS
+    // ============================================================
+
+    private void loadTermChecklists() {
+
+        List<TermChecklist> checklists =
+                termChecklistService.getChecklists(
+                        CURRENT_BATCH,
+                        currentDegree
+                );
+
+        termTabPane.getTabs().clear();
+
+        termCheckBoxes.clear();
+
+        for (TermChecklist checklist : checklists) {
+
+            createTermTab(checklist);
+        }
+    }
+
+// ============================================================
+// CREATE TERM TAB
+// ============================================================
+
+    private void createTermTab(
+            TermChecklist checklist
+    ) {
+
+        int termNumber =
+                checklist.getTermNumber();
+
+        VBox container =
+                new VBox(10);
+
+        container.setPadding(
+                new javafx.geometry.Insets(15)
+        );
+
+        Label maxUnitsLabel =
+                new Label(
+                        "Maximum Units: "
+                                + checklist.getMaxUnits()
+                );
+
+        container.getChildren().add(
+                maxUnitsLabel
+        );
+
+        List<MasterlistCourse> courses =
+                termChecklistService.getCoursesForTerm(
+                        CURRENT_BATCH,
+                        currentDegree,
+                        termNumber
+                );
+
+        List<CheckBox> checkBoxes =
+                new ArrayList<>();
+
+        for (MasterlistCourse course : courses) {
+
+            CheckBox checkBox =
+                    new CheckBox();
+
+            checkBox.setText(
+                    course.getCode()
+                            + " - "
+                            + course.getName()
+                            + " ("
+                            + course.getUnits()
+                            + " units)"
+            );
+
+            /*
+             * Store the course ID inside
+             * the CheckBox.
+             */
+            checkBox.setUserData(
+                    course.getId()
+            );
+
+            checkBoxes.add(checkBox);
+
+            container.getChildren().add(
+                    checkBox
+            );
+        }
+
+        termCheckBoxes.put(
+                termNumber,
+                checkBoxes
+        );
+
+        Tab tab =
+                new Tab(
+                        "Term " + termNumber
+                );
+
+        tab.setContent(container);
+
+        tab.setClosable(false);
+
+        termTabPane.getTabs().add(tab);
+    }
+
+    // ============================================================
+    // ADD SELECTED COURSES
+    // ============================================================
+
+    @FXML
+    private void handleAddSelectedCourses(
+            ActionEvent event
+    ) {
+
+        // --------------------------------------------------------
+        // CHECK STUDENT
+        // --------------------------------------------------------
+
+        if (currentStudentId == null) {
+
+            showAlert(
+                    Alert.AlertType.ERROR,
+                    "No Student",
+                    "No student is currently logged in."
+            );
+
             return;
         }
 
-        courses = checklistService.getCourseDetailsOf(checklist);
+        // --------------------------------------------------------
+        // FIND SELECTED COURSES
+        // --------------------------------------------------------
 
-        // Set up each course listed in the term checklist
-        int orderIdx = 0;
-        for (MasterlistCourse course : courses) {
-            Parent courseBox;
-            // Load an instance of the course box
+        Set<Long> selectedCourseIds =
+                new HashSet<>();
+
+        for (List<CheckBox> checkBoxes :
+                termCheckBoxes.values()) {
+
+            for (CheckBox checkBox :
+                    checkBoxes) {
+
+                if (checkBox.isSelected()) {
+
+                    Long courseId =
+                            (Long) checkBox.getUserData();
+
+                    selectedCourseIds.add(
+                            courseId
+                    );
+                }
+            }
+        }
+
+        // --------------------------------------------------------
+        // CHECK IF NOTHING WAS SELECTED
+        // --------------------------------------------------------
+
+        if (selectedCourseIds.isEmpty()) {
+
+            showAlert(
+                    Alert.AlertType.WARNING,
+                    "No Courses Selected",
+                    "Please select at least one course."
+            );
+
+            return;
+        }
+
+        // --------------------------------------------------------
+        // ADD COURSES
+        // --------------------------------------------------------
+
+        int addedCount = 0;
+
+        List<String> errors =
+                new ArrayList<>();
+
+        for (Long courseId :
+                selectedCourseIds) {
+
             try {
-                courseBox = fxmlLoader.load(getClass().getResource("course-box.fxml"));
-            } catch (IOException e) {
-                coursesView.getChildren().add(new Label("Error loading course"));
-                continue;
-            }
 
-            // Extract and save the instance's controller into a list
-            CourseBoxController controller = fxmlLoader.getController();
-            courseControllers.add(controller);
+                curriculumService.addCourse(
+                        currentStudentId,
+                        courseId,
+                        currentTerm,
+                        "IN-PROGRESS"
+                );
 
-            // Provide the instance with key data
-            controller.setCourseCode(course.getCode());
-            controller.setCourseUnits(course.getUnits());
-            controller.setOrderInChecklist(orderIdx);
+                addedCount++;
 
-            CourseStatus status = checklistService.getStatusOf(course, progressList);
-            controller.setStatus(status);
-            orderIdx++; // Increment the index
+            } catch (Exception e) {
 
-            // Define the listener for the instance
-            controller.addListener(this::handleOnCourseClick);
-
-            // Add the instance to the checklist view
-            coursesView.getChildren().add(courseBox);
-
-            // Automatically highlight the instance based on its status
-            highlightedCourses.add(controller);
-            controller.updateHighlight();
-        }
-
-        // Update max units
-        maxUnitsLabel.setText(String.valueOf(checklist.getMaxUnits()));
-    }
-
-    /**
-     * Executes when ANY child (course box) instance is clicked.
-     * Passes the course model of the clicked on course box to the parent (checklist view) controller.
-     * @param orderIdx The order index of the clicked on course box
-     */
-    private void handleOnCourseClick(int orderIdx) {
-        if (onCourseClickListener != null) {
-            // Pass the data back to the main controller listener
-            onCourseClickListener.accept(courses.get(orderIdx));
-        }
-    }
-
-    /**
-     * Attaches a listener to the controller.
-     * @param listener
-     */
-    public void addListener(Consumer<MasterlistCourse> listener) {
-        onCourseClickListener = listener;
-    }
-
-    /**
-     * Counts how many courses have the source course as 1 of its requisites.
-     * @param sourceCourse The course to match against
-     * @return A count of dependents
-     */
-    public int countDependentsOf(MasterlistCourse sourceCourse, boolean renderHighlights) {
-        int count = 0;
-
-        // Simply return 0 if there are no courses
-        if (courses.isEmpty()) return count;
-
-        // Loop through each course in the checklist
-        int idx = -1;
-        for (MasterlistCourse course : courses) {
-            idx++;
-            // Skip this course if it has no reqs
-            if (course.hasNoRequisites()) continue;
-
-            // Check each req slot of the course
-            for (int i = 1; i <= 3; i++) {
-                Long reqId = course.getRequisiteIdAt(i);
-
-                if (reqId == null) continue; // Skip req slot if empty
-
-                // If req does match source course, increment counter and trigger dependent visualization (ONLY IF desired)
-                if (reqId.equals(sourceCourse.getId())) {
-                    count++;
-                    IO.println(course.getCode() + " is a dependent of " + sourceCourse.getCode());
-                    if (renderHighlights) {
-                        highlightDependent(idx);
-                    }
-                }
+                errors.add(
+                        e.getMessage()
+                );
             }
         }
-        return count;
-    }
 
-    /**
-     * Highlights all requisites of the source course found in the checklist.
-     * @param sourceCourse   The course to match against
-     * @param progressList   The complete curriculum progress records of a student
-     */
-    public void highlightRequisitesOf(MasterlistCourse sourceCourse, List<CurriculumProgress> progressList) {
-        // Simply return if the source course has no reqs
-        if (sourceCourse.hasNoRequisites()) return;
+        // --------------------------------------------------------
+        // SHOW RESULT
+        // --------------------------------------------------------
 
-        // Simply return if there are no courses in checklist
-        if (courses.isEmpty()) return;
+        if (errors.isEmpty()) {
 
-        // Check each req slot of the source course
-        for (int i = 0; i < 3; i++) {
-            Long reqId = sourceCourse.getRequisiteIdAt(i);
+            showAlert(
+                    Alert.AlertType.INFORMATION,
+                    "Courses Added",
+                    addedCount
+                            + " course(s) were successfully added "
+                            + "to your enrollment plan for Term "
+                            + currentTerm
+                            + "."
+            );
 
-            if (reqId == null) continue; // Skip req slot if empty
+        } else {
 
-            // Loop through each course in the checklist
-            int idx = 0;
-            for (MasterlistCourse course : courses) {
-                if (reqId.equals(course.getId())) {
-                    IO.println(course.getCode() + " is a requisite of " + sourceCourse.getCode());
-                    highlightRequisite(idx, progressList);
-                }
-                idx++;
+            StringBuilder message =
+                    new StringBuilder();
+
+            message.append(
+                    addedCount
+                            + " course(s) successfully added."
+            );
+
+            message.append("\n\n");
+
+            message.append(
+                    "Some courses could not be added:\n"
+            );
+
+            for (String error : errors) {
+
+                message.append(
+                        "• "
+                );
+
+                message.append(
+                        error
+                );
+
+                message.append(
+                        "\n"
+                );
+            }
+
+            showAlert(
+                    Alert.AlertType.WARNING,
+                    "Some Courses Were Not Added",
+                    message.toString()
+            );
+        }
+
+        // --------------------------------------------------------
+        // CLEAR CHECKBOXES
+        // --------------------------------------------------------
+
+        for (List<CheckBox> checkBoxes :
+                termCheckBoxes.values()) {
+
+            for (CheckBox checkBox :
+                    checkBoxes) {
+
+                checkBox.setSelected(false);
             }
         }
     }
 
-    /**
-     * Instructs the course box to highlight itself as a requisite.
-     * The specific type of requisite is first determined before being passed on to the course box.
-     * @param courseIdx      The order index of the course
-     * @param progressList   The complete curriculum progress records of a student
-     */
-    private void highlightRequisite(int courseIdx, List<CurriculumProgress> progressList) {
-        // Get the specific controller and save it to a list
-        CourseBoxController courseBox = courseControllers.get(courseIdx);
-        highlightedCourses.add(courseBox);
+    // ============================================================
+    // BACK
+    // ============================================================
 
-        // Ask the checklist service to get the status of the course based on the progress records
-        CourseStatus status = checklistService.getStatusOf(courses.get(courseIdx), progressList);
-        // Instruct the course box
-        courseBox.updateHighlight(status);
-    }
+    // ============================================================
+// BACK
+// ============================================================
 
-    /**
-     * Instructs the course box to highlight itself as a dependent.
-     * @param courseIdx The order index of the course
-     */
-    private void highlightDependent(int courseIdx) {
-        // Get the specific controller and save it to a list
-        CourseBoxController courseBox = courseControllers.get(courseIdx);
-        highlightedCourses.add(courseBox);
+    @FXML
+    private void handleBack(ActionEvent event) {
 
-        // Instruct the course box
-        courseBox.updateHighlight(CourseStatus.DEPENDENT);
-    }
+        try {
 
-    /**
-     * Removes the highlight from all highlighted courses.
-     */
-    public void resetHighlights() {
-        for (CourseBoxController courseBox : highlightedCourses) {
-            courseBox.resetHighlight();
+            Parent root =
+                    fxWeaver.loadView(
+                            EnrollmentController.class
+                    );
+
+            EnrollmentController controller =
+                    fxWeaver.getBean(
+                            EnrollmentController.class
+                    );
+
+            controller.setStudentId(
+                    currentStudentId
+            );
+
+            controller.setDegree(
+                    currentDegree
+            );
+
+            controller.setCurrentTerm(
+                    currentTerm
+            );
+
+            Stage stage =
+                    (Stage) ((Node) event.getSource())
+                            .getScene()
+                            .getWindow();
+
+            stage.setScene(
+                    new Scene(root)
+            );
+
+            stage.setTitle(
+                    "AnimoQuestList - Enrollment"
+            );
+
+            stage.show();
+            stage.setMaximized(true);
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            showAlert(
+                    Alert.AlertType.ERROR,
+                    "Navigation Error",
+                    "Unable to return to the enrollment page."
+            );
         }
-        highlightedCourses.clear();
     }
+    // ============================================================
+    // ALERT
+    // ============================================================
 
-    /**
-     * Highlights the (clicked on) course based on the given state.
-     * @param sourceCourse The clicked on course
-     * @param newState The state to base the highlighting style on
-     */
-    public void highlightSourceCourse(MasterlistCourse sourceCourse, CourseBoxState newState) {
-        if (sourceCourse == null) return;
+    private void showAlert(
+            Alert.AlertType type,
+            String title,
+            String message
+    ) {
 
-        // Loop through each course in the checklist to find the source course
-        int idx = 0;
-        for (MasterlistCourse course : courses) {
-            if (Objects.equals(sourceCourse.getId(), course.getId())) {
-                CourseBoxController courseBox = courseControllers.get(idx);
-                highlightedCourses.add(courseBox);
-                courseBox.updateHighlight(newState);
-            }
-            idx++;
-        }
-    }
+        Alert alert =
+                new Alert(type);
 
-    /**
-     * Instructs all course boxes to revert back to the highlights associated with their stored statuses.
-     */
-    public void restoreHighlights() {
-        // Loop through each course in the checklist to restore its default highlight
-        for (CourseBoxController courseBox : courseControllers) {
-            highlightedCourses.add(courseBox);
-            courseBox.updateHighlight();
-        }
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+
+        alert.showAndWait();
     }
 }
