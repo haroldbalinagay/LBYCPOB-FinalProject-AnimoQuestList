@@ -238,3 +238,174 @@ public class TermChecklistController {
         // --------------------------------------------------------
         // FIND SELECTED COURSES
         // --------------------------------------------------------
+
+        Set<Long> selectedCourseIds =
+                new HashSet<>();
+
+        for (List<CheckBox> checkBoxes :
+                termCheckBoxes.values()) {
+
+            for (CheckBox checkBox :
+                    checkBoxes) {
+
+                if (checkBox.isSelected()) {
+
+                    Long courseId =
+                            (Long) checkBox.getUserData();
+
+                    selectedCourseIds.add(
+                            courseId
+                    );
+                }
+            }
+        }
+
+        // --------------------------------------------------------
+        // CHECK IF NOTHING WAS SELECTED
+        // --------------------------------------------------------
+
+        if (selectedCourseIds.isEmpty()) {
+
+            showAlert(
+                    Alert.AlertType.WARNING,
+                    "No Courses Selected",
+                    "Please select at least one course."
+            );
+
+            return;
+        }
+
+        // --------------------------------------------------------
+        // ADD COURSES
+        // --------------------------------------------------------
+
+        int addedCount = 0;
+
+        List<String> errors =
+                new ArrayList<>();
+
+        for (Long courseId :
+                selectedCourseIds) {
+
+            try {
+
+                curriculumService.addCourse(
+                        currentStudentId,
+                        courseId,
+                        currentTerm,
+                        "IN-PROGRESS"
+                );
+
+                addedCount++;
+
+            } catch (Exception e) {
+
+                errors.add(
+                        e.getMessage()
+                );
+            }
+        }
+
+        // --------------------------------------------------------
+        // SHOW RESULT
+        // --------------------------------------------------------
+
+        if (errors.isEmpty()) {
+
+            showAlert(
+                    Alert.AlertType.INFORMATION,
+                    "Courses Added",
+                    addedCount
+                            + " course(s) were successfully added "
+                            + "to your enrollment plan for Term "
+                            + currentTerm
+                            + "."
+            );
+
+        } else {
+
+            StringBuilder message =
+                    new StringBuilder();
+
+            message.append(
+                    addedCount
+                            + " course(s) successfully added."
+            );
+
+            message.append("\n\n");
+
+            message.append(
+                    "Some courses could not be added:\n"
+            );
+
+            for (String error : errors) {
+
+                message.append(
+                        "• "
+                );
+
+                message.append(
+                        error
+                );
+
+                message.append(
+                        "\n"
+                );
+            }
+
+            showAlert(
+                    Alert.AlertType.WARNING,
+                    "Some Courses Were Not Added",
+                    message.toString()
+            );
+        }
+
+        // --------------------------------------------------------
+        // CLEAR CHECKBOXES
+        // --------------------------------------------------------
+
+        for (List<CheckBox> checkBoxes :
+                termCheckBoxes.values()) {
+
+            for (CheckBox checkBox :
+                    checkBoxes) {
+
+                checkBox.setSelected(false);
+            }
+        }
+    }
+
+    // ============================================================
+    // BACK
+    // ============================================================
+
+    @FXML
+    private void handleBack(ActionEvent event) {
+
+        /*
+         * Keep your existing back-navigation code here.
+         *
+         * We are not changing navigation in this step.
+         */
+    }
+
+    // ============================================================
+    // ALERT
+    // ============================================================
+
+    private void showAlert(
+            Alert.AlertType type,
+            String title,
+            String message
+    ) {
+
+        Alert alert =
+                new Alert(type);
+
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+
+        alert.showAndWait();
+    }
+}
