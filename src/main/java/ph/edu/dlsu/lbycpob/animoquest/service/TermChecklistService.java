@@ -1,7 +1,9 @@
 package ph.edu.dlsu.lbycpob.animoquest.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ph.edu.dlsu.lbycpob.animoquest.model.CourseStatus;
 import ph.edu.dlsu.lbycpob.animoquest.model.CurriculumProgress;
 import ph.edu.dlsu.lbycpob.animoquest.model.MasterlistCourse;
@@ -204,4 +206,44 @@ public class TermChecklistService {
      * @param reason Brief explanation of eligibility status
      */
     public record EnrollEligibility(boolean eligible, String reason) {}
+
+    /**
+     * Saves checklist data to the database.
+     * This method either updates an existing record with new data OR creates a new record if one does not exist already.
+     * @param degree The degree program
+     * @param batch The freshman year ID code
+     * @param termNumber The term number of checklist
+     * @param courseList A list of course IDs
+     */
+    @Transactional
+    public void saveChecklistData(String degree, int batch, int termNumber, List<MasterlistCourse> courseList) {
+        if (degree == null || batch <= 0 || termNumber <= 0 || courseList.isEmpty()) return;
+
+        int units = 0;
+        List<Long> courseIds = new ArrayList<>();
+
+        // Calculate max units & extract all course IDs into a list
+        for (MasterlistCourse course : courseList) {
+            if (course == null) continue;
+            units += course.getUnits();
+            courseIds.add(course.getId());
+        }
+
+        // Convert ArrayList<Long> into long[] array
+        long[] idsArray = courseIds.stream().mapToLong(Long::longValue).toArray();
+
+        try {
+            // Fetch the existing record from the database
+            TermChecklist existingChecklist = checklistRepository.findTermChecklistByDegreeAndBatchAndTermNumber(degree, batch, termNumber);
+            // Throw exception if not found
+            if (existingChecklist == null) throw new EntityNotFoundException("Checklist not found.");
+            // Update the max units & course IDs of the record
+            checklistRepository.updateCourseIds(existingChecklist.getId(), units, idsArray);
+
+        } catch (EntityNotFoundException e) {
+            // If no existing record, save a new record instead.
+            checklistRepository.save(new TermChecklist(batch, degree, termNumber, units, idsArray));
+        }
+    }
+
 }
