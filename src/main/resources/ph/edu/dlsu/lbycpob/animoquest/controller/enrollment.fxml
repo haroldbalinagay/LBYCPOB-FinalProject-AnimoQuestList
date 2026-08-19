@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
@@ -8,12 +9,14 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
+
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="ph.edu.dlsu.lbycpob.animoquest.controller.EnrollmentController"
       spacing="15"
       prefWidth="800"
       prefHeight="700">
+
 
     <padding>
         <Insets top="20"
@@ -22,89 +25,124 @@
                 left="20"/>
     </padding>
 
+
     <!-- ======================================================== -->
     <!-- TITLE -->
     <!-- ======================================================== -->
 
+
+    <Label fx:id="welcomeLabel"
+           text="Welcome!"/>
+
+
     <Label text="Enrollment Planning List"/>
+
 
     <!-- ======================================================== -->
     <!-- CONTROL BAR -->
     <!-- ======================================================== -->
 
+
     <HBox spacing="10">
 
+
         <Label text="Current Term:"/>
+
 
         <ComboBox fx:id="currentTermComboBox"
                   promptText="Select Current Term"/>
 
+
         <Label text="Filter Term:"/>
+
 
         <ComboBox fx:id="termFilterComboBox"
                   promptText="Select Term"/>
 
+
         <Label text="Sort:"/>
+
 
         <ComboBox fx:id="sortComboBox"
                   promptText="Select Filter"/>
 
+
         <Button text="Apply Filter"
                 onAction="#handleApplyFilter"/>
 
+
     </HBox>
+
 
     <!-- ======================================================== -->
     <!-- RECOMMENDATION BUTTON -->
     <!-- ======================================================== -->
 
+
     <Button text="Generate Recommended Courses"
             onAction="#handleGenerateRecommendations"/>
+
 
     <!-- ======================================================== -->
     <!-- TERM CHECKLIST -->
     <!-- ======================================================== -->
 
+
     <Button text="Open Term Checklist"
             onAction="#handleOpenTermChecklist"/>
+
 
     <!-- ======================================================== -->
     <!-- ENROLLED COURSES -->
     <!-- ======================================================== -->
 
+
     <Label text="Enrolled Courses"/>
+
 
     <ListView fx:id="courseListView"
               VBox.vgrow="ALWAYS"/>
+
 
     <!-- ======================================================== -->
     <!-- COURSE ACTIONS -->
     <!-- ======================================================== -->
 
+
     <HBox spacing="10">
+
 
         <ComboBox fx:id="statusComboBox"
                   promptText="Select Status"/>
 
+
         <Button text="Save Status"
                 onAction="#handleSaveStatus"/>
+
 
         <Button text="Remove Course"
                 onAction="#handleRemoveCourse"/>
 
+
     </HBox>
+
 
     <!-- ======================================================== -->
     <!-- RECOMMENDED COURSES -->
     <!-- ======================================================== -->
 
+
     <Label fx:id="recommendationLabel"
            text="Recommended Courses"/>
+
 
     <ListView fx:id="recommendedCourseListView"
               prefHeight="180"/>
 
+
     <Button text="Add Selected to Enrollment Plan"
             onAction="#handleAddRecommendedCourses"/>
 
+
 </VBox>
+
