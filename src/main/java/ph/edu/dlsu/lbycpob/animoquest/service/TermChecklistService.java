@@ -110,7 +110,7 @@ public class TermChecklistService {
             if (Objects.equals(course.getId(), progress.getCourseId())) {
                 // Save the status of the MOST RECENT info about course
                 if (progress.getTermTaken() >= latestTermTaken) {
-                    status = progress.getStatus();
+                    status = progress.getStatus(); // TODO: HARMONY POINT
                 }
             }
         }

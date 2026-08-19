@@ -27,6 +27,9 @@ public class CurriculumProgress {
     @Column(nullable = false)
     private boolean passed;
 
+    @Column(name = "in_progress", nullable = false)
+    private boolean inProgress;
+
     @Column(name = "created_at", insertable = false, updatable = false)
     private OffsetDateTime createdAt;
 
@@ -41,4 +44,10 @@ public class CurriculumProgress {
     }
 
     // TODO: Add attributes & behaviors for curriculum progress of a student
+
+    public CourseStatus getStatus() {
+        if (passed) return CourseStatus.PASSED;
+        else if (inProgress) return CourseStatus.IN_PROGRESS;
+        else return CourseStatus.FAILED;
+    }
 }
