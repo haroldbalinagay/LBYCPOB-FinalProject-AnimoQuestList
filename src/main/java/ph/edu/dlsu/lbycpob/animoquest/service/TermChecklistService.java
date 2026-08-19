@@ -7,6 +7,7 @@ import ph.edu.dlsu.lbycpob.animoquest.repository.MasterlistCourseRepository;
 import ph.edu.dlsu.lbycpob.animoquest.repository.TermChecklistRepository;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -23,10 +24,24 @@ public class TermChecklistService {
         this.masterlistCourseRepository = masterlistCourseRepository;
     }
 
-    // ============================================================
-    // GET CHECKLIST
-    // ============================================================
+    /**
+     * Gets all term checklists for a specific batch and degree.
+     */
+    public List<TermChecklist> getChecklists(
+            int batch,
+            String degree
+    ) {
 
+        return termChecklistRepository
+                .findByBatchAndDegreeOrderByTermNumberAsc(
+                        batch,
+                        degree
+                );
+    }
+
+    /**
+     * Gets the checklist for one specific term.
+     */
     public TermChecklist getChecklist(
             int batch,
             String degree,
@@ -41,19 +56,15 @@ public class TermChecklistService {
                 )
                 .orElseThrow(() ->
                         new IllegalArgumentException(
-                                "No checklist was found for "
-                                        + degree
-                                        + " Term "
-                                        + termNumber
+                                "Term checklist was not found."
                         )
                 );
     }
 
-    // ============================================================
-    // GET COURSES FOR CHECKLIST
-    // ============================================================
-
-    public List<MasterlistCourse> getCoursesForChecklist(
+    /**
+     * Gets the actual courses belonging to a term checklist.
+     */
+    public List<MasterlistCourse> getCoursesForTerm(
             int batch,
             String degree,
             int termNumber
@@ -66,42 +77,14 @@ public class TermChecklistService {
                         termNumber
                 );
 
-        List<MasterlistCourse> courses =
-                new ArrayList<>();
+        Long[] courseIds = checklist.getCourseIds();
 
-        if (checklist.getCourseIds() == null) {
-            return courses;
+        if (courseIds == null || courseIds.length == 0) {
+            return new ArrayList<>();
         }
 
-        for (Long courseId : checklist.getCourseIds()) {
-
-            MasterlistCourse course =
-                    masterlistCourseRepository
-                            .findById(courseId)
-                            .orElse(null);
-
-            if (course != null) {
-                courses.add(course);
-            }
-        }
-
-        return courses;
-    }
-
-    // ============================================================
-    // GET MAX UNITS
-    // ============================================================
-
-    public int getMaxUnits(
-            int batch,
-            String degree,
-            int termNumber
-    ) {
-
-        return getChecklist(
-                batch,
-                degree,
-                termNumber
-        ).getMaxUnits();
+        return masterlistCourseRepository.findByIdIn(
+                Arrays.asList(courseIds)
+        );
     }
 }
