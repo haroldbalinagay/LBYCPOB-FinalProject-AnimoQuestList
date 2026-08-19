@@ -12,6 +12,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "course_masterlist")
 public class MasterlistCourse {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -52,7 +53,6 @@ public class MasterlistCourse {
     public MasterlistCourse() {
     }
 
-    // TODO: missing reqIds & reqTypes (use builder)
     public MasterlistCourse(String code, String name, int units, boolean passFail) {
         this.code = code;
         this.name = name;
@@ -60,39 +60,26 @@ public class MasterlistCourse {
         this.passFail = passFail;
     }
 
-    // TODO: Add attributes & behaviors for course in masterlist
-
-    /**
-     * @return Whether the course has no requisites
-     */
     public boolean hasNoRequisites() {
         return reqId1 == null && reqId2 == null && reqId3 == null;
     }
 
-    /**
-     * @param requisite The requisite "number"
-     * @return The desired requisite ID
-     */
     public Long getRequisiteIdAt(int requisite) {
-        switch (requisite) {
-            case 1 -> { return reqId1; }
-            case 2 -> { return reqId2; }
-            case 3 -> { return reqId3; }
-            default -> { return null; }
-        }
+        return switch (requisite) {
+            case 1 -> reqId1;
+            case 2 -> reqId2;
+            case 3 -> reqId3;
+            default -> null;
+        };
     }
 
-    /**
-     * @param requisite The requisite "number"
-     * @return The desired requisite type
-     */
     public String getRequisiteTypeAt(int requisite) {
-        switch (requisite) {
-            case 1 -> { return reqType1; }
-            case 2 -> { return reqType2; }
-            case 3 -> { return reqType3; }
-            default -> { return null; }
-        }
+        return switch (requisite) {
+            case 1 -> reqType1;
+            case 2 -> reqType2;
+            case 3 -> reqType3;
+            default -> null;
+        };
     }
 
     @Override
@@ -100,7 +87,7 @@ public class MasterlistCourse {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MasterlistCourse that = (MasterlistCourse) o;
-        return Objects.equals(this.code, that.code); // Match by course code
+        return Objects.equals(this.code, that.code);
     }
 
     @Override
