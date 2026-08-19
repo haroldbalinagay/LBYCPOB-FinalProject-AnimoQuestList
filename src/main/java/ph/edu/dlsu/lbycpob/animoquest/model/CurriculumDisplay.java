@@ -8,9 +8,9 @@ public class CurriculumDisplay {
     private int units;
     private String status;
     private int term;
-    private String requisiteInfo;
+    private String requisites;
     private boolean valid;
-    private String missingPrerequisiteWarning;
+    private String warningMessage;
 
     // ============================================================
     // CONSTRUCTOR
@@ -23,21 +23,19 @@ public class CurriculumDisplay {
             int units,
             String status,
             int term,
-            String requisiteInfo,
+            String requisites,
             boolean valid,
-            String missingPrerequisiteWarning
+            String warningMessage
     ) {
-
         this.courseId = courseId;
         this.code = code;
         this.name = name;
         this.units = units;
         this.status = status;
         this.term = term;
-        this.requisiteInfo = requisiteInfo;
+        this.requisites = requisites;
         this.valid = valid;
-        this.missingPrerequisiteWarning =
-                missingPrerequisiteWarning;
+        this.warningMessage = warningMessage;
     }
 
     // ============================================================
@@ -68,16 +66,16 @@ public class CurriculumDisplay {
         return term;
     }
 
-    public String getRequisiteInfo() {
-        return requisiteInfo;
+    public String getRequisites() {
+        return requisites;
     }
 
     public boolean isValid() {
         return valid;
     }
 
-    public String getMissingPrerequisiteWarning() {
-        return missingPrerequisiteWarning;
+    public String getWarningMessage() {
+        return warningMessage;
     }
 
     // ============================================================
@@ -108,18 +106,15 @@ public class CurriculumDisplay {
         this.term = term;
     }
 
-    public void setRequisiteInfo(String requisiteInfo) {
-        this.requisiteInfo = requisiteInfo;
+    public void setRequisites(String requisites) {
+        this.requisites = requisites;
     }
 
     public void setValid(boolean valid) {
         this.valid = valid;
     }
 
-    public void setMissingPrerequisiteWarning(
-            String missingPrerequisiteWarning
-    ) {
-        this.missingPrerequisiteWarning =
-                missingPrerequisiteWarning;
+    public void setWarningMessage(String warningMessage) {
+        this.warningMessage = warningMessage;
     }
 }
