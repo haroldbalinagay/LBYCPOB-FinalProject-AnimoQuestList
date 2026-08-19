@@ -1,5 +1,6 @@
 package ph.edu.dlsu.lbycpob.animoquest.service;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ph.edu.dlsu.lbycpob.animoquest.model.CourseStatus;
 import ph.edu.dlsu.lbycpob.animoquest.model.CurriculumProgress;
@@ -24,7 +25,14 @@ public class TermChecklistService {
         this.checklistRepository = checklistRepository;
         this.progressService = progressService;
     }
-    
+
+    /**
+     * @return A list of all courses from the course masterlist.
+     */
+    public List<MasterlistCourse> getAllCourses() {
+        return courseRepository.findAll(Sort.by(Sort.Direction.ASC, "code"));
+    }
+
     public List<TermChecklist> getTermChecklistsOf(String degree, int batch) {
         if (degree == null || batch <= 0) return null;
         return checklistRepository.findAllByDegreeAndBatch(degree, batch);
