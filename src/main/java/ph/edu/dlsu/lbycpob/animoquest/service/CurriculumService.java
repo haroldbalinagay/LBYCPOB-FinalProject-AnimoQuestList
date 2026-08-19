@@ -287,3 +287,221 @@ public class CurriculumService {
         // Must be PASSED
         // --------------------------------------------------------
 
+        if (type.equals("H")) {
+
+            CurriculumProgress progress =
+                    findProgress(
+                            requisiteId,
+                            studentProgress
+                    );
+
+            boolean satisfied =
+                    progress != null
+                            && progress.isPassed();
+
+            return new RequisiteResult(
+                    satisfied,
+                    requisiteCode + " (H)"
+            );
+        }
+
+        // --------------------------------------------------------
+        // S = SOFT PREREQUISITE
+        // Must have been TAKEN
+        // Passing is NOT required
+        // --------------------------------------------------------
+
+        if (type.equals("S")) {
+
+            CurriculumProgress progress =
+                    findProgress(
+                            requisiteId,
+                            studentProgress
+                    );
+
+            boolean satisfied =
+                    progress != null;
+
+            return new RequisiteResult(
+                    satisfied,
+                    requisiteCode + " (S)"
+            );
+        }
+
+        // --------------------------------------------------------
+        // C = CO-REQUISITE
+        // Must be taken in the SAME TERM
+        // --------------------------------------------------------
+
+        if (type.equals("C")) {
+
+            CurriculumProgress progress =
+                    findProgress(
+                            requisiteId,
+                            studentProgress
+                    );
+
+            boolean satisfied =
+                    progress != null
+                            && progress.getTermTaken()
+                            == currentCourse.getTermTaken();
+
+            return new RequisiteResult(
+                    satisfied,
+                    requisiteCode + " (C)"
+            );
+        }
+
+        // --------------------------------------------------------
+        // UNKNOWN REQUISITE TYPE
+        // --------------------------------------------------------
+
+        return new RequisiteResult(
+                true,
+                requisiteCode
+                        + " ("
+                        + type
+                        + ")"
+        );
+    }
+
+    // ============================================================
+    // FIND STUDENT'S COURSE PROGRESS
+    // ============================================================
+
+    private CurriculumProgress findProgress(
+            Long courseId,
+            List<CurriculumProgress> studentProgress
+    ) {
+
+        for (CurriculumProgress progress :
+                studentProgress) {
+
+            if (progress.getCourseId().equals(courseId)) {
+                return progress;
+            }
+        }
+
+        return null;
+    }
+
+    // ============================================================
+    // ADD COURSE
+    // ============================================================
+
+    public CurriculumProgress addCourse(
+            Long studentId,
+            Long courseId,
+            int termTaken,
+            String status
+    ) {
+
+        if (studentId == null) {
+            throw new IllegalArgumentException(
+                    "Student ID cannot be null."
+            );
+        }
+
+        if (courseId == null) {
+            throw new IllegalArgumentException(
+                    "Course ID cannot be null."
+            );
+        }
+
+        if (termTaken < 1) {
+            throw new IllegalArgumentException(
+                    "Invalid term."
+            );
+        }
+
+        if (curriculumRepository
+                .findByStudentIdAndCourseId(
+                        studentId,
+                        courseId
+                )
+                .isPresent()) {
+
+            throw new IllegalArgumentException(
+                    "This course is already in your enrollment list."
+            );
+        }
+
+        CurriculumProgress progress =
+                new CurriculumProgress();
+
+        progress.setStudentId(studentId);
+        progress.setCourseId(courseId);
+        progress.setTermTaken(termTaken);
+        progress.setStatus(status);
+
+        return curriculumRepository.save(progress);
+    }
+
+    // ============================================================
+    // UPDATE COURSE STATUS
+    // ============================================================
+
+    public CurriculumProgress updateStatus(
+            Long studentId,
+            Long courseId,
+            String status
+    ) {
+
+        CurriculumProgress progress =
+                curriculumRepository
+                        .findByStudentIdAndCourseId(
+                                studentId,
+                                courseId
+                        )
+                        .orElseThrow(() ->
+                                new IllegalArgumentException(
+                                        "Course was not found."
+                                )
+                        );
+
+        // PASSED courses cannot be changed.
+        if (progress.isPassed()) {
+            throw new IllegalArgumentException(
+                    "A passed course cannot have its status changed."
+            );
+        }
+
+        progress.setStatus(status);
+
+        return curriculumRepository.save(progress);
+    }
+
+    // ============================================================
+    // REMOVE COURSE
+    // ============================================================
+
+    public void removeCourse(
+            Long studentId,
+            Long courseId
+    ) {
+
+        CurriculumProgress progress =
+                curriculumRepository
+                        .findByStudentIdAndCourseId(
+                                studentId,
+                                courseId
+                        )
+                        .orElseThrow(() ->
+                                new IllegalArgumentException(
+                                        "Course was not found."
+                                )
+                        );
+
+        curriculumRepository.delete(progress);
+    }
+
+    // ============================================================
+    // REQUISITE RESULT
+    // ============================================================
+
+    private record RequisiteResult(
+            boolean satisfied,
+            String description
+    ) {
+    }
+}
