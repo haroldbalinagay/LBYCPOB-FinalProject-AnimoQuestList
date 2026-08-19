@@ -153,3 +153,160 @@ public class CurriculumController {
         // --------------------------------------------------------
         // COURSE LIST DISPLAY
         // --------------------------------------------------------
+
+        courseListView.setCellFactory(
+                listView -> new ListCell<>() {
+
+                    @Override
+                    protected void updateItem(
+                            CurriculumDisplay course,
+                            boolean empty
+                    ) {
+
+                        super.updateItem(course, empty);
+
+                        if (empty || course == null) {
+
+                            setText(null);
+
+                        } else {
+
+                            StringBuilder text =
+                                    new StringBuilder();
+
+                            text.append(
+                                    course.getCode()
+                            );
+
+                            text.append(
+                                    " | "
+                            );
+
+                            text.append(
+                                    course.getName()
+                            );
+
+                            text.append(
+                                    " | "
+                            );
+
+                            text.append(
+                                    course.getUnits()
+                            );
+
+                            text.append(
+                                    " units"
+                            );
+
+                            text.append(
+                                    "\nTerm: "
+                            );
+
+                            text.append(
+                                    course.getTerm()
+                            );
+
+                            text.append(
+                                    " | Status: "
+                            );
+
+                            text.append(
+                                    course.getStatus()
+                            );
+
+                            text.append(
+                                    "\nRequisites: "
+                            );
+
+                            text.append(
+                                    course.getRequisiteInfo()
+                            );
+
+                            // ------------------------------------------------
+                            // MISSING PREREQUISITE WARNING
+                            // ------------------------------------------------
+
+                            if (
+                                    course
+                                            .getMissingPrerequisiteWarning()
+                                            != null
+                                            &&
+                                            !course
+                                                    .getMissingPrerequisiteWarning()
+                                                    .isBlank()
+                            ) {
+
+                                text.append(
+                                        "\n⚠ "
+                                );
+
+                                text.append(
+                                        course
+                                                .getMissingPrerequisiteWarning()
+                                );
+                            }
+
+                            setText(
+                                    text.toString()
+                            );
+                        }
+                    }
+                }
+        );
+
+
+        // --------------------------------------------------------
+        // COURSE SELECTION
+        // --------------------------------------------------------
+
+        courseListView
+                .getSelectionModel()
+                .selectedItemProperty()
+                .addListener(
+                        (observable, oldValue, newValue) -> {
+
+                            if (newValue == null) {
+
+                                statusComboBox
+                                        .getSelectionModel()
+                                        .clearSelection();
+
+                                statusComboBox.setDisable(false);
+
+                                return;
+                            }
+
+                            statusComboBox.setValue(
+                                    newValue.getStatus()
+                            );
+
+                            /*
+                             * PASSED courses cannot be changed.
+                             */
+                            if (
+                                    "PASSED".equals(
+                                            newValue.getStatus()
+                                    )
+                            ) {
+
+                                statusComboBox.setDisable(true);
+
+                            } else {
+
+                                statusComboBox.setDisable(false);
+                            }
+                        }
+                );
+
+
+        // --------------------------------------------------------
+        // LOAD COURSES
+        // --------------------------------------------------------
+
+        loadCourses();
+    }
+
+
+// ============================================================
+// LOAD COURSES
+// ============================================================
