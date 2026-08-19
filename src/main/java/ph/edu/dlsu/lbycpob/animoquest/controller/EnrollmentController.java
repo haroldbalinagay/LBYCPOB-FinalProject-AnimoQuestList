@@ -9,6 +9,10 @@ import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.stereotype.Component;
 import ph.edu.dlsu.lbycpob.animoquest.model.CurriculumDisplay;
 import ph.edu.dlsu.lbycpob.animoquest.service.CurriculumService;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import net.rgielen.fxweaver.core.FxWeaver;
+import ph.edu.dlsu.lbycpob.animoquest.controller.TermChecklistController;
 
 import java.util.Comparator;
 
@@ -47,10 +51,14 @@ public class EnrollmentController {
 
 
 
+    private final FxWeaver fxWeaver;
+
     public EnrollmentController(
-            CurriculumService curriculumService
+            CurriculumService curriculumService,
+            FxWeaver fxWeaver
     ) {
         this.curriculumService = curriculumService;
+        this.fxWeaver = fxWeaver;
     }
 
     public void setStudentId(Long studentId) {
@@ -520,5 +528,71 @@ private void handleCourseSelection() {
         alert.setContentText(message);
 
         alert.showAndWait();
+    }
+
+    // ============================================================
+// OPEN TERM CHECKLIST
+// ============================================================
+
+    @FXML
+    private void handleOpenTermChecklist(
+            ActionEvent event
+    ) {
+
+        if (currentStudentId == null) {
+
+            showAlert(
+                    Alert.AlertType.WARNING,
+                    "Student Not Found",
+                    "No student is currently logged in."
+            );
+
+            return;
+        }
+
+        Integer selectedTerm =
+                currentTermComboBox.getValue();
+
+        if (selectedTerm == null) {
+
+            showAlert(
+                    Alert.AlertType.WARNING,
+                    "No Current Term",
+                    "Please select the current term first."
+            );
+
+            return;
+        }
+
+        currentTerm = selectedTerm;
+
+        TermChecklistController controller =
+                fxWeaver.getBean(
+                        TermChecklistController.class
+                );
+
+        controller.setStudentId(
+                currentStudentId
+        );
+
+        controller.setCurrentTerm(
+                currentTerm
+        );
+
+        Stage stage =
+                (Stage) ((javafx.scene.Node) event.getSource())
+                        .getScene()
+                        .getWindow();
+
+        Scene scene =
+                new Scene(
+                        fxWeaver.loadView(
+                                TermChecklistController.class
+                        )
+                );
+
+        stage.setScene(scene);
+        stage.setTitle("Term Checklist");
+        stage.show();
     }
 }
