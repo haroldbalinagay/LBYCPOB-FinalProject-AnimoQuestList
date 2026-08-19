@@ -10,28 +10,34 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.stereotype.Component;
+import ph.edu.dlsu.lbycpob.animoquest.model.CurriculumDisplay;
 import ph.edu.dlsu.lbycpob.animoquest.model.CurriculumProgress;
 import ph.edu.dlsu.lbycpob.animoquest.service.CurriculumService;
+
+import java.util.Comparator;
 
 @Component
 @FxmlView("enrollment.fxml")
 public class CurriculumController {
 
     @FXML
-    private ComboBox<Integer> termFilterComboBox;
+    private ComboBox<Integer> currentTermComboBox;
+
+    @FXML
+    private ComboBox<String> termFilterComboBox;
 
     @FXML
     private ComboBox<String> sortComboBox;
 
     @FXML
-    private ListView<CurriculumProgress> courseListView;
+    private ListView<CurriculumDisplay> courseListView;
 
     @FXML
     private ComboBox<String> statusComboBox;
 
     private final CurriculumService curriculumService;
 
-    private final ObservableList<CurriculumProgress> courses =
+    private final ObservableList<CurriculumDisplay> courses =
             FXCollections.observableArrayList();
 
     /*
@@ -69,28 +75,50 @@ public class CurriculumController {
     @FXML
     public void initialize() {
 
-        // --------------------------------------------------------
-        // Term filter
-        // --------------------------------------------------------
+        // ============================================================
+        // CURRENT TERM
+        // ============================================================
 
-        termFilterComboBox.setItems(
+        currentTermComboBox.setItems(
                 FXCollections.observableArrayList(
-                        1,
-                        2,
-                        3,
-                        4,
-                        5,
-                        6,
-                        7,
-                        8,
-                        9,
-                        10
+                        1, 2, 3, 4, 5, 6,
+                        7, 8, 9, 10, 11, 12
                 )
         );
 
-        // --------------------------------------------------------
-        // Sorting options
-        // --------------------------------------------------------
+        // Default current term
+        currentTermComboBox.setValue(1);
+
+
+        // ============================================================
+        // TERM FILTER
+        // ============================================================
+
+        termFilterComboBox.setItems(
+                FXCollections.observableArrayList(
+                        "All",
+                        "Term 1",
+                        "Term 2",
+                        "Term 3",
+                        "Term 4",
+                        "Term 5",
+                        "Term 6",
+                        "Term 7",
+                        "Term 8",
+                        "Term 9",
+                        "Term 10",
+                        "Term 11",
+                        "Term 12"
+                )
+        );
+
+        // Show all courses by default
+        termFilterComboBox.setValue("All");
+
+
+        // ============================================================
+        // SORTING OPTIONS
+        // ============================================================
 
         sortComboBox.setItems(
                 FXCollections.observableArrayList(
@@ -99,10 +127,13 @@ public class CurriculumController {
                 )
         );
 
+        // Default sorting
+        sortComboBox.setValue("By Term");
 
-        // --------------------------------------------------------
-        // Course status options
-        // --------------------------------------------------------
+
+        // ============================================================
+        // COURSE STATUS OPTIONS
+        // ============================================================
 
         statusComboBox.setItems(
                 FXCollections.observableArrayList(
@@ -112,10 +143,13 @@ public class CurriculumController {
                 )
         );
 
+        // No status selected initially
+        statusComboBox.getSelectionModel().clearSelection();
 
-        // --------------------------------------------------------
-        // How each course appears in the ListView
-        // --------------------------------------------------------
+
+        // ============================================================
+        // COURSE LIST DISPLAY
+        // ============================================================
 
         courseListView.setCellFactory(
                 listView -> new ListCell<>() {
@@ -148,9 +182,9 @@ public class CurriculumController {
         );
 
 
-        // --------------------------------------------------------
-        // Load student's courses
-        // --------------------------------------------------------
+        // ============================================================
+        // LOAD COURSES
+        // ============================================================
 
         loadCourses();
     }
@@ -190,42 +224,64 @@ public class CurriculumController {
     @FXML
     private void handleApplyFilter(ActionEvent event) {
 
-        Integer selectedTerm =
+        String selectedTerm =
                 termFilterComboBox.getValue();
 
+        String selectedSort =
+                sortComboBox.getValue();
 
-        // If no term is selected,
-        // show all courses.
+        // --------------------------------------------------------
+        // LOAD COURSES
+        // --------------------------------------------------------
 
-        if (selectedTerm == null) {
-
-            loadCourses();
-
-            return;
-        }
-
-
-        try {
+        if ("All".equals(selectedTerm)) {
 
             courses.setAll(
-                    curriculumService.getCoursesByTerm(
-                            currentStudentId,
-                            selectedTerm
+                    curriculumService.getStudentCourseDisplays(
+                            currentStudentId
                     )
             );
 
-            courseListView.setItems(courses);
+        } else {
 
-        } catch (Exception e) {
-
-            showAlert(
-                    Alert.AlertType.ERROR,
-                    "Filter Error",
-                    "Unable to apply the selected filter."
+            int term = Integer.parseInt(
+                    selectedTerm.replace(
+                            "Term ",
+                            ""
+                    )
             );
 
-            e.printStackTrace();
+            courses.setAll(
+                    curriculumService.getCourseDisplaysByTerm(
+                            currentStudentId,
+                            term
+                    )
+            );
         }
+
+        // --------------------------------------------------------
+        // SORT
+        // --------------------------------------------------------
+
+        if ("Alphabetical".equals(selectedSort)) {
+
+            courses.sort(
+                    Comparator.comparing(
+                            CurriculumDisplay::getCode,
+                            String.CASE_INSENSITIVE_ORDER
+                    )
+            );
+
+        } else {
+
+            courses.sort(
+                    Comparator.comparingInt(
+                            CurriculumDisplay::getTerm
+                    )
+            );
+        }
+
+        courseListView.setItems(courses);
     }
 
 
