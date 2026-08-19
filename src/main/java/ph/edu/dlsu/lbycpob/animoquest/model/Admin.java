@@ -16,5 +16,4 @@ public class Admin extends User {
     public Admin() {
     }
 
-    // TODO: Add admin attributes & behaviors
 }
