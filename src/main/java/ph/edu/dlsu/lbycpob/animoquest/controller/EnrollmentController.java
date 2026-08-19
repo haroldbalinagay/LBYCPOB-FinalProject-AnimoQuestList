@@ -81,3 +81,194 @@ public class EnrollmentController {
                             CurriculumProgress course,
                             boolean empty
                     ) {
+
+                        super.updateItem(course, empty);
+
+                        if (empty || course == null) {
+                            setText(null);
+                        } else {
+
+                            setText(
+                                    "Course ID: "
+                                            + course.getCourseId()
+                                            + " | Term: "
+                                            + course.getTermTaken()
+                                            + " | Status: "
+                                            + course.getStatus()
+                            );
+                        }
+                    }
+                }
+        );
+
+        loadCourses();
+    }
+
+    // ============================================================
+    // LOAD COURSES
+    // ============================================================
+
+    private void loadCourses() {
+
+        courses.setAll(
+                curriculumService.getStudentCourses(
+                        currentStudentId
+                )
+        );
+
+        courseListView.setItems(courses);
+    }
+
+    // ============================================================
+    // FILTER
+    // ============================================================
+
+    @FXML
+    private void handleApplyFilter(ActionEvent event) {
+
+        Integer selectedTerm =
+                termFilterComboBox.getValue();
+
+        if (selectedTerm == null) {
+            loadCourses();
+            return;
+        }
+
+        courses.setAll(
+                curriculumService.getCoursesByTerm(
+                        currentStudentId,
+                        selectedTerm
+                )
+        );
+
+        courseListView.setItems(courses);
+    }
+
+    // ============================================================
+    // UPDATE STATUS
+    // ============================================================
+
+    @FXML
+    private void handleSaveStatus(ActionEvent event) {
+
+        CurriculumProgress selectedCourse =
+                courseListView.getSelectionModel()
+                        .getSelectedItem();
+
+        String selectedStatus =
+                statusComboBox.getValue();
+
+        if (selectedCourse == null) {
+
+            showAlert(
+                    Alert.AlertType.WARNING,
+                    "No Course Selected",
+                    "Please select a course first."
+            );
+
+            return;
+        }
+
+        if (selectedStatus == null) {
+
+            showAlert(
+                    Alert.AlertType.WARNING,
+                    "No Status Selected",
+                    "Please select a status."
+            );
+
+            return;
+        }
+
+        try {
+
+            curriculumService.updateStatus(
+                    currentStudentId,
+                    selectedCourse.getCourseId(),
+                    selectedStatus
+            );
+
+            showAlert(
+                    Alert.AlertType.INFORMATION,
+                    "Status Updated",
+                    "The course status was successfully updated."
+            );
+
+            loadCourses();
+
+        } catch (Exception e) {
+
+            showAlert(
+                    Alert.AlertType.ERROR,
+                    "Update Failed",
+                    e.getMessage()
+            );
+        }
+    }
+
+    // ============================================================
+    // REMOVE COURSE
+    // ============================================================
+
+    @FXML
+    private void handleRemoveCourse(ActionEvent event) {
+
+        CurriculumProgress selectedCourse =
+                courseListView.getSelectionModel()
+                        .getSelectedItem();
+
+        if (selectedCourse == null) {
+
+            showAlert(
+                    Alert.AlertType.WARNING,
+                    "No Course Selected",
+                    "Please select a course first."
+            );
+
+            return;
+        }
+
+        try {
+
+            curriculumService.removeCourse(
+                    currentStudentId,
+                    selectedCourse.getCourseId()
+            );
+
+            showAlert(
+                    Alert.AlertType.INFORMATION,
+                    "Course Removed",
+                    "The course was removed from your enrollment list."
+            );
+
+            loadCourses();
+
+        } catch (Exception e) {
+
+            showAlert(
+                    Alert.AlertType.ERROR,
+                    "Removal Failed",
+                    e.getMessage()
+            );
+        }
+    }
+
+    // ============================================================
+    // ALERT
+    // ============================================================
+
+    private void showAlert(
+            Alert.AlertType type,
+            String title,
+            String message
+    ) {
+
+        Alert alert = new Alert(type);
+
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+
+        alert.showAndWait();
+    }
+}
