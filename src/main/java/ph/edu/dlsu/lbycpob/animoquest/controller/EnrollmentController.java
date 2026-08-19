@@ -41,6 +41,13 @@ public class EnrollmentController {
      */
     private Long currentStudentId = 1L;
 
+    public void setStudentId(Long studentId) {
+
+        this.currentStudentId = studentId;
+
+        loadCourses();
+    }
+
     public EnrollmentController(
             CurriculumService curriculumService
     ) {
@@ -263,6 +270,7 @@ public class EnrollmentController {
     // ============================================================
     // SORT
     // ============================================================
+
 
     private void applySorting() {
 
