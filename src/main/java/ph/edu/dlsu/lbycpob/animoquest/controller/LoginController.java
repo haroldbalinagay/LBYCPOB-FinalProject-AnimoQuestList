@@ -99,14 +99,14 @@ public class LoginController {
 
             else if (user instanceof Admin) {
 
-                showAlert(
-                        Alert.AlertType.INFORMATION,
-                        "Login Successful",
-                        "Welcome, " + user.getFullName() + "!"
-                );
 
-                // TODO:
-                // Open Admin Dashboard here
+                Admin admin = (Admin) user;
+
+
+                openAdminDashboard(
+                        event,
+                        admin
+                );
             }
 
         } catch (IllegalArgumentException e) {
@@ -204,6 +204,65 @@ public class LoginController {
         }
     }
 
+    private void openAdminDashboard(
+            ActionEvent event,
+            Admin admin
+    ) {
+
+
+        try {
+
+
+            Parent root =
+                    fxWeaver.loadView(
+                            AdminDashboardController.class
+                    );
+
+
+            AdminDashboardController controller =
+                    fxWeaver.getBean(
+                            AdminDashboardController.class
+                    );
+
+
+            controller.setAdmin(
+                    admin
+            );
+
+
+            Stage stage =
+                    (Stage) ((Node) event.getSource())
+                            .getScene()
+                            .getWindow();
+
+
+            stage.setScene(
+                    new Scene(root)
+            );
+
+
+            stage.setTitle(
+                    "AnimoQuestList - Admin Dashboard"
+            );
+
+
+            stage.show();
+            stage.setMaximized(true);
+
+
+        } catch (Exception e) {
+
+
+            e.printStackTrace();
+
+
+            showAlert(
+                    Alert.AlertType.ERROR,
+                    "Navigation Error",
+                    "Unable to open the Admin Dashboard."
+            );
+        }
+    }
 
     // ============================================================
     // BACK
