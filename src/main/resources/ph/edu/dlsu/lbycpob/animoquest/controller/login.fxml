@@ -18,14 +18,9 @@
           prefWidth="300.0"
           AnchorPane.leftAnchor="150.0"
           AnchorPane.rightAnchor="150.0"
-          AnchorPane.topAnchor="50.0">
+          AnchorPane.topAnchor="100.0">
 
         <Label text="AnimoQuest Login"/>
-
-        <Label text="Username"/>
-
-        <TextField fx:id="usernameField"
-                   promptText="First Middle Last"/>
 
         <Label text="DLSU ID Number"/>
 
