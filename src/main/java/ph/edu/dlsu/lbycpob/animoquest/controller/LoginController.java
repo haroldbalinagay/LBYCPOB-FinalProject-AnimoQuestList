@@ -166,6 +166,9 @@ public class LoginController {
             controller.setStudentId(
                     student.getId()
             );
+            controller.setDegree(
+                    student.getMajor()
+            );
 
             /*
              * Change the current scene.
