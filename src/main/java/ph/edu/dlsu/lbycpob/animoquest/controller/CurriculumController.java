@@ -9,6 +9,8 @@ import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.stereotype.Component;
 import ph.edu.dlsu.lbycpob.animoquest.model.CurriculumProgress;
 import ph.edu.dlsu.lbycpob.animoquest.service.CurriculumService;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 
 @Component
 @FxmlView("curriculum.fxml")
@@ -72,6 +74,30 @@ public class CurriculumController {
                 "IN-PROGRESS",
                 "PASSED",
                 "FAILED"
+        );
+
+        // ============================================================
+        // TABLE COLUMNS
+        // ============================================================
+
+        codeColumn.setCellValueFactory(cellData ->
+                new SimpleStringProperty(
+                        String.valueOf(
+                                cellData.getValue().getCourseId()
+                        )
+                )
+        );
+
+        statusColumn.setCellValueFactory(cellData ->
+                new SimpleStringProperty(
+                        cellData.getValue().getStatus()
+                )
+        );
+
+        termColumn.setCellValueFactory(cellData ->
+                new SimpleIntegerProperty(
+                        cellData.getValue().getTermTaken()
+                ).asObject()
         );
     }
 
