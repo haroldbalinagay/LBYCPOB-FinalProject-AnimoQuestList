@@ -2,7 +2,9 @@ package ph.edu.dlsu.lbycpob.animoquest.service;
 
 import org.springframework.stereotype.Service;
 import ph.edu.dlsu.lbycpob.animoquest.model.CurriculumProgress;
+import ph.edu.dlsu.lbycpob.animoquest.model.MasterlistCourse;
 import ph.edu.dlsu.lbycpob.animoquest.repository.CurriculumRepository;
+import ph.edu.dlsu.lbycpob.animoquest.repository.MasterlistCourseRepository;
 
 import java.util.List;
 
@@ -10,9 +12,14 @@ import java.util.List;
 public class CurriculumService {
 
     private final CurriculumRepository curriculumRepository;
+    private final MasterlistCourseRepository masterlistCourseRepository;
 
-    public CurriculumService(CurriculumRepository curriculumRepository) {
+    public CurriculumService(
+            CurriculumRepository curriculumRepository,
+            MasterlistCourseRepository masterlistCourseRepository
+    ) {
         this.curriculumRepository = curriculumRepository;
+        this.masterlistCourseRepository = masterlistCourseRepository;
     }
 
     // ============================================================
@@ -50,47 +57,3 @@ public class CurriculumService {
             Long courseId
     ) {
 
-        return curriculumRepository
-                .findByStudentIdAndCourseId(studentId, courseId)
-                .orElseThrow(() ->
-                        new IllegalArgumentException(
-                                "Course was not found in the student's curriculum."
-                        )
-                );
-    }
-
-
-    // ============================================================
-    // UPDATE COURSE STATUS
-    // ============================================================
-
-    public void updateCourseStatus(
-            Long studentId,
-            Long courseId,
-            String status
-    ) {
-
-        CurriculumProgress progress =
-                getStudentCourse(studentId, courseId);
-
-        progress.setStatus(status);
-
-        curriculumRepository.save(progress);
-    }
-
-
-    // ============================================================
-    // REMOVE COURSE
-    // ============================================================
-
-    public void removeCourse(
-            Long studentId,
-            Long courseId
-    ) {
-
-        CurriculumProgress progress =
-                getStudentCourse(studentId, courseId);
-
-        curriculumRepository.delete(progress);
-    }
-}
