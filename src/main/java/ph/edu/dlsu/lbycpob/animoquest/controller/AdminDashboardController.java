@@ -57,6 +57,51 @@ public class AdminDashboardController {
                     "Course Management will be implemented here."
             );
         }
+        // CHECKLIST MANAGEMENT
+
+        @FXML
+        private void handleChecklistManagement(
+                ActionEvent event
+        ) {
+
+            showAlert(
+                    Alert.AlertType.INFORMATION,
+                    "Checklist Management",
+                    "Checklist Management will be implemented here."
+            );
+        }
+
+        // LOGOUT
+
+        @FXML
+        private void handleLogout(
+                ActionEvent event
+        ) {
+            try {
+                Parent root =
+                        fxWeaver.loadView(
+                                WelcomeController.class
+                        );
+                Stage stage =
+                        (Stage) ((Node) event.getSource())
+                                .getScene()
+                                .getWindow();
+                stage.setScene(
+                        new Scene(root)
+                );
+                stage.setTitle(
+                        "AnimoQuest"
+                );
+                stage.show();
+            } catch (Exception e) {
+                e.printStackTrace();
+                showAlert(
+                        Alert.AlertType.ERROR,
+                        "Logout Error",
+                        "Unable to return to the welcome page."
+                );
+            }
+        }
 
         // ALERT
 
