@@ -3,6 +3,8 @@ package ph.edu.dlsu.lbycpob.animoquest.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.OffsetDateTime;
 
@@ -11,6 +13,7 @@ import java.time.OffsetDateTime;
 @Entity
 @Table(name = "term_checklists")
 public class TermChecklist {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,8 +30,9 @@ public class TermChecklist {
     @Column(name = "max_units", nullable = false)
     private int maxUnits;
 
+    @JdbcTypeCode(SqlTypes.ARRAY)
     @Column(name = "course_ids", nullable = false)
-    private long[] courseIds;
+    private Long[] courseIds;
 
     @Column(name = "created_at", insertable = false, updatable = false)
     private OffsetDateTime createdAt;
@@ -36,14 +40,17 @@ public class TermChecklist {
     public TermChecklist() {
     }
 
-    // TODO: Might change long[] courseIds with arraylist
-    public TermChecklist(int batch, String degree, int termNumber, int maxUnits, long[] courseIds) {
+    public TermChecklist(
+            int batch,
+            String degree,
+            int termNumber,
+            int maxUnits,
+            Long[] courseIds
+    ) {
         this.batch = batch;
         this.degree = degree;
         this.termNumber = termNumber;
         this.maxUnits = maxUnits;
         this.courseIds = courseIds;
     }
-
-// TODO: Add attributes & behaviors for term checklist
 }
