@@ -569,7 +569,106 @@ private void handleCourseSelection() {
             );
         }
     }
+// ============================================================
+// GENERATE RECOMMENDED COURSES
+// ============================================================
 
+    @FXML
+    private void handleGenerateRecommendations(
+            ActionEvent event
+    ) {
+
+        if (currentStudentId == null) {
+
+            showAlert(
+                    Alert.AlertType.WARNING,
+                    "Student Not Found",
+                    "No student is currently logged in."
+            );
+
+            return;
+        }
+
+        if (currentDegree == null
+                || currentDegree.isBlank()) {
+
+            showAlert(
+                    Alert.AlertType.WARNING,
+                    "Degree Not Found",
+                    "The student's degree could not be determined."
+            );
+
+            return;
+        }
+
+        Integer selectedTerm =
+                currentTermComboBox.getValue();
+
+        if (selectedTerm == null) {
+
+            showAlert(
+                    Alert.AlertType.WARNING,
+                    "Current Term Required",
+                    "Please select your current term first."
+            );
+
+            return;
+        }
+
+        try {
+
+            int nextTerm =
+                    selectedTerm + 1;
+
+            List<MasterlistCourse> recommendations =
+                    curriculumService.getRecommendedCourses(
+                            currentStudentId,
+                            currentDegree,
+                            selectedTerm
+                    );
+
+            recommendedCourseListView
+                    .getSelectionModel()
+                    .clearSelection();
+
+            recommendedCourseListView
+                    .setItems(
+                            FXCollections.observableArrayList(
+                                    recommendations
+                            )
+                    );
+
+            recommendationLabel.setText(
+                    "Recommended Courses for Term "
+                            + nextTerm
+            );
+
+            if (recommendations.isEmpty()) {
+
+                showAlert(
+                        Alert.AlertType.INFORMATION,
+                        "No Recommendations",
+                        "There are currently no courses "
+                                + "available for recommendation "
+                                + "for Term "
+                                + nextTerm
+                                + "."
+                );
+
+            }
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            showAlert(
+                    Alert.AlertType.ERROR,
+                    "Recommendation Error",
+                    "Unable to generate course recommendations.\n\n"
+                            + e.getMessage()
+            );
+        }
+    }
     // ============================================================
     // ALERT
     // ============================================================
