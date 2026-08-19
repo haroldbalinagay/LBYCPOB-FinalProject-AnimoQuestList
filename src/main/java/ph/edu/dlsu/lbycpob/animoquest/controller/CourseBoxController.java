@@ -25,7 +25,7 @@ public class CourseBoxController {
     @FXML private GridPane courseBox;
 
     private int orderIdxInChecklist;
-    @Getter @Setter private CourseStatus status;
+    @Getter private CourseStatus status;
 
     // The listener that will notify the checklist controller of a click
     private IntConsumer onClickListener;
@@ -43,6 +43,13 @@ public class CourseBoxController {
 
     public void setOrderInChecklist(int index) {
         this.orderIdxInChecklist = index;
+    }
+
+    public void setStatus(CourseStatus status) {
+        this.status = status;
+
+        // Disables the checkbox if already passed
+        if (status == CourseStatus.PASSED) enrollInCheckbox.setDisable(true);
     }
 
     // LISTENER

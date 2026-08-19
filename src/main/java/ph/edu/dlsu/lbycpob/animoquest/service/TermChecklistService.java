@@ -8,10 +8,9 @@ import ph.edu.dlsu.lbycpob.animoquest.model.TermChecklist;
 import ph.edu.dlsu.lbycpob.animoquest.repository.MasterlistCourseRepository;
 import ph.edu.dlsu.lbycpob.animoquest.repository.TermChecklistRepository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 public class TermChecklistService {
@@ -31,13 +30,38 @@ public class TermChecklistService {
         return checklistRepository.findAllByDegreeAndBatch(degree, batch);
     }
 
+    /**
+     * Supplies the corresponding term checklist based on the following parameters:
+     * @param degree The student's degree program
+     * @param batch The student's freshman start year ID
+     * @param termNumber The specific term checklist to search for
+     * @return A specific term checklist
+     */
     public TermChecklist getChecklistOf(String degree, int batch, int termNumber) {
         if (degree == null || batch <= 0 || termNumber <= 0) return null;
         return checklistRepository.findTermChecklistByDegreeAndBatchAndTermNumber(degree, batch, termNumber);
     }
 
+    /**
+     * Supplies an ordered list of the courses associated with the given term checklist.
+     * @param checklist The term checklist to search for
+     * @return An ordered list of courses
+     */
     public List<MasterlistCourse> getCourseDetailsOf(TermChecklist checklist) {
-        return courseRepository.findByIdIn(checklist.getCourseIds());
+        long[] ids = checklist.getCourseIds();
+
+        // Fetch unordered records from repository
+        List<MasterlistCourse> courses = courseRepository.findByIdIn(ids);
+
+        // Map IDs to their original array index for O(1) lookups
+        Map<Long, Integer> idOrderMap = IntStream.range(0, ids.length)
+                .boxed()
+                .collect(Collectors.toMap(i -> ids[i], i -> i));
+
+        // Sort the list based on the map
+        courses.sort(Comparator.comparingInt(user -> idOrderMap.getOrDefault(user.getId(), Integer.MAX_VALUE)));
+
+        return courses;
     }
 
     /**
