@@ -9,6 +9,8 @@ import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.stereotype.Component;
 import ph.edu.dlsu.lbycpob.animoquest.model.CurriculumDisplay;
 import ph.edu.dlsu.lbycpob.animoquest.service.CurriculumService;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import net.rgielen.fxweaver.core.FxWeaver;
@@ -47,6 +49,7 @@ public class EnrollmentController {
      * who successfully logged in.
      */
     private Long currentStudentId;
+    private String currentDegree;
     private int currentTerm = 1;
 
 
@@ -66,6 +69,11 @@ public class EnrollmentController {
         this.currentStudentId = studentId;
 
         loadCourses();
+    }
+
+    public void setDegree(String degree) {
+
+        this.currentDegree = degree;
     }
 
     // ============================================================
@@ -535,64 +543,99 @@ private void handleCourseSelection() {
 // ============================================================
 
     @FXML
-    private void handleOpenTermChecklist(
-            ActionEvent event
-    ) {
+    private void handleOpenTermChecklist(ActionEvent event) {
 
-        if (currentStudentId == null) {
+        try {
 
-            showAlert(
-                    Alert.AlertType.WARNING,
-                    "Student Not Found",
-                    "No student is currently logged in."
-            );
+            if (currentStudentId == null) {
 
-            return;
-        }
-
-        Integer selectedTerm =
-                currentTermComboBox.getValue();
-
-        if (selectedTerm == null) {
-
-            showAlert(
-                    Alert.AlertType.WARNING,
-                    "No Current Term",
-                    "Please select the current term first."
-            );
-
-            return;
-        }
-
-        currentTerm = selectedTerm;
-
-        TermChecklistController controller =
-                fxWeaver.getBean(
-                        TermChecklistController.class
+                showAlert(
+                        Alert.AlertType.WARNING,
+                        "Student Not Found",
+                        "No student is currently logged in."
                 );
 
-        controller.setStudentId(
-                currentStudentId
-        );
+                return;
+            }
 
-        controller.setCurrentTerm(
-                currentTerm
-        );
+            if (currentDegree == null
+                    || currentDegree.isBlank()) {
 
-        Stage stage =
-                (Stage) ((javafx.scene.Node) event.getSource())
-                        .getScene()
-                        .getWindow();
-
-        Scene scene =
-                new Scene(
-                        fxWeaver.loadView(
-                                TermChecklistController.class
-                        )
+                showAlert(
+                        Alert.AlertType.WARNING,
+                        "Degree Not Found",
+                        "The student's degree could not be determined."
                 );
 
-        stage.setScene(scene);
-        stage.setTitle("Term Checklist");
-        stage.show();
+                return;
+            }
+
+            Integer selectedTerm =
+                    currentTermComboBox.getValue();
+
+            if (selectedTerm == null) {
+                selectedTerm = currentTerm;
+            }
+
+            /*
+             * Load the Term Checklist view.
+             */
+            Parent root =
+                    fxWeaver.loadView(
+                            TermChecklistController.class
+                    );
+
+            /*
+             * Get the controller used by the loaded view.
+             */
+            TermChecklistController controller =
+                    fxWeaver.getBean(
+                            TermChecklistController.class
+                    );
+
+            /*
+             * Pass the logged-in student's information.
+             */
+            controller.setStudentId(
+                    currentStudentId
+            );
+
+            controller.setDegree(
+                    currentDegree
+            );
+
+            controller.setCurrentTerm(
+                    selectedTerm
+            );
+
+            /*
+             * Change the current scene.
+             */
+            Stage stage =
+                    (Stage) ((Node) event.getSource())
+                            .getScene()
+                            .getWindow();
+
+            stage.setScene(
+                    new Scene(root)
+            );
+
+            stage.setTitle(
+                    "AnimoQuestList - Term Checklist"
+            );
+
+            stage.show();
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            showAlert(
+                    Alert.AlertType.ERROR,
+                    "Navigation Error",
+                    "Unable to open the Term Checklist.\n\n"
+                            + e.getMessage()
+            );
+        }
     }
 }
