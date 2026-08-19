@@ -70,3 +70,77 @@ public class CurriculumService {
                     "Invalid term."
             );
         }
+        if (curriculumRepository
+                .findByStudentIdAndCourseId(
+                        studentId,
+                        courseId
+                )
+                .isPresent()) {
+
+            throw new IllegalArgumentException(
+                    "This course is already in your enrollment list."
+            );
+        }
+
+        CurriculumProgress progress =
+                new CurriculumProgress();
+
+        progress.setStudentId(studentId);
+        progress.setCourseId(courseId);
+        progress.setTermTaken(termTaken);
+        progress.setStatus(status);
+
+        return curriculumRepository.save(progress);
+    }
+
+    // ============================================================
+    // UPDATE COURSE STATUS
+    // ============================================================
+
+    public CurriculumProgress updateStatus(
+            Long studentId,
+            Long courseId,
+            String status
+    ) {
+
+        CurriculumProgress progress =
+                curriculumRepository
+                        .findByStudentIdAndCourseId(
+                                studentId,
+                                courseId
+                        )
+                        .orElseThrow(() ->
+                                new IllegalArgumentException(
+                                        "Course was not found."
+                                )
+                        );
+
+        progress.setStatus(status);
+
+        return curriculumRepository.save(progress);
+    }
+
+    // ============================================================
+    // REMOVE COURSE
+    // ============================================================
+
+    public void removeCourse(
+            Long studentId,
+            Long courseId
+    ) {
+
+        CurriculumProgress progress =
+                curriculumRepository
+                        .findByStudentIdAndCourseId(
+                                studentId,
+                                courseId
+                        )
+                        .orElseThrow(() ->
+                                new IllegalArgumentException(
+                                        "Course was not found."
+                                )
+                        );
+
+        curriculumRepository.delete(progress);
+    }
+}
