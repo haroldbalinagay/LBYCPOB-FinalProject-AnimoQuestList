@@ -12,13 +12,19 @@ public class CurriculumDisplay {
     private final String status;
     private final int term;
 
+    // Prerequisite information
+    private final String requisiteInfo;
+    private final String missingPrerequisiteWarning;
+
     public CurriculumDisplay(
             Long courseId,
             String code,
             String name,
             int units,
             String status,
-            int term
+            int term,
+            String requisiteInfo,
+            String missingPrerequisiteWarning
     ) {
         this.courseId = courseId;
         this.code = code;
@@ -26,5 +32,7 @@ public class CurriculumDisplay {
         this.units = units;
         this.status = status;
         this.term = term;
+        this.requisiteInfo = requisiteInfo;
+        this.missingPrerequisiteWarning = missingPrerequisiteWarning;
     }
 }
