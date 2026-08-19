@@ -1,6 +1,5 @@
 package ph.edu.dlsu.lbycpob.animoquest.controller;
 
-import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
@@ -8,8 +7,10 @@ import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.stereotype.Component;
 import ph.edu.dlsu.lbycpob.animoquest.model.MasterlistCourse;
 import ph.edu.dlsu.lbycpob.animoquest.model.TermChecklist;
+import ph.edu.dlsu.lbycpob.animoquest.service.CurriculumService;
 import ph.edu.dlsu.lbycpob.animoquest.service.TermChecklistService;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -33,6 +34,19 @@ public class TermChecklistController {
 
     private final TermChecklistService termChecklistService;
 
+    private final CurriculumService curriculumService;
+
+    /*
+     * Student who is currently logged in.
+     */
+    private Long currentStudentId;
+
+    /*
+     * Current term selected by the student
+     * in the Enrollment Planning screen.
+     */
+    private int currentTerm = 1;
+
     /*
      * Stores the CheckBoxes for each term.
      *
@@ -44,11 +58,46 @@ public class TermChecklistController {
     private final Map<Integer, List<CheckBox>> termCheckBoxes =
             new HashMap<>();
 
+
+    // ============================================================
+    // CONSTRUCTOR
+    // ============================================================
+
     public TermChecklistController(
-            TermChecklistService termChecklistService
+            TermChecklistService termChecklistService,
+            CurriculumService curriculumService
     ) {
         this.termChecklistService = termChecklistService;
+        this.curriculumService = curriculumService;
     }
+
+
+    // ============================================================
+    // SET STUDENT ID
+    // ============================================================
+
+    public void setStudentId(Long studentId) {
+
+        this.currentStudentId = studentId;
+    }
+
+
+    // ============================================================
+    // SET CURRENT TERM
+    // ============================================================
+
+    public void setCurrentTerm(int currentTerm) {
+
+        if (currentTerm < 1 || currentTerm > 12) {
+
+            throw new IllegalArgumentException(
+                    "Current term must be between 1 and 12."
+            );
+        }
+
+        this.currentTerm = currentTerm;
+    }
+
 
     // ============================================================
     // INITIALIZE
@@ -59,6 +108,7 @@ public class TermChecklistController {
 
         loadTermChecklists();
     }
+
 
     // ============================================================
     // LOAD TERMS
@@ -74,160 +124,16 @@ public class TermChecklistController {
 
         termTabPane.getTabs().clear();
 
+        termCheckBoxes.clear();
+
         for (TermChecklist checklist : checklists) {
 
             createTermTab(checklist);
         }
     }
 
-    // ============================================================
-    // CREATE TERM TAB
-    // ============================================================
 
-    private void createTermTab(
-            TermChecklist checklist
-    ) {
+// ============================================================
+// CREATE TERM TAB
+// ============================================================
 
-        int termNumber =
-                checklist.getTermNumber();
-
-        VBox container =
-                new VBox(10);
-
-        container.setPadding(
-                new javafx.geometry.Insets(15)
-        );
-
-        Label maxUnitsLabel =
-                new Label(
-                        "Maximum Units: "
-                                + checklist.getMaxUnits()
-                );
-
-        container.getChildren().add(
-                maxUnitsLabel
-        );
-
-        List<MasterlistCourse> courses =
-                termChecklistService.getCoursesForTerm(
-                        CURRENT_BATCH,
-                        CURRENT_DEGREE,
-                        termNumber
-                );
-
-        List<CheckBox> checkBoxes =
-                new java.util.ArrayList<>();
-
-        for (MasterlistCourse course : courses) {
-
-            CheckBox checkBox =
-                    new CheckBox();
-
-            checkBox.setText(
-                    course.getCode()
-                            + " - "
-                            + course.getName()
-                            + " ("
-                            + course.getUnits()
-                            + " units)"
-            );
-
-            /*
-             * Store course ID inside the CheckBox.
-             */
-            checkBox.setUserData(
-                    course.getId()
-            );
-
-            checkBoxes.add(checkBox);
-
-            container.getChildren().add(
-                    checkBox
-            );
-        }
-
-        termCheckBoxes.put(
-                termNumber,
-                checkBoxes
-        );
-
-        Tab tab =
-                new Tab(
-                        "Term " + termNumber
-                );
-
-        tab.setContent(container);
-
-        tab.setClosable(false);
-
-        termTabPane.getTabs().add(tab);
-    }
-
-    // ============================================================
-    // ADD SELECTED COURSES
-    // ============================================================
-
-    @FXML
-    private void handleAddSelectedCourses() {
-
-        Set<Long> selectedCourseIds =
-                new HashSet<>();
-
-        for (List<CheckBox> checkBoxes :
-                termCheckBoxes.values()) {
-
-            for (CheckBox checkBox :
-                    checkBoxes) {
-
-                if (checkBox.isSelected()) {
-
-                    Long courseId =
-                            (Long) checkBox.getUserData();
-
-                    selectedCourseIds.add(
-                            courseId
-                    );
-                }
-            }
-        }
-
-        if (selectedCourseIds.isEmpty()) {
-
-            showAlert(
-                    Alert.AlertType.WARNING,
-                    "No Courses Selected",
-                    "Please select at least one course."
-            );
-
-            return;
-        }
-
-        showAlert(
-                Alert.AlertType.INFORMATION,
-                "Courses Selected",
-                "Selected "
-                        + selectedCourseIds.size()
-                        + " course(s)."
-        );
-    }
-
-    // ============================================================
-    // ALERT
-    // ============================================================
-
-    private void showAlert(
-            Alert.AlertType type,
-            String title,
-            String message
-    ) {
-
-        Alert alert =
-                new Alert(type);
-
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-
-        alert.showAndWait();
-    }
-}
