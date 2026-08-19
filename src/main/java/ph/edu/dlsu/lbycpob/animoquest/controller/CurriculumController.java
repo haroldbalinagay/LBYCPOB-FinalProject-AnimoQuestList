@@ -46,6 +46,9 @@ public class CurriculumController {
 
     private final CurriculumService curriculumService;
 
+    // ID of the currently logged-in student
+    private Long studentId;
+
     public CurriculumController(
             CurriculumService curriculumService
     ) {
@@ -55,44 +58,19 @@ public class CurriculumController {
     @FXML
     private void initialize() {
 
-        // Terms
         termComboBox.getItems().addAll(
                 1, 2, 3, 4, 5, 6, 7, 8
         );
 
-        // Filters
         filterComboBox.getItems().addAll(
                 "Current Term",
                 "All Terms",
                 "Alphabetical"
         );
 
-        // Status options
         statusComboBox.getItems().addAll(
                 "IN-PROGRESS",
                 "PASSED",
                 "FAILED"
         );
     }
-
-    @FXML
-    private void handleApplyFilter(ActionEvent event) {
-
-        // We'll connect this to the logged-in student
-        // and database in the next step.
-
-        System.out.println("Apply Filter pressed.");
-    }
-
-    @FXML
-    private void handleSaveStatus(ActionEvent event) {
-
-        System.out.println("Save Status pressed.");
-    }
-
-    @FXML
-    private void handleRemoveCourse(ActionEvent event) {
-
-        System.out.println("Remove Course pressed.");
-    }
-}
