@@ -13,6 +13,7 @@ import ph.edu.dlsu.lbycpob.animoquest.model.Student;
 import ph.edu.dlsu.lbycpob.animoquest.model.User;
 import ph.edu.dlsu.lbycpob.animoquest.service.LoginService;
 
+
 @Component
 @FxmlView("login.fxml")
 public class LoginController {
@@ -44,14 +45,9 @@ public class LoginController {
     @FXML
     private void handleLogin(ActionEvent event) {
 
-        String username =
-                usernameField.getText().trim();
-
-        String idNumber =
-                idNumberField.getText().trim();
-
-        String password =
-                passwordField.getText();
+        String username = usernameField.getText().trim();
+        String idNumber = idNumberField.getText().trim();
+        String password = passwordField.getText();
 
         // --------------------------------------------------------
         // CHECK EMPTY FIELDS
@@ -71,17 +67,16 @@ public class LoginController {
         }
 
         // --------------------------------------------------------
-        // AUTHENTICATE
+        // LOGIN
         // --------------------------------------------------------
 
         try {
 
-            User user =
-                    loginService.login(
-                            username,
-                            idNumber,
-                            password
-                    );
+            User user = loginService.login(
+                    username,
+                    idNumber,
+                    password
+            );
 
             // ----------------------------------------------------
             // STUDENT LOGIN
@@ -92,25 +87,36 @@ public class LoginController {
                 showAlert(
                         Alert.AlertType.INFORMATION,
                         "Login Successful",
-                        "Welcome, "
-                                + student.getFullName()
-                                + "!"
+                        "Welcome, " + user.getFullName() + "!"
                 );
 
-                /*
-                 * The student's ID will eventually be passed
-                 * to the Student Dashboard and EnrollmentController.
-                 *
-                 * We do NOT use a hardcoded student ID here.
-                 */
+                // Load Enrollment page
+                Parent root =
+                        fxWeaver.loadView(
+                                EnrollmentController.class
+                        );
 
-                System.out.println(
-                        "Logged-in student ID: "
-                                + student.getId()
+                // Pass logged-in student's ID
+                EnrollmentController controller =
+                        fxWeaver.getBean(
+                                EnrollmentController.class
+                        );
+
+                controller.setStudentId(
+                        student.getId()
                 );
 
-                // TODO:
-                // Open Student Dashboard
+                // Change scene
+                Stage stage =
+                        (Stage) ((Node) event.getSource())
+                                .getScene()
+                                .getWindow();
+
+                stage.setScene(
+                        new Scene(root)
+                );
+
+                stage.show();
 
             }
 
@@ -118,18 +124,16 @@ public class LoginController {
             // ADMIN LOGIN
             // ----------------------------------------------------
 
-            else if (user instanceof Admin admin) {
+            else if (user instanceof Admin) {
 
                 showAlert(
                         Alert.AlertType.INFORMATION,
                         "Login Successful",
-                        "Welcome, "
-                                + admin.getFullName()
-                                + "!"
+                        "Welcome, " + user.getFullName() + "!"
                 );
 
                 // TODO:
-                // Open Admin Dashboard
+                // Redirect to Admin Dashboard
             }
 
         } catch (IllegalArgumentException e) {
@@ -151,7 +155,6 @@ public class LoginController {
             e.printStackTrace();
         }
     }
-
     // ============================================================
     // BACK TO WELCOME
     // ============================================================
