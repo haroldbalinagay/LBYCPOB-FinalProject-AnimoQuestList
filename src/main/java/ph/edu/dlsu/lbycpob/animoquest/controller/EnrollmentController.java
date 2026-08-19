@@ -15,6 +15,9 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import net.rgielen.fxweaver.core.FxWeaver;
 import ph.edu.dlsu.lbycpob.animoquest.model.Student;
+import ph.edu.dlsu.lbycpob.animoquest.model.MasterlistCourse;
+
+import java.util.List;
 import ph.edu.dlsu.lbycpob.animoquest.controller.TermChecklistController;
 
 import java.util.Comparator;
@@ -37,6 +40,12 @@ public class EnrollmentController {
 
     @FXML
     private ComboBox<String> statusComboBox;
+
+    @FXML
+    private ListView<MasterlistCourse> recommendedCourseListView;
+
+    @FXML
+    private Label recommendationLabel;
 
     private final CurriculumService curriculumService;
 
@@ -250,6 +259,40 @@ public class EnrollmentController {
 
                             setText(
                                     text.toString()
+                            );
+                        }
+                    }
+                }
+        );
+
+        // --------------------------------------------------------
+// RECOMMENDED COURSE LIST DISPLAY
+// --------------------------------------------------------
+
+        recommendedCourseListView.setCellFactory(
+                listView -> new ListCell<>() {
+
+                    @Override
+                    protected void updateItem(
+                            MasterlistCourse course,
+                            boolean empty
+                    ) {
+
+                        super.updateItem(course, empty);
+
+                        if (empty || course == null) {
+
+                            setText(null);
+
+                        } else {
+
+                            setText(
+                                    course.getCode()
+                                            + " | "
+                                            + course.getName()
+                                            + " | "
+                                            + course.getUnits()
+                                            + " units"
                             );
                         }
                     }
