@@ -159,6 +159,14 @@ public class LoginController {
                             EnrollmentController.class
                     );
 
+            /*
+             * Pass the logged-in student.
+             *
+             * This gives EnrollmentController access to:
+             * - student ID
+             * - student's major
+             * - student's name
+             */
             controller.setStudent(
                     student
             );
