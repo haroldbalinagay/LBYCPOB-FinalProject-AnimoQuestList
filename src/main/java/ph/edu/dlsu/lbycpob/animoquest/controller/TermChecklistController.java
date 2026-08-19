@@ -131,3 +131,110 @@ public class TermChecklistController {
 // CREATE TERM TAB
 // ============================================================
 
+    private void createTermTab(
+            TermChecklist checklist
+    ) {
+
+        int termNumber =
+                checklist.getTermNumber();
+
+        VBox container =
+                new VBox(10);
+
+        container.setPadding(
+                new javafx.geometry.Insets(15)
+        );
+
+        Label maxUnitsLabel =
+                new Label(
+                        "Maximum Units: "
+                                + checklist.getMaxUnits()
+                );
+
+        container.getChildren().add(
+                maxUnitsLabel
+        );
+
+        List<MasterlistCourse> courses =
+                termChecklistService.getCoursesForTerm(
+                        CURRENT_BATCH,
+                        CURRENT_DEGREE,
+                        termNumber
+                );
+
+        List<CheckBox> checkBoxes =
+                new ArrayList<>();
+
+        for (MasterlistCourse course : courses) {
+
+            CheckBox checkBox =
+                    new CheckBox();
+
+            checkBox.setText(
+                    course.getCode()
+                            + " - "
+                            + course.getName()
+                            + " ("
+                            + course.getUnits()
+                            + " units)"
+            );
+
+            /*
+             * Store the course ID inside
+             * the CheckBox.
+             */
+            checkBox.setUserData(
+                    course.getId()
+            );
+
+            checkBoxes.add(checkBox);
+
+            container.getChildren().add(
+                    checkBox
+            );
+        }
+
+        termCheckBoxes.put(
+                termNumber,
+                checkBoxes
+        );
+
+        Tab tab =
+                new Tab(
+                        "Term " + termNumber
+                );
+
+        tab.setContent(container);
+
+        tab.setClosable(false);
+
+        termTabPane.getTabs().add(tab);
+    }
+
+    // ============================================================
+    // ADD SELECTED COURSES
+    // ============================================================
+
+    @FXML
+    private void handleAddSelectedCourses(
+            ActionEvent event
+    ) {
+
+        // --------------------------------------------------------
+        // CHECK STUDENT
+        // --------------------------------------------------------
+
+        if (currentStudentId == null) {
+
+            showAlert(
+                    Alert.AlertType.ERROR,
+                    "No Student",
+                    "No student is currently logged in."
+            );
+
+            return;
+        }
+
+        // --------------------------------------------------------
+        // FIND SELECTED COURSES
+        // --------------------------------------------------------
