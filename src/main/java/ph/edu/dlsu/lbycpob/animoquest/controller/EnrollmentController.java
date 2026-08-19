@@ -296,3 +296,191 @@ public class EnrollmentController {
 // ============================================================
 // COURSE SELECTION
 // ============================================================
+@FXML
+private void handleCourseSelection() {
+
+    CurriculumDisplay selectedCourse =
+            courseListView
+                    .getSelectionModel()
+                    .getSelectedItem();
+
+    if (selectedCourse == null) {
+        statusComboBox.setValue(null);
+        statusComboBox.setDisable(false);
+        return;
+    }
+
+    statusComboBox.setValue(
+            selectedCourse.getStatus()
+    );
+
+    /*
+     * PASSED courses cannot have their status changed.
+     */
+    if ("PASSED".equals(
+            selectedCourse.getStatus()
+    )) {
+
+        statusComboBox.setDisable(true);
+
+    } else {
+
+        statusComboBox.setDisable(false);
+    }
+}
+
+    // ============================================================
+    // UPDATE STATUS
+    // ============================================================
+
+    @FXML
+    private void handleSaveStatus(
+            ActionEvent event
+    ) {
+
+        CurriculumDisplay selectedCourse =
+                courseListView
+                        .getSelectionModel()
+                        .getSelectedItem();
+
+        String selectedStatus =
+                statusComboBox.getValue();
+
+        if (selectedCourse == null) {
+
+            showAlert(
+                    Alert.AlertType.WARNING,
+                    "No Course Selected",
+                    "Please select a course first."
+            );
+
+            return;
+        }
+
+        /*
+         * Passed courses are locked.
+         */
+        if ("PASSED".equals(
+                selectedCourse.getStatus()
+        )) {
+
+            showAlert(
+                    Alert.AlertType.WARNING,
+                    "Status Locked",
+                    "A passed course cannot have its status changed."
+            );
+
+            return;
+        }
+
+        if (selectedStatus == null) {
+
+            showAlert(
+                    Alert.AlertType.WARNING,
+                    "No Status Selected",
+                    "Please select a status."
+            );
+
+            return;
+        }
+
+        try {
+
+            curriculumService.updateStatus(
+                    currentStudentId,
+                    selectedCourse.getCourseId(),
+                    selectedStatus
+            );
+
+            showAlert(
+                    Alert.AlertType.INFORMATION,
+                    "Status Updated",
+                    "The course status was successfully updated."
+            );
+
+            loadCourses();
+
+            statusComboBox.setValue(null);
+
+        } catch (Exception e) {
+
+            showAlert(
+                    Alert.AlertType.ERROR,
+                    "Update Failed",
+                    e.getMessage()
+            );
+        }
+    }
+
+    // ============================================================
+    // REMOVE COURSE
+    // ============================================================
+
+    @FXML
+    private void handleRemoveCourse(
+            ActionEvent event
+    ) {
+
+        CurriculumDisplay selectedCourse =
+                courseListView
+                        .getSelectionModel()
+                        .getSelectedItem();
+
+        if (selectedCourse == null) {
+
+            showAlert(
+                    Alert.AlertType.WARNING,
+                    "No Course Selected",
+                    "Please select a course first."
+            );
+
+            return;
+        }
+
+        try {
+
+            curriculumService.removeCourse(
+                    currentStudentId,
+                    selectedCourse.getCourseId()
+            );
+
+            showAlert(
+                    Alert.AlertType.INFORMATION,
+                    "Course Removed",
+                    "The course was removed from your enrollment list."
+            );
+
+            loadCourses();
+
+            statusComboBox.setValue(null);
+
+        } catch (Exception e) {
+
+            showAlert(
+                    Alert.AlertType.ERROR,
+                    "Removal Failed",
+                    e.getMessage()
+            );
+        }
+    }
+
+    // ============================================================
+    // ALERT
+    // ============================================================
+
+    private void showAlert(
+            Alert.AlertType type,
+            String title,
+            String message
+    ) {
+
+        Alert alert =
+                new Alert(type);
+
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+
+        alert.showAndWait();
+    }
+}
