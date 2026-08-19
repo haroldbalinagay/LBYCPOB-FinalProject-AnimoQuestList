@@ -1,20 +1,20 @@
 package ph.edu.dlsu.lbycpob.animoquest.model;
 
-import lombok.Getter;
-
-@Getter
 public class CurriculumDisplay {
 
-    private final Long courseId;
-    private final String code;
-    private final String name;
-    private final int units;
-    private final String status;
-    private final int term;
+    private Long courseId;
+    private String code;
+    private String name;
+    private int units;
+    private String status;
+    private int term;
+    private String requisiteInfo;
+    private boolean valid;
+    private String missingPrerequisiteWarning;
 
-    private final String requisites;
-    private final boolean valid;
-    private final String warningMessage;
+    // ============================================================
+    // CONSTRUCTOR
+    // ============================================================
 
     public CurriculumDisplay(
             Long courseId,
@@ -23,18 +23,103 @@ public class CurriculumDisplay {
             int units,
             String status,
             int term,
-            String requisites,
+            String requisiteInfo,
             boolean valid,
-            String warningMessage
+            String missingPrerequisiteWarning
     ) {
+
         this.courseId = courseId;
         this.code = code;
         this.name = name;
         this.units = units;
         this.status = status;
         this.term = term;
-        this.requisites = requisites;
+        this.requisiteInfo = requisiteInfo;
         this.valid = valid;
-        this.warningMessage = warningMessage;
+        this.missingPrerequisiteWarning =
+                missingPrerequisiteWarning;
+    }
+
+    // ============================================================
+    // GETTERS
+    // ============================================================
+
+    public Long getCourseId() {
+        return courseId;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getUnits() {
+        return units;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public int getTerm() {
+        return term;
+    }
+
+    public String getRequisiteInfo() {
+        return requisiteInfo;
+    }
+
+    public boolean isValid() {
+        return valid;
+    }
+
+    public String getMissingPrerequisiteWarning() {
+        return missingPrerequisiteWarning;
+    }
+
+    // ============================================================
+    // SETTERS
+    // ============================================================
+
+    public void setCourseId(Long courseId) {
+        this.courseId = courseId;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setUnits(int units) {
+        this.units = units;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void setTerm(int term) {
+        this.term = term;
+    }
+
+    public void setRequisiteInfo(String requisiteInfo) {
+        this.requisiteInfo = requisiteInfo;
+    }
+
+    public void setValid(boolean valid) {
+        this.valid = valid;
+    }
+
+    public void setMissingPrerequisiteWarning(
+            String missingPrerequisiteWarning
+    ) {
+        this.missingPrerequisiteWarning =
+                missingPrerequisiteWarning;
     }
 }
