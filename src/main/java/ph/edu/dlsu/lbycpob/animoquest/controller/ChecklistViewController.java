@@ -72,32 +72,78 @@ public class ChecklistViewController {
         // Loop through each cell of the checklist grid and create a new checklist instance
         for (int row = 0; row < 4 ; row++) {
             for (int col = 0; col < 3; col++) {
-                Parent subView;
-                try {
-                    subView = fxmlLoader.load(getClass().getResource("term-checklist.fxml"));
-                } catch (IOException e) {
-                    checklistGrid.add(new Label("Error loading checklist"), col, row);
-                    continue;
-                }
-
-                // Extract and save the instance's controller into a list
-                TermChecklistController controller = fxmlLoader.getController();
-                checklistControllers.add(controller);
-
-                // Define the listener for the instance
-                controller.addListener(this::handleOnCourseClick);
-
-                // Set the term number of the instance (causes it to start searching for its courses)
-                controller.setTermNumber(count);
-                controller.populateCourses(progressList);
+                initializeChecklist(col, row, count);
                 count++;
-
-                // Show the instance on screen
-                checklistGrid.add(subView, col, row);
             }
         }
 
         initializeChecklistEditor();
+    }
+
+    /**
+     * Creates a term checklist in the checklist grid pane. This method is used when initializing checklists for the first time.
+     * @param col Grid pane column
+     * @param row Grid pane row
+     * @param termNumber Term number of checklist
+     */
+    private void initializeChecklist(int col, int row, int termNumber) {
+        // Load a new checklist instance
+        Parent subView;
+        try {
+            subView = fxmlLoader.load(getClass().getResource("term-checklist.fxml"));
+        } catch (IOException e) {
+            checklistGrid.add(new Label("Error loading checklist"), col, row);
+            return;
+        }
+
+        // Extract and save the instance's controller into a list
+        TermChecklistController controller = fxmlLoader.getController();
+        checklistControllers.add(controller);
+
+        // Define the listener for the instance
+        controller.addListener(this::handleOnCourseClick);
+
+        // Set the term number of the instance (causes it to start searching for its courses)
+        controller.setTermNumber(termNumber);
+        controller.populateCourses(progressList);
+
+        // Show the instance on screen
+        checklistGrid.add(subView, col, row);
+    }
+
+    /**
+     * Creates a term checklist in the checklist grid pane.
+     * This method is used when initializing a checklist that was previously created (serves as a hard refresh).
+     * @param termNumber Term number of checklist
+     * @param insertAtIdx Insertion order index of the checklist (based on previous initialization)
+     */
+    private void initializeChecklist(int termNumber, int insertAtIdx) {
+        // Calculate the col & row
+        int col = (termNumber - 1) % 3;
+        int row = (termNumber - 1) / 3;
+
+        // Load a new checklist instance
+        Parent subView;
+        try {
+            subView = fxmlLoader.load(getClass().getResource("term-checklist.fxml"));
+        } catch (IOException e) {
+            checklistGrid.add(new Label("Error loading checklist"), col, row);
+            return;
+        }
+
+        // Extract and save the instance's controller into a list (by overriding)
+        TermChecklistController controller = fxmlLoader.getController();
+        checklistControllers.set(insertAtIdx, controller);
+
+        // Define the listener for the instance
+        controller.addListener(this::handleOnCourseClick);
+
+        // Set the term number of the instance (causes it to start searching for its courses)
+        controller.setTermNumber(termNumber);
+        controller.populateCourses(progressList);
+
+        // Show the instance on screen
+        checklistGrid.add(subView, col, row);
     }
 
     /**
