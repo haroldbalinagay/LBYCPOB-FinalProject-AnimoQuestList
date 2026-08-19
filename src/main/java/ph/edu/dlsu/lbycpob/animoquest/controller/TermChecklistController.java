@@ -175,3 +175,161 @@ public class TermChecklistController {
 // SET DEGREE / MAJOR
 // ============================================================
 
+    public void setDegree(String degree) {
+
+        this.currentDegree = degree;
+
+        tryLoadChecklist();
+    }
+
+
+    // ============================================================
+    // SET CURRENT TERM
+    // ============================================================
+
+    public void setCurrentTerm(int currentTerm) {
+
+        if (currentTerm < 1 || currentTerm > 12) {
+
+            throw new IllegalArgumentException(
+                    "Current term must be between 1 and 12."
+            );
+        }
+
+        this.currentTerm = currentTerm;
+    }
+
+
+    // ============================================================
+    // TRY TO LOAD CHECKLIST
+    // ============================================================
+
+    private void tryLoadChecklist() {
+
+        /*
+         * We only load the checklist once we know
+         * which student and degree we are dealing with.
+         */
+        if (currentStudentId == null) {
+            return;
+        }
+
+        if (currentDegree == null ||
+                currentDegree.isBlank()) {
+
+            return;
+        }
+
+        loadTermChecklists();
+    }
+
+
+    // ============================================================
+    // LOAD TERMS
+    // ============================================================
+
+    private void loadTermChecklists() {
+
+        List<TermChecklist> checklists =
+                termChecklistService.getChecklists(
+                        CURRENT_BATCH,
+                        currentDegree
+                );
+
+        termTabPane.getTabs().clear();
+
+        termCheckBoxes.clear();
+
+
+        /*
+         * Check whether a curriculum was found.
+         */
+        if (checklists.isEmpty()) {
+
+            Tab emptyTab =
+                    new Tab("No Curriculum");
+
+            VBox container =
+                    new VBox(10);
+
+            container.setPadding(
+                    new javafx.geometry.Insets(15)
+            );
+
+            Label message =
+                    new Label(
+                            "No curriculum was found for:\n\n"
+                                    + currentDegree
+                                    + "\n\n"
+                                    + "Batch: "
+                                    + CURRENT_BATCH
+                    );
+
+            container.getChildren().add(
+                    message
+            );
+
+            emptyTab.setContent(
+                    container
+            );
+
+            emptyTab.setClosable(
+                    false
+            );
+
+            termTabPane.getTabs().add(
+                    emptyTab
+            );
+
+            return;
+        }
+
+
+        /*
+         * Create a tab for every term.
+         */
+        for (TermChecklist checklist :
+                checklists) {
+
+            createTermTab(checklist);
+        }
+    }
+
+
+    // ============================================================
+    // CREATE TERM TAB
+    // ============================================================
+
+    private void createTermTab(
+            TermChecklist checklist
+    ) {
+
+        int termNumber =
+                checklist.getTermNumber();
+
+
+        // --------------------------------------------------------
+        // CONTAINER
+        // --------------------------------------------------------
+
+        VBox container =
+                new VBox(10);
+
+        container.setPadding(
+                new javafx.geometry.Insets(15)
+        );
+
+
+        // --------------------------------------------------------
+        // MAXIMUM UNITS
+        // --------------------------------------------------------
+
+        Label maxUnitsLabel =
+                new Label(
+                        "Maximum Units: "
+                                + checklist.getMaxUnits()
+                );
+
+        container.getChildren().add(
+                maxUnitsLabel
+        );
