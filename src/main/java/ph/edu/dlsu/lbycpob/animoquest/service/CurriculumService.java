@@ -498,6 +498,122 @@ public class CurriculumService {
     }
 
     // ============================================================
+// CHECK ENROLLMENT REQUISITE
+// ============================================================
+
+    private void checkEnrollmentRequisite(
+            MasterlistCourse course,
+            Long requisiteId,
+            String requisiteType,
+            int currentTerm,
+            List<CurriculumProgress> studentProgress
+    ) {
+
+        if (requisiteId == null) {
+            return;
+        }
+
+        MasterlistCourse requisiteCourse =
+                masterlistCourseRepository
+                        .findById(requisiteId)
+                        .orElseThrow(() ->
+                                new IllegalArgumentException(
+                                        "Requisite course was not found."
+                                )
+                        );
+
+        String requisiteCode =
+                requisiteCourse.getCode();
+
+        String type =
+                requisiteType == null
+                        ? ""
+                        : requisiteType.trim().toUpperCase();
+
+        CurriculumProgress progress =
+                findProgress(
+                        requisiteId,
+                        studentProgress
+                );
+
+        // --------------------------------------------------------
+        // H = HARD PREREQUISITE
+        // MUST HAVE PASSED
+        // --------------------------------------------------------
+
+        if ("H".equals(type)) {
+
+            boolean passed =
+                    progress != null
+                            && progress.isPassed();
+
+            if (!passed) {
+
+                throw new IllegalArgumentException(
+                        "Cannot enroll in "
+                                + course.getCode()
+                                + ". You must pass "
+                                + requisiteCode
+                                + " first."
+                );
+            }
+
+            return;
+        }
+
+        // --------------------------------------------------------
+        // S = SOFT PREREQUISITE
+        // MUST HAVE TAKEN
+        // PASSING IS NOT REQUIRED
+        // --------------------------------------------------------
+
+        if ("S".equals(type)) {
+
+            boolean taken =
+                    progress != null;
+
+            if (!taken) {
+
+                throw new IllegalArgumentException(
+                        "Cannot enroll in "
+                                + course.getCode()
+                                + ". You must have taken "
+                                + requisiteCode
+                                + " first."
+                );
+            }
+
+            return;
+        }
+
+        // --------------------------------------------------------
+        // C = CO-REQUISITE
+        // MUST BE TAKEN IN SAME TERM
+        // --------------------------------------------------------
+
+        if ("C".equals(type)) {
+
+            boolean takenTogether =
+                    progress != null
+                            && progress.getTermTaken()
+                            == currentTerm;
+
+            if (!takenTogether) {
+
+                throw new IllegalArgumentException(
+                        "Cannot enroll in "
+                                + course.getCode()
+                                + ". "
+                                + requisiteCode
+                                + " must be taken in the same term."
+                );
+            }
+
+            return;
+        }
+    }
+
+    // ============================================================
     // UPDATE COURSE STATUS
     // ============================================================
 
