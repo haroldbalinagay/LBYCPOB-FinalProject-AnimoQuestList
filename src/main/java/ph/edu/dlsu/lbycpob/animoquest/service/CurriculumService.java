@@ -588,7 +588,82 @@ public class CurriculumService {
         return true;
     }
 
+// ============================================================
+// CHECK ONE REQUISITE FOR RECOMMENDATION
+// ============================================================
 
+    private boolean isRequisiteSatisfiedForRecommendation(
+            Long requisiteId,
+            String requisiteType,
+            int nextTerm,
+            List<CurriculumProgress> studentProgress,
+            List<MasterlistCourse> recommendations
+    ) {
+
+        if (requisiteId == null) {
+            return true;
+        }
+
+        String type =
+                requisiteType == null
+                        ? ""
+                        : requisiteType.trim().toUpperCase();
+
+        CurriculumProgress progress =
+                findProgress(
+                        requisiteId,
+                        studentProgress
+                );
+
+        // --------------------------------------------------------
+        // HARD PREREQUISITE
+        // --------------------------------------------------------
+
+        if ("H".equals(type)) {
+
+            return progress != null
+                    && progress.isPassed();
+        }
+
+        // --------------------------------------------------------
+        // SOFT PREREQUISITE
+        // --------------------------------------------------------
+
+        if ("S".equals(type)) {
+
+            return progress != null;
+        }
+
+        // --------------------------------------------------------
+        // CO-REQUISITE
+        // --------------------------------------------------------
+
+        if ("C".equals(type)) {
+
+            // Already being taken in the next term
+            if (progress != null
+                    && progress.getTermTaken() == nextTerm) {
+
+                return true;
+            }
+
+            // Or recommended together with this course
+            for (MasterlistCourse recommended :
+                    recommendations) {
+
+                if (recommended.getId()
+                        .equals(requisiteId)) {
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        // Unknown requisite types don't block
+        return true;
+    }
 
     // ============================================================
 // ADD COURSE
