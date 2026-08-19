@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="ph.edu.dlsu.lbycpob.animoquest.controller.AddAccountController"
+            prefHeight="650.0"
+            prefWidth="600.0">
+
+    <VBox spacing="10.0"
+          alignment="CENTER"
+          prefWidth="300.0"
+          AnchorPane.leftAnchor="150.0"
+          AnchorPane.rightAnchor="150.0"
+          AnchorPane.topAnchor="40.0">
+
+        <Label text="Create AnimoQuest Account"/>
+
+        <!-- ID NUMBER -->
+        <Label text="DLSU ID Number"/>
+
+        <TextField fx:id="idNumberField"
+                   promptText="Enter 8-digit ID number"/>
+
+
+        <!-- FIRST NAME -->
+        <Label text="First Name"/>
+
+        <TextField fx:id="firstNameField"
+                   promptText="Enter your first name"/>
+
+
+        <!-- MIDDLE NAME -->
+        <Label text="Middle Name"/>
+
+        <TextField fx:id="middleNameField"
+                   promptText="Enter your middle name"/>
+
+
+        <!-- LAST NAME -->
+        <Label text="Last Name"/>
+
+        <TextField fx:id="lastNameField"
+                   promptText="Enter your last name"/>
+
+
+        <!-- PASSWORD -->
+        <Label text="Password"/>
+
+        <PasswordField fx:id="passwordField"
+                       promptText="Enter password"/>
+
+        <TextField fx:id="passwordTextField"
+                   promptText="Enter password"
+                   visible="false"
+                   managed="false"/>
+
+        <CheckBox fx:id="showPasswordCheckBox"
+                  text="Show Password"
+                  onAction="#handleShowPassword"/>
+
+
+        <!-- MAJOR -->
+        <Label text="Major"/>
+
+        <TextField fx:id="majorField"
+                   promptText="e.g. CPE"/>
+
+
+        <!-- CREATE ACCOUNT -->
+        <Button text="Create Account"
+                onAction="#handleAddAccount"/>
+
+
+        <!-- BACK -->
+        <Button text="Back"
+                onAction="#handleBack"/>
+
+    </VBox>
+
+</AnchorPane>

@@ -1,4 +1,18 @@
 package ph.edu.dlsu.lbycpob.animoquest.repository;
 
-public interface UserRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+import ph.edu.dlsu.lbycpob.animoquest.model.User;
+
+import java.util.Optional;
+
+public interface UserRepository extends JpaRepository<User, Long> {
+
+    Optional<User> findByIdNumber(Long idNumber);
+
+    Optional<User> findByUsernameAndIdNumber(
+            String username,
+            Long idNumber
+    );
+
+    boolean existsByUsername(String username);
 }

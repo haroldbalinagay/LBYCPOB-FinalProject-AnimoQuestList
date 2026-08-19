@@ -11,21 +11,38 @@ import java.time.OffsetDateTime;
 @Entity
 @Table(name = "users")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "user_type", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorColumn(
+        name = "user_type",
+        discriminatorType = DiscriminatorType.STRING
+)
 public abstract class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // "insertable=false, updatable=false" since user_type is used as a discriminator (hibernate auto inserts value)
-    @Column(name = "user_type", nullable = false, insertable=false, updatable=false)
+    @Column(
+            name = "user_type",
+            nullable = false,
+            insertable = false,
+            updatable = false
+    )
     private String type;
 
-    @Column(name = "id_number", nullable = false)
+    @Column(name = "username", nullable = false, unique = true)
+    private String username;
+
+    @Column(name = "id_number", nullable = false, unique = true)
     private Long idNumber;
 
-    @Column(nullable = false)
-    private String name;
+    @Column(name = "first_name", nullable = false)
+    private String firstName;
+
+    @Column(name = "middle_name", nullable = false)
+    private String middleName;
+
+    @Column(name = "last_name", nullable = false)
+    private String lastName;
 
     @Column(nullable = false)
     private String password;
@@ -36,12 +53,25 @@ public abstract class User {
     public User() {
     }
 
-    public User(String type, Long idNumber, String name, String password) {
+    public User(
+            String type,
+            String username,
+            Long idNumber,
+            String firstName,
+            String middleName,
+            String lastName,
+            String password
+    ) {
         this.type = type;
+        this.username = username;
         this.idNumber = idNumber;
-        this.name = name;
+        this.firstName = firstName;
+        this.middleName = middleName;
+        this.lastName = lastName;
         this.password = password;
     }
 
-    // TODO: Add common attributes & behaviors for user
+    public String getFullName() {
+        return firstName + " " + middleName + " " + lastName;
+    }
 }

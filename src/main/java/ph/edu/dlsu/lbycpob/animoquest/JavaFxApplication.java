@@ -8,8 +8,7 @@ import javafx.stage.Stage;
 import net.rgielen.fxweaver.core.FxWeaver;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
-import ph.edu.dlsu.lbycpob.animoquest.controller.MainController;
-import ph.edu.dlsu.lbycpob.animoquest.controller.TermChecklistController;
+import ph.edu.dlsu.lbycpob.animoquest.controller.WelcomeController;
 
 public class JavaFxApplication extends Application {
 
@@ -27,10 +26,11 @@ public class JavaFxApplication extends Application {
     @Override
     public void start(Stage stage) {
         FxWeaver fxWeaver = applicationContext.getBean(FxWeaver.class);
-        Parent root = fxWeaver.loadView(MainController.class); // TODO: Likely merge conflict
+        Parent root = fxWeaver.loadView(WelcomeController.class);
         Scene scene = new Scene(root);
         stage.setScene(scene);
-        stage.setMaximized(true);
+        stage.setTitle("AnimoQuest");
+
         stage.show();
     }
 
