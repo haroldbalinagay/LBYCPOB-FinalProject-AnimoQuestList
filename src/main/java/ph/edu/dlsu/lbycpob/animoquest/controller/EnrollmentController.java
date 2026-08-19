@@ -162,17 +162,13 @@ public class EnrollmentController {
                             );
 
                             text.append(
-                                    course.getRequisiteInfo()
+                                    course.getRequisites()
                             );
 
                             if (
-                                    course
-                                            .getMissingPrerequisiteWarning()
-                                            != null
+                                    course.getWarningMessage() != null
                                             &&
-                                            !course
-                                                    .getMissingPrerequisiteWarning()
-                                                    .isBlank()
+                                            !course.getWarningMessage().isBlank()
                             ) {
 
                                 text.append(
@@ -180,8 +176,7 @@ public class EnrollmentController {
                                 );
 
                                 text.append(
-                                        course
-                                                .getMissingPrerequisiteWarning()
+                                        course.getWarningMessage()
                                 );
                             }
 
