@@ -2,13 +2,9 @@ package ph.edu.dlsu.lbycpob.animoquest.controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 import net.rgielen.fxweaver.core.FxWeaver;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.stereotype.Component;
@@ -41,14 +37,26 @@ public class LoginController {
         this.fxWeaver = fxWeaver;
     }
 
+    // ============================================================
+    // LOGIN
+    // ============================================================
+
     @FXML
     private void handleLogin(ActionEvent event) {
 
-        String username = usernameField.getText().trim();
-        String idNumber = idNumberField.getText().trim();
-        String password = passwordField.getText();
+        String username =
+                usernameField.getText().trim();
 
-        // Check empty fields
+        String idNumber =
+                idNumberField.getText().trim();
+
+        String password =
+                passwordField.getText();
+
+        // --------------------------------------------------------
+        // CHECK EMPTY FIELDS
+        // --------------------------------------------------------
+
         if (username.isEmpty()
                 || idNumber.isEmpty()
                 || password.isEmpty()) {
@@ -62,67 +70,62 @@ public class LoginController {
             return;
         }
 
+        // --------------------------------------------------------
+        // AUTHENTICATE
+        // --------------------------------------------------------
+
         try {
 
-            User user = loginService.login(
-                    username,
-                    idNumber,
-                    password
-            );
+            User user =
+                    loginService.login(
+                            username,
+                            idNumber,
+                            password
+                    );
 
-            if (user instanceof Student) {
+            // ----------------------------------------------------
+            // STUDENT LOGIN
+            // ----------------------------------------------------
+
+            if (user instanceof Student student) {
 
                 showAlert(
                         Alert.AlertType.INFORMATION,
                         "Login Successful",
-                        "Welcome, " + user.getFullName() + "!"
+                        "Welcome, "
+                                + student.getFullName()
+                                + "!"
                 );
 
-                try {
+                /*
+                 * The student's ID will eventually be passed
+                 * to the Student Dashboard and EnrollmentController.
+                 *
+                 * We do NOT use a hardcoded student ID here.
+                 */
 
-                    Parent root =
-                            fxWeaver.loadView(CurriculumController.class);
-
-                    CurriculumController controller =
-                            fxWeaver.getBean(CurriculumController.class);
-
-                    controller.setStudentId(user.getId());
-
-                    Stage stage =
-                            (Stage) ((Node) event.getSource())
-                                    .getScene()
-                                    .getWindow();
-
-                    stage.setScene(new Scene(root));
-                    stage.show();
-
-                } catch (Exception e) {
-
-                    e.printStackTrace();
-
-                    showAlert(
-                            Alert.AlertType.ERROR,
-                            "Navigation Error",
-                            "Unable to open the enrollment planning list."
-                    );
-                }
-
-            } else if (user instanceof Admin) {
-
-                showAlert(
-                        Alert.AlertType.INFORMATION,
-                        "Login Successful",
-                        "Welcome, " + user.getFullName() + "!"
+                System.out.println(
+                        "Logged-in student ID: "
+                                + student.getId()
                 );
 
                 // TODO:
-                // Open Admin Dashboard
-            } else if (user instanceof Admin) {
+                // Open Student Dashboard
+
+            }
+
+            // ----------------------------------------------------
+            // ADMIN LOGIN
+            // ----------------------------------------------------
+
+            else if (user instanceof Admin admin) {
 
                 showAlert(
                         Alert.AlertType.INFORMATION,
                         "Login Successful",
-                        "Welcome, " + user.getFullName() + "!"
+                        "Welcome, "
+                                + admin.getFullName()
+                                + "!"
                 );
 
                 // TODO:
@@ -149,18 +152,32 @@ public class LoginController {
         }
     }
 
+    // ============================================================
+    // BACK TO WELCOME
+    // ============================================================
+
     @FXML
     private void handleBack(ActionEvent event) {
 
         try {
 
-            Parent root = fxWeaver.loadView(WelcomeController.class);
+            fxWeaver.loadView(WelcomeController.class);
 
-            Stage stage = (Stage) ((Node) event.getSource())
-                    .getScene()
-                    .getWindow();
+            javafx.scene.Parent root =
+                    fxWeaver.loadView(
+                            WelcomeController.class
+                    );
 
-            stage.setScene(new Scene(root));
+            javafx.stage.Stage stage =
+                    (javafx.stage.Stage)
+                            ((javafx.scene.Node) event.getSource())
+                                    .getScene()
+                                    .getWindow();
+
+            stage.setScene(
+                    new javafx.scene.Scene(root)
+            );
+
             stage.show();
 
         } catch (Exception e) {
@@ -169,16 +186,23 @@ public class LoginController {
         }
     }
 
+    // ============================================================
+    // ALERT
+    // ============================================================
+
     private void showAlert(
             Alert.AlertType type,
             String title,
             String message
     ) {
 
-        Alert alert = new Alert(type);
+        Alert alert =
+                new Alert(type);
+
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
+
         alert.showAndWait();
     }
 }
