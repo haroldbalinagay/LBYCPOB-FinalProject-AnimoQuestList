@@ -97,3 +97,121 @@ public class CurriculumService {
             Long studentId,
             int term
     ) {
+
+        List<CurriculumProgress> allProgress =
+                curriculumRepository.findByStudentId(studentId);
+
+        List<CurriculumDisplay> displays =
+                new ArrayList<>();
+
+        for (CurriculumProgress progress : allProgress) {
+
+            if (progress.getTermTaken() != term) {
+                continue;
+            }
+
+            MasterlistCourse course =
+                    masterlistCourseRepository
+                            .findById(progress.getCourseId())
+                            .orElse(null);
+
+            if (course == null) {
+                continue;
+            }
+
+            displays.add(
+                    buildDisplay(
+                            progress,
+                            course,
+                            allProgress
+                    )
+            );
+        }
+
+        return displays;
+    }
+
+    // ============================================================
+    // BUILD DISPLAY OBJECT
+    // ============================================================
+
+    private CurriculumDisplay buildDisplay(
+            CurriculumProgress progress,
+            MasterlistCourse course,
+            List<CurriculumProgress> studentProgress
+    ) {
+
+        List<String> requisiteDescriptions =
+                new ArrayList<>();
+
+        List<String> missingRequirements =
+                new ArrayList<>();
+
+        boolean valid = true;
+
+        // --------------------------------------------------------
+        // REQUIREMENT 1
+        // --------------------------------------------------------
+
+        if (course.getReqId1() != null) {
+
+            RequisiteResult result =
+                    checkRequisite(
+                            progress,
+                            course.getReqId1(),
+                            course.getReqType1(),
+                            studentProgress
+                    );
+
+            requisiteDescriptions.add(
+                    result.description()
+            );
+
+            if (!result.satisfied()) {
+                valid = false;
+                missingRequirements.add(
+                        result.description()
+                );
+            }
+        }
+
+        // --------------------------------------------------------
+        // REQUIREMENT 2
+        // --------------------------------------------------------
+
+        if (course.getReqId2() != null) {
+
+            RequisiteResult result =
+                    checkRequisite(
+                            progress,
+                            course.getReqId2(),
+                            course.getReqType2(),
+                            studentProgress
+                    );
+
+            requisiteDescriptions.add(
+                    result.description()
+            );
+
+            if (!result.satisfied()) {
+                valid = false;
+                missingRequirements.add(
+                        result.description()
+                );
+            }
+        }
+
+        // --------------------------------------------------------
+        // REQUIREMENT 3
+        // --------------------------------------------------------
+
+        if (course.getReqId3() != null) {
+
+            RequisiteResult result =
+                    checkRequisite(
+                            progress,
+                            course.getReqId3(),
+                            course.getReqType3(),
+                            studentProgress
+                    );
+
