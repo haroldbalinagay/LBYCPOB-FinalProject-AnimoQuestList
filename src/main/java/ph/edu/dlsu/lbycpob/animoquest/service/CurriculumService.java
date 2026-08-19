@@ -215,3 +215,75 @@ public class CurriculumService {
                             studentProgress
                     );
 
+            requisiteDescriptions.add(
+                    result.description()
+            );
+
+            if (!result.satisfied()) {
+                valid = false;
+                missingRequirements.add(
+                        result.description()
+                );
+            }
+        }
+
+        String requisites =
+                String.join(", ", requisiteDescriptions);
+
+        String warningMessage;
+
+        if (valid) {
+            warningMessage = "";
+        } else {
+            warningMessage =
+                    "Missing: "
+                            + String.join(
+                            ", ",
+                            missingRequirements
+                    );
+        }
+
+        return new CurriculumDisplay(
+                course.getId(),
+                course.getCode(),
+                course.getName(),
+                course.getUnits(),
+                progress.getStatus(),
+                progress.getTermTaken(),
+                requisites,
+                valid,
+                warningMessage
+        );
+    }
+
+    // ============================================================
+    // CHECK ONE REQUISITE
+    // ============================================================
+
+    private RequisiteResult checkRequisite(
+            CurriculumProgress currentCourse,
+            Long requisiteId,
+            String requisiteType,
+            List<CurriculumProgress> studentProgress
+    ) {
+
+        MasterlistCourse requisiteCourse =
+                masterlistCourseRepository
+                        .findById(requisiteId)
+                        .orElse(null);
+
+        String requisiteCode =
+                requisiteCourse != null
+                        ? requisiteCourse.getCode()
+                        : "Course ID " + requisiteId;
+
+        String type =
+                requisiteType == null
+                        ? ""
+                        : requisiteType.trim().toUpperCase();
+
+        // --------------------------------------------------------
+        // H = HARD PREREQUISITE
+        // Must be PASSED
+        // --------------------------------------------------------
+
