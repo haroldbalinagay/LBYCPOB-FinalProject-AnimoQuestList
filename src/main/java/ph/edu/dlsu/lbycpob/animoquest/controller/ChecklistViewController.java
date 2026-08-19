@@ -384,7 +384,35 @@ public class ChecklistViewController {
         }
     }
 
+    /**
+     * Handles the steps that must be done to properly save the checklist data and display the new checklist on screen.
+     * @param event
+     */
     public void handleSaveChecklist(ActionEvent event) {
+        // Get only the term number
+        int termNumber = Integer.parseInt(checklistEditorComboBox.getValue().substring(5));
 
+        // Get the complete list of courses from a checklist
+        TermChecklistController checklist = checklistControllers.get(termNumber - 1);
+
+        List<MasterlistCourse> courses = new ArrayList<>();
+
+        for (ComboBox<MasterlistCourse> comboBox : comboBoxList) {
+            courses.add(comboBox.getValue());
+        }
+
+        checklistService.saveChecklistData("CPE", 125, termNumber, courses); // TODO: HARMONY POINT
+
+        checklistGrid.getChildren().remove(checklist.getChecklistBox());
+        initializeChecklist(termNumber, termNumber - 1);
+
+        // Restore / reset course highlights
+        for (TermChecklistController controller : checklistControllers) {
+            if (showColorCodingCheckbox.isSelected()) {
+                controller.restoreHighlights();
+            } else {
+                controller.resetHighlights();
+            }
+        }
     }
 }

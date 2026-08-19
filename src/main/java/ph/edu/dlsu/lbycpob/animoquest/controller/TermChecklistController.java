@@ -27,6 +27,8 @@ public class TermChecklistController {
     @FXML private CheckBox enrollInAllCheckbox;
     @FXML private Label maxUnitsLabel;
     @FXML private VBox coursesView;
+    @Getter
+    @FXML private VBox checklistBox;
 
     private int termNumber;
     private List<CourseBoxController> courseControllers = new ArrayList<>();
