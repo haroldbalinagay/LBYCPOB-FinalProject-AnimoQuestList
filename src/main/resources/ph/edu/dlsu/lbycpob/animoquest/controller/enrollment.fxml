@@ -134,6 +134,9 @@
 
 
     <Button onAction="#handleAddRecommendedCourses" text="Add Selected to Enrollment Plan" />
+    <Button text="Logout"
+            onAction="#handleLogout"
+            prefWidth="150.0"/>
 
 
 </VBox>

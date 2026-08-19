@@ -12,7 +12,7 @@ import net.rgielen.fxweaver.core.FxWeaver;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.stereotype.Component;
 import ph.edu.dlsu.lbycpob.animoquest.model.Admin;
-import ph.edu.dlsu.lbycpob.animoquest.service.CourseManagementService;
+import ph.edu.dlsu.lbycpob.animoquest.service.SessionService;
 
 @Component
 @FxmlView("admin-dashboard.fxml")
@@ -22,38 +22,55 @@ public class AdminDashboardController {
     private Label welcomeLabel;
 
     private final FxWeaver fxWeaver;
-    private final CourseManagementService courseService;
+    private final SessionService sessionService;
 
     private Admin currentAdmin;
 
-    public AdminDashboardController(FxWeaver fxWeaver, CourseManagementService courseService) {
+    public AdminDashboardController(
+            FxWeaver fxWeaver,
+            SessionService sessionService
+    ) {
         this.fxWeaver = fxWeaver;
-        this.courseService = courseService;
+        this.sessionService = sessionService;
     }
+
+    // ============================================================
+    // SET ADMIN
+    // ============================================================
 
     public void setAdmin(Admin admin) {
+
         this.currentAdmin = admin;
+
         if (welcomeLabel != null) {
-            welcomeLabel.setText("Welcome, " + admin.getFullName() + "!");
+
+            welcomeLabel.setText(
+                    "Welcome, "
+                            + admin.getFullName()
+                            + "!"
+            );
         }
     }
 
+    // ============================================================
     // COURSE MANAGEMENT
+    // ============================================================
 
     @FXML
-    private void handleCourseManagement(ActionEvent event) {
-        try {Parent root = fxWeaver.loadView(CourseManagementController.class);
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle("AnimoQuest - Course Management");
-            stage.show();}
-        catch (Exception e) {
-            e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Navigation Error", "Unable to open Course Management.");
-        }
+    private void handleCourseManagement(
+            ActionEvent event
+    ) {
+
+        showAlert(
+                Alert.AlertType.INFORMATION,
+                "Course Management",
+                "Course Management will be implemented here."
+        );
     }
 
+    // ============================================================
     // CHECKLIST MANAGEMENT
+    // ============================================================
 
     @FXML
     private void handleChecklistManagement(
@@ -67,25 +84,63 @@ public class AdminDashboardController {
         );
     }
 
-    // LOGOUT
+// ============================================================
+// LOGOUT
+// ============================================================
+@FXML
+private void handleLogout(
+        ActionEvent event
+) {
 
-    @FXML
-    private void handleLogout(ActionEvent event) {
-        try {Parent root = fxWeaver.loadView(WelcomeController.class);
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle("AnimoQuest");
-            stage.show();}
-        catch (Exception e) {e.printStackTrace();
-            showAlert(
-                    Alert.AlertType.ERROR,
-                    "Logout Error",
-                    "Unable to return to the welcome page."
-            );
-        }
+    try {
+
+        // ----------------------------------------------------
+        // CLEAR CURRENT SESSION
+        // ----------------------------------------------------
+
+        sessionService.logout();
+
+        // ----------------------------------------------------
+        // RETURN TO WELCOME PAGE
+        // ----------------------------------------------------
+
+        Parent root =
+                fxWeaver.loadView(
+                        WelcomeController.class
+                );
+
+        Stage stage =
+                (Stage) ((Node) event.getSource())
+                        .getScene()
+                        .getWindow();
+
+        stage.setScene(
+                new Scene(root)
+        );
+
+        stage.setTitle(
+                "AnimoQuest"
+        );
+
+        stage.show();
+
+        stage.setMaximized(false);
+
+    } catch (Exception e) {
+
+        e.printStackTrace();
+
+        showAlert(
+                Alert.AlertType.ERROR,
+                "Logout Error",
+                "Unable to log out."
+        );
     }
+}
 
+    // ============================================================
     // ALERT
+    // ============================================================
 
     private void showAlert(
             Alert.AlertType type,
