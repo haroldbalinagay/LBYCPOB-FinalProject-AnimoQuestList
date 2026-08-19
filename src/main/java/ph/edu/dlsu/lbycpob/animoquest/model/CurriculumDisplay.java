@@ -12,11 +12,9 @@ public class CurriculumDisplay {
     private final String status;
     private final int term;
 
-    // Requisite information for display
-    private final String requisiteInfo;
-
-    // Warning shown when a requisite is not satisfied
-    private final String missingPrerequisiteWarning;
+    private final String requisites;
+    private final boolean valid;
+    private final String warningMessage;
 
     public CurriculumDisplay(
             Long courseId,
@@ -25,8 +23,9 @@ public class CurriculumDisplay {
             int units,
             String status,
             int term,
-            String requisiteInfo,
-            String missingPrerequisiteWarning
+            String requisites,
+            boolean valid,
+            String warningMessage
     ) {
         this.courseId = courseId;
         this.code = code;
@@ -34,7 +33,8 @@ public class CurriculumDisplay {
         this.units = units;
         this.status = status;
         this.term = term;
-        this.requisiteInfo = requisiteInfo;
-        this.missingPrerequisiteWarning = missingPrerequisiteWarning;
+        this.requisites = requisites;
+        this.valid = valid;
+        this.warningMessage = warningMessage;
     }
 }
