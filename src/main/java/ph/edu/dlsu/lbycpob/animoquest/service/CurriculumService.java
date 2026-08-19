@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import ph.edu.dlsu.lbycpob.animoquest.model.CurriculumDisplay;
 import ph.edu.dlsu.lbycpob.animoquest.model.CurriculumProgress;
 import ph.edu.dlsu.lbycpob.animoquest.model.MasterlistCourse;
+import ph.edu.dlsu.lbycpob.animoquest.model.TermChecklist;
 import ph.edu.dlsu.lbycpob.animoquest.repository.CurriculumRepository;
 import ph.edu.dlsu.lbycpob.animoquest.repository.MasterlistCourseRepository;
 
