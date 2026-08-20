@@ -99,45 +99,23 @@ public class AddAccountController {
         // ============================================================
         // CREATE ACCOUNT
         // ============================================================
-
         try {
-
-            loginService.addStudentAccount(
-                    idNumber,
-                    password,
-                    firstName,
-                    middleName,
-                    lastName,
-                    major
-            );
-
-            showAlert(
-                    Alert.AlertType.INFORMATION,
-                    "Account Created",
-                    "Your AnimoQuest account was successfully created!"
-            );
-
+            loginService.addStudentAccount(idNumber, password, firstName, middleName,
+                    lastName, major);
+            showAlert(Alert.AlertType.INFORMATION, "Account Created",
+                    "Your AnimoQuest account was successfully created!");
             clearFields();
 
         } catch (IllegalArgumentException e) {
-
-            showAlert(
-                    Alert.AlertType.WARNING,
-                    "Account Creation Failed",
-                    e.getMessage()
-            );
+            showAlert(Alert.AlertType.WARNING, "Account Creation Failed", e.getMessage());
 
         } catch (Exception e) {
-
-            showAlert(
-                    Alert.AlertType.ERROR,
-                    "Database Error",
-                    "An unexpected error occurred while creating the account."
-            );
-
+            showAlert(Alert.AlertType.ERROR, "Database Error",
+                    "An unexpected error occurred while creating the account.");
             e.printStackTrace();
         }
     }
+
 // ============================================================
     // SHOW / HIDE PASSWORD
     // ============================================================

@@ -223,6 +223,7 @@ public class LoginController {
                             AdminDashboardController.class
                     );
 
+            root.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/style.css")).toExternalForm());
 
             AdminDashboardController controller =
                     fxWeaver.getBean(
@@ -247,7 +248,7 @@ public class LoginController {
 
 
             stage.setTitle(
-                    "AnimoQuestList - Admin Dashboard"
+                    "AnimoQuest - Admin Dashboard"
             );
 
 

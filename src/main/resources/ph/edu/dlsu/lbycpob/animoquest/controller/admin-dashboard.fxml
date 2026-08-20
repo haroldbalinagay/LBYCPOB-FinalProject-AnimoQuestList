@@ -18,7 +18,7 @@
           AnchorPane.topAnchor="80.0"
           AnchorPane.bottomAnchor="80.0">
 
-        <Label text="AnimoQuestList"/>
+        <Label text="AnimoQuest"/>
 
         <Label text="Admin Dashboard"/>
 

@@ -976,6 +976,13 @@ private void handleCourseSelection() {
         // Load the fxml file
         Parent root = fxWeaver.loadView(ChecklistViewController.class);
 
+        // Get the controller
+        ChecklistViewController controller = fxWeaver.getBean(ChecklistViewController.class);
+
+        // Supply the current student id
+        controller.setStudentId(currentStudentId);
+        controller.initialize();
+
         // Create the Stage and Scene
         Stage popupStage = new Stage();
         popupStage.setTitle("AnimoQuest - Term Checklist Visualization");

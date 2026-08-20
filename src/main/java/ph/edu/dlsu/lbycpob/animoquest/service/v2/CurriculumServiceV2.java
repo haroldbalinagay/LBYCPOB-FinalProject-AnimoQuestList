@@ -16,7 +16,7 @@ public class CurriculumServiceV2 {
         this.progressRepository = progressRepository;
     }
 
-    public List<CurriculumProgressV2> getProgressOf(Student student) {
-        return progressRepository.findByStudentId(1L);
+    public List<CurriculumProgressV2> getProgressOf(Long studentId) {
+        return progressRepository.findByStudentId(studentId);
     }
 }

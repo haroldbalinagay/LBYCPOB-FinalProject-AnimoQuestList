@@ -11,8 +11,11 @@ import javafx.scene.input.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
+import lombok.Getter;
+import lombok.Setter;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.stereotype.Component;
+import ph.edu.dlsu.lbycpob.animoquest.model.Student;
 import ph.edu.dlsu.lbycpob.animoquest.model.v2.CourseBoxState;
 import ph.edu.dlsu.lbycpob.animoquest.model.v2.CourseStatusV2;
 import ph.edu.dlsu.lbycpob.animoquest.model.v2.CurriculumProgressV2;
@@ -46,6 +49,9 @@ public class ChecklistViewController {
     @FXML private GridPane checklistGrid;
     private boolean checklistGridClickLock = false; // A set-reset latch
 
+    @Getter @Setter
+    private Long studentId;
+
     private List<TermChecklistControllerV2> checklistControllers = new ArrayList<>();
 
     private List<CurriculumProgressV2> progressList = new ArrayList<>();
@@ -70,7 +76,7 @@ public class ChecklistViewController {
         int count = 1;
 
         // Ask the curriculum service for the student's progress records
-        progressList = progressService.getProgressOf(null); // TODO: HARMONY POINT
+        progressList = progressService.getProgressOf(studentId); // TODO: HARMONY POINT (DONE PARTIAL)
 
         // Loop through each cell of the checklist grid and create a new checklist instance
         for (int row = 0; row < 4 ; row++) {
