@@ -1,3 +1,1 @@
-**Use the MASTER branch as the primary branch to push commits to and create branches from**
-
-I'm not sure how to combine MAIN and MASTER properly - Timothy
+**Refer to the main branch for the original project proposal README.**
